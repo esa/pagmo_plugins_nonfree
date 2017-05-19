@@ -241,9 +241,9 @@ void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF,
  *
  *    Unfortunately, SNOPT7 fortran code is only available acquiring a licence.
  *    If you do have such a licence, then you will also have the fortran files and can build them into the library
- *    snopt7 (one single library). In what follows, we assume the snopt7 fortran library is available in your system.
- *    Since pagmo wraps around the C interface you will have to compile also the library snopt7_c, which is open source
- *    and can be obtained from https://github.com/snopt/snopt-interface. We ask that when building such a library
+ *    snopt7 (one single library). In what follows, we assume the snopt7 fortran library is available in your
+ *    system. Since pagmo wraps around the C interface you will have to compile also the library snopt7_c, which is open
+ *    source and can be obtained from https://github.com/snopt/snopt-interface. We ask that when building such a library
  *    you link it to the fortran library. You can achieve this modifying the snopt-interface build system
  *    (e.g. using "LDFLAGS = -avoid-version -lsnopt7" in the Makefile).
  *
@@ -276,10 +276,6 @@ void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF,
  *    The possibility to exploit the linear part of the problem fitness, part of the original SNOPT7 library,
  *    is deactivated in this plugin for pagmo.
  *
- * .. note::
- *
- *    This user-defined algorithm is available only if pagmo was compiled with the ``PAGMO_WITH_SNOPT`` option
- *    enabled (see the :ref:`installation instructions <install>`).
  *
  * .. seealso::
  *
