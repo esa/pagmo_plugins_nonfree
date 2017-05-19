@@ -41,13 +41,10 @@ see https://www.gnu.org/licenses/. */
 #include <unordered_map>
 #include <vector>
 
-#include <pagmo/config.hpp>
-
-#if defined(PAGMO_WITH_SNOPT7)
-
 #include <algorithm> // std::min_element
 #include <iomanip>
 #include <limits> // std::numeric_limits
+#include <pagmo/config.hpp>
 #include <random>
 #include <string>
 #include <tuple>
@@ -924,10 +921,4 @@ private:
 
 PAGMO_REGISTER_ALGORITHM(pagmo::snopt7)
 
-#else // PAGMO_WITH_SNOPT7
-
-#error The snopt7.hpp header was included, but pagmo was not compiled with Snopt7 support
-
-#endif // PAGMO_WITH_SNOPT7
-
-#endif
+#endif // PAGMO_SNOPT7

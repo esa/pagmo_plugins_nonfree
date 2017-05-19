@@ -82,6 +82,7 @@ include(PagmoFindBoost)
 
 # Pagmo setup.
 find_package(PAGMO REQUIRED)
+message(STATUS "Pagmo include directory: ${PAGMO_INCLUDE_DIR}")
 
 # Setup of the header-only pagmo library.
 add_library(pagmo_snopt7 INTERFACE)
