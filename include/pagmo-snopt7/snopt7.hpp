@@ -55,7 +55,7 @@ see https://www.gnu.org/licenses/. */
 #include <vector>
 
 extern "C" {
-#include <pagmo-snopt7/c_interface/snopt_cwrap.h>"
+#include <pagmo-snopt7/c_interface/snopt_cwrap.h>
 }
 
 // The following lines are a workaround for the boost::is_object limit of 24 maximum arguments. When called with

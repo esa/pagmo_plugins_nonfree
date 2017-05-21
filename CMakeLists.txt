@@ -99,7 +99,7 @@ endif()
 # Pagmo setup.
 find_package(Pagmo REQUIRED)
 
-# Setup of the header-only pagmo library.
+# Setup of the header-only pagmo_snopt7 library.
 add_library(pagmo_snopt7 INTERFACE)
 
 target_include_directories(pagmo_snopt7 INTERFACE
