@@ -64,7 +64,7 @@ endif()
 # Python setup.
 # NOTE: we do it here because we need to detect the Python bits *before*
 # looking for boost.python.
-if(PAGMO_SNOPT7_BUILD_PYGMO)
+if(PAGMO_SNOPT7_BUILD_PYTHON)
     include(YACMAPythonSetup)
 
     # Python version check.
@@ -78,11 +78,26 @@ if(PAGMO_SNOPT7_BUILD_PYGMO)
 endif()
 
 # Boost setup.
-include(PagmoFindBoost)
+list(APPEND PAGMO_SNOPT7_REQUIRED_BOOST_LIBS system filesystem)
+if(PAGMO_SNOPT7_BUILD_PYTHON)
+    list(APPEND PAGMO_SNOPT7_REQUIRED_BOOST_LIBS python)
+endif()
+message(STATUS "Required Boost libraries: ${PAGMO_SNOPT7_REQUIRED_BOOST_LIBS}")
+find_package(Boost 1.55.0 REQUIRED COMPONENTS "${PAGMO_SNOPT7_REQUIRED_BOOST_LIBS}")
+if(NOT Boost_FOUND)
+    message(FATAL_ERROR "Not all requested Boost components were found, exiting.")
+endif()
+message(STATUS "Detected Boost version: ${Boost_VERSION}")
+message(STATUS "Boost include dirs: ${Boost_INCLUDE_DIRS}")
+# Might need to recreate targets if they are missing (e.g., older CMake versions).
+if(NOT TARGET Boost2::boost2)
+    message(STATUS "The 'Boost2::boost2' target is missing, creating it.")
+    add_library(Boost2::boost2 INTERFACE IMPORTED)
+    set_target_properties(Boost2::boost2 PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${Boost_INCLUDE_DIRS}")
+endif()
 
 # Pagmo setup.
-find_package(PAGMO REQUIRED)
-message(STATUS "Pagmo include directory: ${PAGMO_INCLUDE_DIR}")
+find_package(Pagmo REQUIRED)
 
 # Setup of the header-only pagmo library.
 add_library(pagmo_snopt7 INTERFACE)
@@ -92,7 +107,7 @@ target_include_directories(pagmo_snopt7 INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
     $<INSTALL_INTERFACE:include>)
 
-target_link_libraries(pagmo_snopt7 INTERFACE PAGMO::pagmo ${CMAKE_DL_LIBS})
+target_link_libraries(pagmo_snopt7 INTERFACE Pagmo::pagmo ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})
 
 # Configure config.hpp.
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in" "${CMAKE_CURRENT_BINARY_DIR}/include/pagmo_snopt7/config.hpp" @ONLY)

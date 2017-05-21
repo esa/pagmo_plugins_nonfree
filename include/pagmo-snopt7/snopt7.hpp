@@ -30,35 +30,33 @@ see https://www.gnu.org/licenses/. */
 #define PAGMO_SNOPT7_HPP
 
 #include <algorithm>
+#include <algorithm> // std::min_element
 #include <boost/dll/import.hpp>
 #include <boost/dll/shared_library.hpp>
 #include <exception>
 #include <iomanip>
-#include <limits>
-#include <mutex>
-#include <stdexcept>
-#include <string>
-#include <unordered_map>
-#include <vector>
-
-#include <algorithm> // std::min_element
 #include <iomanip>
 #include <limits> // std::numeric_limits
-#include <pagmo/config.hpp>
-#include <random>
-#include <string>
-#include <tuple>
-
+#include <mutex>
 #include <pagmo/algorithm.hpp>
 #include <pagmo/algorithms/not_population_based.hpp>
-extern "C" {
-#include <pagmo/algorithms/snopt7/snopt_cwrap.h>
-}
+#include <pagmo/config.hpp>
 #include <pagmo/exceptions.hpp>
 #include <pagmo/io.hpp>
 #include <pagmo/population.hpp>
 #include <pagmo/problem.hpp>
 #include <pagmo/utils/constrained.hpp>
+#include <random>
+#include <stdexcept>
+#include <string>
+#include <string>
+#include <tuple>
+#include <unordered_map>
+#include <vector>
+
+extern "C" {
+#include <pagmo-snopt7/c_interface/snopt_cwrap.h>"
+}
 
 // The following lines are a workaround for the boost::is_object limit of 24 maximum arguments. When called with
 // more arguments boost::is_object actually fails to detect correctly if T is an object. To workaround this
@@ -199,8 +197,8 @@ void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF,
 
                 if (!(f_count / verb % 50u)) {
                     // Every 50 lines print the column names.
-                    print("\n", std::setw(10), "objevals:", std::setw(15), "objval:", std::setw(15),
-                          "violated:", std::setw(15), "viol. norm:", '\n');
+                    print("\n", std::setw(10), "objevals:", std::setw(15), "objval:", std::setw(15), "violated:",
+                          std::setw(15), "viol. norm:", '\n');
                 }
                 // Print to screen the log line.
                 print(std::setw(10), f_count + 1u, std::setw(15), fit[0], std::setw(15), nv, std::setw(15), l,
@@ -388,9 +386,8 @@ public:
         // PREAMBLE-------------------------------------------------------------------------------------------------
         // We start by checking that the problem is suitable for this particular algorithm.
         if (prob.get_nobj() != 1u) {
-            pagmo_throw(std::invalid_argument,
-                        "Multiple objectives detected in " + prob.get_name() + " instance. " + get_name()
-                            + " cannot deal with them");
+            pagmo_throw(std::invalid_argument, "Multiple objectives detected in " + prob.get_name() + " instance. "
+                                                   + get_name() + " cannot deal with them");
         }
         if (prob.is_stochastic()) {
             pagmo_throw(std::invalid_argument,

@@ -31,10 +31,11 @@ see https://www.gnu.org/licenses/. */
 
 #include <pagmo/algorithm.hpp>
 #include <pagmo/algorithms/ipopt.hpp>
-#include <pagmo/algorithms/snopt7.hpp>
 #include <pagmo/io.hpp>
 #include <pagmo/problems/ackley.hpp>
 #include <pagmo/problems/cec2006.hpp>
+
+#include <pagmo-snopt7/snopt7.hpp>
 
 using namespace pagmo;
 
