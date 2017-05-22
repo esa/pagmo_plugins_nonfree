@@ -29,7 +29,7 @@ static inline void *wrap_import_array()
 
 namespace bp = boost::python;
 
-BOOST_PYTHON_MODULE(pygmo_snopt7)
+BOOST_PYTHON_MODULE(core)
 {
     // This function needs to be called before doing anything with threads.
     // https://docs.python.org/3/c-api/init.html
