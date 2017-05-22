@@ -180,6 +180,12 @@ extern "C" {
 void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF, double F[], int *needG, int *neG,
                            double G[], char cu[], int *lencu, int iu[], int *leniu, double ru[], int *lenru)
 {
+    (void)n;
+    (void)cu;
+    (void)lencu;
+    (void)ru;
+    (void)lenru;
+    (void)leniu;
     // First we recover the info we have hidden in the workspace
     auto &info = *(detail::user_data *)iu;
     auto &verb = info.m_verbosity;
@@ -364,11 +370,8 @@ public:
      *
      *    All options passed to the snOptA interface are those set by the user via the pagmo::snopt7 interface, or
      *    where no user specifications are available, to the default detailed on the User Manual available online but
-     *    with the following exceptions. "Derivative option" is set to 3 and the user is not allowed to set its
-     *    value. This corresponds to declare that all non zero gradients are provided in the UDP. To use numerical
-     *    approximations for the gradients, use pagmo::estimate_gradient() or similar. "Major feasibility tolerance" is
-     *    set to the default value 1E-6 or to the minimum among the values returned by pagmo::problem::get_c_tol() if
-     *    not zero.
+     *    with the following exception: "Major feasibility tolerance" is set to the default value 1E-6 or to the minimum
+     *    among the values returned by pagmo::problem::get_c_tol() if not zero.
      *
      * .. seealso::
      *
@@ -390,14 +393,12 @@ public:
     population evolve(population pop) const
     {
         // We store some useful properties
-        const auto &prob = pop.get_problem(); // This is a const reference, so using set_seed for example will not be
-                                              // allowed
-        auto dim = prob.get_nx();             // not const as used type for counters
+        const auto &prob
+            = pop.get_problem(); // This is a const reference, so using set_seed, for example, will not work
+        auto dim = prob.get_nx();
         const auto bounds = prob.get_bounds();
         const auto &lb = bounds.first;
         const auto &ub = bounds.second;
-        auto fevals0 = prob.get_fevals(); // disount for the already made fevals
-        unsigned int count = 1u;          // regulates the screen output
 
         // PREAMBLE-------------------------------------------------------------------------------------------------
         // We start by checking that the problem is suitable for this particular algorithm.
@@ -557,8 +558,8 @@ We report the exact text of the original exception thrown:
         int n = static_cast<int>(prob.get_nx());  // Decision vector dimension
 
         // ------- Setting the bounds. -----------------------------------------------------------------------------
-        double xlow[n], xupp[n];
-        double Flow[nF], Fupp[nF];
+        vector_double xlow(n), xupp(n);
+        vector_double Flow(nF), Fupp(nF);
         // decision vector.
         for (decltype(dim) i = 0u; i < dim; ++i) {
             xlow[i] = lb[i];
@@ -581,8 +582,8 @@ We report the exact text of the original exception thrown:
         auto sel_xf = select_individual(pop);
         vector_double x0(std::move(sel_xf.first)), fit0(std::move(sel_xf.second));
         // Initialize states, x and multipliers
-        int xstate[n], Fstate[nF];
-        double x[n], xmul[n], F[nF], Fmul[nF];
+        std::vector<int> xstate(n), Fstate(nF);
+        vector_double x(n), xmul(n), F(nF), Fmul(nF);
         for (decltype(x0.size()) i = 0u; i < x0.size(); i++) {
             xstate[i] = 0;
             x[i] = x0[i];
@@ -610,19 +611,19 @@ We report the exact text of the original exception thrown:
         // -------- Linear Part Of the Problem. As pagmo does not support linear problems we do not use this -------
         int neA = 0;  // We switch off the linear part of the fitness
         int lenA = 1; // Thats the minimum length allowed
-        int iAfun[lenA];
-        int jAvar[lenA];
-        double A[lenA];
+        std::vector<int> iAfun(lenA);
+        std::vector<int> jAvar(lenA);
+        vector_double A(lenA);
 
         // -------- Non Linear Part Of the Problem. ----------------------------------------------------------------
         auto sparsity = prob.gradient_sparsity();
         int neG = static_cast<int>(sparsity.size());
         int lenG = neG;
-        int iGfun[lenG];
-        int jGvar[lenG];
+        std::vector<int> iGfun(lenG);
+        std::vector<int> jGvar(lenG);
         for (decltype(sparsity.size()) i = 0u; i < sparsity.size(); ++i) {
-            iGfun[i] = sparsity[i].first;
-            jGvar[i] = sparsity[i].second;
+            iGfun[i] = static_cast<int>(sparsity[i].first);
+            jGvar[i] = static_cast<int>(sparsity[i].second);
         }
         if (prob.has_gradient()) {
             auto res = setIntParameter(&snopt7_problem, &std::string("Derivative option")[0], 3);
@@ -646,9 +647,10 @@ We report the exact text of the original exception thrown:
                 print("The gradient is computed numerically by SNOPT7.\n");
             }
         }
-        m_last_opt_res
-            = solveA(&snopt7_problem, Cold, nF, n, ObjAdd, ObjRow, detail::snopt_fitness_wrapper, neA, iAfun, jAvar, A,
-                     neG, iGfun, jGvar, xlow, xupp, Flow, Fupp, x, xstate, xmul, F, Fstate, Fmul, &nS, &nInf, &sInf);
+        m_last_opt_res = solveA(&snopt7_problem, Cold, nF, n, ObjAdd, ObjRow, detail::snopt_fitness_wrapper, neA,
+                                iAfun.data(), jAvar.data(), A.data(), neG, iGfun.data(), jGvar.data(), xlow.data(),
+                                xupp.data(), Flow.data(), Fupp.data(), x.data(), xstate.data(), xmul.data(), F.data(),
+                                Fstate.data(), Fmul.data(), &nS, &nInf, &sInf);
         if (m_verbosity > 0u) {
             print("\n", detail::snopt_statics<>::results.at(m_last_opt_res), "\n");
         }
@@ -662,12 +664,12 @@ We report the exact text of the original exception thrown:
 
         // ------- We reinsert the solution if better -----------------------------------------------------------
         // Compute the new fitness vector.
-        vector_double final_f(F, F + prob.get_nf());
-        vector_double final_x(x, x + prob.get_nx());
+        // vector_double final_f(F, F + prob.get_nf());
+        // vector_double final_x(x, x + prob.get_nx());
 
         // Store the new individual into the population, but only if it is improved.
-        if (compare_fc(final_f, fit0, prob.get_nec(), prob.get_c_tol())) {
-            replace_individual(pop, final_x, final_f);
+        if (compare_fc(F, fit0, prob.get_nec(), prob.get_c_tol())) {
+            replace_individual(pop, x, F);
         }
         return pop;
     };

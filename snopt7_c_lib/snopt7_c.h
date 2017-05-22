@@ -6,10 +6,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 typedef void (*isnLog)(int *iAbort, int *info, int *HQNType, int KTcond[], int *MjrPrt, int *minimz, int *n, int *nb,
                        int *nnCon0, int *nS, int *itn, int *nMajor, int *nMinor, int *nSwap, double *condHz, int *iObj,
                        double *sclObj, double *ObjAdd, double *fMrt, double *PenNrm, double *step, double *prInf,
@@ -42,12 +38,9 @@ typedef void (*isnSTOP)(int *iAbort, int KTcond[], int *MjrPrt, int *minimz, int
 
 typedef void (*snFunA)(int *Status, int *n, double x[], int *needF, int *neF, double F[], int *needG, int *neG,
                        double G[], char cu[], int *lencu, int iu[], int *leniu, double ru[], int *lenru);
-#ifdef __cplusplus
-}
-#endif
-/* File: snopt_cwrap.h
- *   C interface for SNOPTB and SNOPTC.
- */
+
+double closed_interval_rand(double x0, double x1);
+
 typedef struct {
     char *name;
 
@@ -69,4 +62,4 @@ typedef struct {
 
 } snProblem;
 
-#endif /* SNOPT_C_H */
+#endif

@@ -12,12 +12,12 @@ void snInit(snProblem *prob, char *name, char *prtfile, int summOn){};
 
 int setIntParameter(snProblem *prob, char stropt[], int opt)
 {
-    return 1;
+    return 0;
 };
 
 int setRealParameter(snProblem *prob, char stropt[], double opt)
 {
-    return 1;
+    return 0;
 };
 
 void deleteSNOPT(snProblem *prob){};
