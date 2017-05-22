@@ -8,8 +8,6 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules" "
 
 message(STATUS "System name: ${CMAKE_SYSTEM_NAME}")
 
-set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH} "${CMAKE_INSTALL_PREFIX}/include")
-
 # Set default build type to "Release".
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING
@@ -24,17 +22,14 @@ option(PAGMO_SNOPT7_BUILD_TESTS "Build test set." OFF)
 option(PAGMO_SNOPT7_BUILD_PYTHON "Build the python module." OFF)
 
 # Build option: install header.
-option(PAGMO_SNOPT7_HEADERS "Enable the installation of the necessary's header files." ON)
+option(PAGMO_SNOPT7_HEADERS "Enable the installation of the necessary header files." ON)
 
 # Initial setup of compiler flags.
 include(YACMACompilerLinkerSettings)
 
-# Threading setup.
-include(YACMAThreadingSetup)
-
 # Assemble the flags.
-set(PAGMO_SNOPT7_CXX_FLAGS_DEBUG ${YACMA_CXX_FLAGS} ${YACMA_CXX_FLAGS_DEBUG} ${YACMA_THREADING_CXX_FLAGS})
-set(PAGMO_SNOPT7_CXX_FLAGS_RELEASE ${YACMA_CXX_FLAGS} ${YACMA_THREADING_CXX_FLAGS})
+set(PAGMO_SNOPT7_CXX_FLAGS_DEBUG ${YACMA_CXX_FLAGS} ${YACMA_CXX_FLAGS_DEBUG})
+set(PAGMO_SNOPT7_CXX_FLAGS_RELEASE ${YACMA_CXX_FLAGS})
 if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin" AND YACMA_COMPILER_IS_CLANGXX)
   message(STATUS "Clang compiler on OSX detected, setting the standard library to 'libc++'.")
   list(APPEND PAGMO_CXX_FLAGS_DEBUG "-stdlib=libc++")
@@ -61,22 +56,6 @@ if(MINGW)
 	list(APPEND PAGMO_SNOPT7_CXX_FLAGS_RELEASE "-Wa,-mbig-obj")
 endif()
 
-# Python setup.
-# NOTE: we do it here because we need to detect the Python bits *before*
-# looking for boost.python.
-if(PAGMO_SNOPT7_BUILD_PYTHON)
-    include(YACMAPythonSetup)
-
-    # Python version check.
-    if(${PYTHON_VERSION_MAJOR} LESS 2 OR (${PYTHON_VERSION_MAJOR} EQUAL 2 AND ${PYTHON_VERSION_MINOR} LESS 7))
-        message(FATAL_ERROR "Minimum supported Python version is 2.7.")
-    endif()
-
-    if(NOT YACMA_NUMPY_INCLUDE_DIR)
-        message(FATAL_ERROR "The NumPy headers could not be located.")
-    endif()
-endif()
-
 # Boost setup.
 list(APPEND PAGMO_SNOPT7_REQUIRED_BOOST_LIBS system filesystem)
 if(PAGMO_SNOPT7_BUILD_PYTHON)
@@ -89,17 +68,11 @@ if(NOT Boost_FOUND)
 endif()
 message(STATUS "Detected Boost version: ${Boost_VERSION}")
 message(STATUS "Boost include dirs: ${Boost_INCLUDE_DIRS}")
-# Might need to recreate targets if they are missing (e.g., older CMake versions).
-if(NOT TARGET Boost2::boost2)
-    message(STATUS "The 'Boost2::boost2' target is missing, creating it.")
-    add_library(Boost2::boost2 INTERFACE IMPORTED)
-    set_target_properties(Boost2::boost2 PROPERTIES INTERFACE_INCLUDE_DIRECTORIES "${Boost_INCLUDE_DIRS}")
-endif()
 
 # Pagmo setup.
 find_package(Pagmo REQUIRED)
 
-# Setup of the header-only pagmo_snopt7 library.
+# Setup of the header-only pagmo-snopt7 library.
 add_library(pagmo_snopt7 INTERFACE)
 
 target_include_directories(pagmo_snopt7 INTERFACE
@@ -107,7 +80,7 @@ target_include_directories(pagmo_snopt7 INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
     $<INSTALL_INTERFACE:include>)
 
-target_link_libraries(pagmo_snopt7 INTERFACE Pagmo::pagmo ${Boost_LIBRARIES} ${CMAKE_DL_LIBS})
+target_link_libraries(pagmo_snopt7 INTERFACE Pagmo::pagmo ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${CMAKE_DL_LIBS})
 
 # Configure config.hpp.
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in" "${CMAKE_CURRENT_BINARY_DIR}/include/pagmo_snopt7/config.hpp" @ONLY)
@@ -116,23 +89,27 @@ configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in" "${CMAKE_CURRENT_BINA
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/doc/doxygen/Doxyfile.in" "${CMAKE_CURRENT_SOURCE_DIR}/doc/doxygen/Doxyfile" @ONLY)
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/doc/sphinx/conf.py.in" "${CMAKE_CURRENT_SOURCE_DIR}/doc/sphinx/conf.py" @ONLY)
 
+# Build the tests
 if(PAGMO_SNOPT7_BUILD_TESTS)
     add_subdirectory("${CMAKE_SOURCE_DIR}/tests")
 endif()
 
+# Build the pygmo-snopt7 module
 if(PAGMO_SNOPT7_BUILD_PYTHON)
-    add_subdirectory("${CMAKE_SOURCE_DIR}/pygmo")
-    if(MINGW OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-        message(STATUS "Creating the files for the generation of a binary wheel.")
-        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/wheel_setup.py" "${CMAKE_CURRENT_BINARY_DIR}/wheel/setup.py" @ONLY)
-        if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-            # NOTE: this is necessary on linux but harmful on mingw.
-            configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/wheel_setup.cfg" "${CMAKE_CURRENT_BINARY_DIR}/wheel/setup.cfg" @ONLY)
-        endif()
-        if(MINGW)
-            configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/mingw_wheel_libs_python${PYTHON_VERSION_MAJOR}.txt" "${CMAKE_CURRENT_BINARY_DIR}/wheel/mingw_wheel_libs_python${PYTHON_VERSION_MAJOR}.txt" @ONLY)
-        endif()
-	endif()
+
+    include(YACMAPythonSetup)
+
+    # Python version check.
+    if(${PYTHON_VERSION_MAJOR} LESS 2 OR (${PYTHON_VERSION_MAJOR} EQUAL 2 AND ${PYTHON_VERSION_MINOR} LESS 7))
+        message(FATAL_ERROR "Minimum supported Python version is 2.7.")
+    endif()
+
+    if(NOT YACMA_NUMPY_INCLUDE_DIR)
+        message(FATAL_ERROR "The NumPy headers could not be located.")
+    endif()
+
+    add_subdirectory("${CMAKE_SOURCE_DIR}/python_module")
+
 endif()
 
 if(PAGMO_SNOPT7_INSTALL_HEADERS)
