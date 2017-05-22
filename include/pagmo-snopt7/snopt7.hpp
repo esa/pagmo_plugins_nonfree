@@ -29,7 +29,6 @@ see https://www.gnu.org/licenses/. */
 #ifndef PAGMO_SNOPT7_HPP
 #define PAGMO_SNOPT7_HPP
 
-#include <algorithm>
 #include <algorithm> // std::min_element
 #include <boost/dll/import.hpp>
 #include <boost/dll/shared_library.hpp>
@@ -49,6 +48,7 @@ see https://www.gnu.org/licenses/. */
 #include <stdexcept>
 #include <string>
 #include <tuple>
+#include <type_traits> // std::false_type
 #include <unordered_map>
 #include <vector>
 
@@ -86,7 +86,7 @@ struct user_data {
     // The verbosity
     unsigned m_verbosity;
     // The log
-    log_type m_log = log_type{};
+    log_type m_log;
     // A counter
     unsigned long m_objfun_counter = 0;
     // This exception pointer will be null, unless
@@ -96,10 +96,28 @@ struct user_data {
     std::exception_ptr m_eptr;
 };
 
+// We use this to ensure deleteSNOPT is called also if exceptions occur.
+struct sn_problem_raii {
+    sn_problem_raii(snProblem *p, char *a, char *b, int n,
+                    std::function<void(snProblem *, char *, char *, int)> &snInit,
+                    std::function<void(snProblem *)> &deleteSNOPT)
+        : m_prob(p), m_deleteSNOPT(deleteSNOPT)
+    {
+        snInit(p, a, b, n);
+    }
+    ~sn_problem_raii()
+    {
+        m_deleteSNOPT(m_prob);
+    }
+    snProblem *m_prob;
+    std::function<void(snProblem *)> &m_deleteSNOPT;
+};
+
 // Usual trick with global read-only data useful to the SNOPT7 wrapper.
 template <typename = void>
 struct snopt_statics {
-    // A map to link a human-readable description to snOptA return codes of the
+    // A map to link a human-readable description to snOptA return codes for the
+    // call result.
     using result_map_t = std::unordered_map<int, std::string>;
     static const result_map_t results;
     using mutex_t = std::mutex;
@@ -156,7 +174,7 @@ extern "C" {
 
 // Wrapper to connect pagmo's fitness calculation machinery to SNOPT7's.
 // NOTE: this function needs to be passed to the SNOPT7 C API, and as such it needs to be
-// declated within an 'extern "C"' block (otherwise, it might be UB to pass C++ function pointers
+// declared within an 'extern "C"' block (otherwise, it might be UB to pass C++ function pointers
 // to a C API).
 // https://www.reddit.com/r/cpp/comments/4fqfy7/using_c11_capturing_lambdas_w_vanilla_c_api/d2b9bh0/
 void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF, double F[], int *needG, int *neG,
@@ -327,8 +345,8 @@ public:
      *
      */
     snopt7(bool screen_output = false, std::string absolute_lib_path = "/usr/local/lib/")
-        : m_absolute_lib_path(absolute_lib_path), m_integer_opts(), m_numeric_opts(), m_last_opt_res(),
-          m_screen_output(screen_output), m_verbosity(0), m_log(){};
+        : m_absolute_lib_path(absolute_lib_path), m_integer_opts(), m_numeric_opts(), m_screen_output(screen_output),
+          m_verbosity(0), m_log(){};
 
     /// Evolve population.
     /**
@@ -410,11 +428,10 @@ public:
             solveA;
         // We then try to load the library at run time and locate the symbols used.
         try {
-            // Here we import at runtime the snopt7_c library and protect the operation with a mutex
-            detail::snopt_statics<>::library_load_mutex.lock();
+            // Here we import at runtime the snopt7_c library and protect the whole try block with a mutex
+            std::lock_guard<std::mutex> lock(detail::snopt_statics<>::library_load_mutex);
             boost::dll::shared_library libsnopt7_c(m_absolute_lib_path + "snopt7_c",
                                                    boost::dll::load_mode::append_decorations);
-            detail::snopt_statics<>::library_load_mutex.unlock();
             // We then load the symbols we need for the SNOPT7 plugin
             snInit = boost::dll::import<void(snProblem *, char *, char *,
                                              int)>( // type of the function to import
@@ -444,13 +461,9 @@ public:
                 libsnopt7_c,                            // the library
                 "solveA"                                // name of the function to import
                 );
-        } catch (...) {
-            auto e_ptr = std::current_exception();
-            try {
-                std::rethrow_exception(e_ptr);
-            } catch (const std::exception &e) {
-                std::string message(
-                    R"(
+        } catch (const std::exception &e) {
+            std::string message(
+                R"(
 An error occurred while loading the snopt7_c library at run-time. This is typically caused by one of the following
 reasons:
 
@@ -477,8 +490,7 @@ Assuming your FORTRAN library is called snopt7.
 We report the exact text of the original exception thrown:
 
  )" + std::string(e.what()));
-                pagmo_throw(std::invalid_argument, message);
-            }
+            pagmo_throw(std::invalid_argument, message);
         }
         // ------------------------- END SNOPT7 PLUGIN -------------------------------------------------------------
 
@@ -488,7 +500,11 @@ We report the exact text of the original exception thrown:
         char empty_string[] = "";
 
         auto problem_name = s_to_C(prob.get_name());
-        snInit(&snopt7_problem, problem_name.data(), empty_string, m_screen_output);
+
+        // Here we call snInit, but the protect memory allocated against possible exception by ensuring deleteSNOPT will
+        // be called when the object spr is destroyed.
+        detail::sn_problem_raii spr(&snopt7_problem, problem_name.data(), empty_string, m_screen_output, snInit,
+                                    deleteSNOPT);
         // Logic for the handling of constraints tolerances. The logic is as follows:
         // - if the user provides the "Major feasibility tolerance" option, use that *unconditionally*. Otherwise,
         // - compute the minimum tolerance min_tol among those returned by  problem.c_tol(). If zero, ignore
@@ -634,7 +650,6 @@ We report the exact text of the original exception thrown:
         m_last_opt_res
             = solveA(&snopt7_problem, Cold, nF, n, ObjAdd, ObjRow, detail::snopt_fitness_wrapper, neA, iAfun, jAvar, A,
                      neG, iGfun, jGvar, xlow, xupp, Flow, Fupp, x, xstate, xmul, F, Fstate, Fmul, &nS, &nInf, &sInf);
-        deleteSNOPT(&snopt7_problem);
         if (m_verbosity > 0u) {
             print("\n", detail::snopt_statics<>::results.at(m_last_opt_res), "\n");
         }

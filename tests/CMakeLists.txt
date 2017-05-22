@@ -1,5 +1,5 @@
 # For testing we build a fake library that we will call snopt7_c
-# and that does nothing.
+# and that does nothing useful.
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/snopt7_c_lib)
 add_library(snopt7_c SHARED ../snopt7_c_lib/snopt7_c.c)
 install(DIRECTORY include/ DESTINATION include)
@@ -14,5 +14,5 @@ function(ADD_PAGMO_SNOPT7_TESTCASE arg1)
     add_test(${arg1} ${arg1})
 endfunction()
 
-# Tests requiring no dependencies (in alphabetical order)
+# Tests
 ADD_PAGMO_SNOPT7_TESTCASE(snopt7)
