@@ -35,7 +35,6 @@ see https://www.gnu.org/licenses/. */
 #include <boost/dll/shared_library.hpp>
 #include <exception>
 #include <iomanip>
-#include <iomanip>
 #include <limits> // std::numeric_limits
 #include <mutex>
 #include <pagmo/algorithm.hpp>
@@ -49,13 +48,12 @@ see https://www.gnu.org/licenses/. */
 #include <random>
 #include <stdexcept>
 #include <string>
-#include <string>
 #include <tuple>
 #include <unordered_map>
 #include <vector>
 
 extern "C" {
-#include <pagmo-snopt7/c_interface/snopt_cwrap.h>
+#include "../../snopt7_c_lib/snopt_cwrap.h"
 }
 
 // The following lines are a workaround for the boost::is_object limit of 24 maximum arguments. When called with
@@ -197,8 +195,8 @@ void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF,
 
                 if (!(f_count / verb % 50u)) {
                     // Every 50 lines print the column names.
-                    print("\n", std::setw(10), "objevals:", std::setw(15), "objval:", std::setw(15), "violated:",
-                          std::setw(15), "viol. norm:", '\n');
+                    print("\n", std::setw(10), "objevals:", std::setw(15), "objval:", std::setw(15),
+                          "violated:", std::setw(15), "viol. norm:", '\n');
                 }
                 // Print to screen the log line.
                 print(std::setw(10), f_count + 1u, std::setw(15), fit[0], std::setw(15), nv, std::setw(15), l,
@@ -386,8 +384,9 @@ public:
         // PREAMBLE-------------------------------------------------------------------------------------------------
         // We start by checking that the problem is suitable for this particular algorithm.
         if (prob.get_nobj() != 1u) {
-            pagmo_throw(std::invalid_argument, "Multiple objectives detected in " + prob.get_name() + " instance. "
-                                                   + get_name() + " cannot deal with them");
+            pagmo_throw(std::invalid_argument,
+                        "Multiple objectives detected in " + prob.get_name() + " instance. " + get_name()
+                            + " cannot deal with them");
         }
         if (prob.is_stochastic()) {
             pagmo_throw(std::invalid_argument,

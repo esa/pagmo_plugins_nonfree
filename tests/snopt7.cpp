@@ -68,7 +68,7 @@ struct my_prob {
 
 BOOST_AUTO_TEST_CASE(snopt7_test)
 {
-    algorithm uda{snopt7{false}};
+    algorithm uda{snopt7{false, "./"}};
     print(uda, "\n");
     population pop(cec2006{7}, 1u);
     pop.get_problem().set_c_tol({1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6});
