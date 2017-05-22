@@ -80,7 +80,7 @@ target_include_directories(pagmo_snopt7 INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
     $<INSTALL_INTERFACE:include>)
 
-target_link_libraries(pagmo_snopt7 INTERFACE Pagmo::pagmo ${Boost_FILESYSTEM_LIBRARY} ${Boost_SYSTEM_LIBRARY} ${CMAKE_DL_LIBS})
+target_link_libraries(pagmo_snopt7 INTERFACE Pagmo::pagmo Boost::filesystem Boost::system ${CMAKE_DL_LIBS})
 
 # Configure config.hpp.
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in" "${CMAKE_CURRENT_BINARY_DIR}/include/pagmo_snopt7/config.hpp" @ONLY)
