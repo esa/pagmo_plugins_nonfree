@@ -1,7 +1,7 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include "snopt_cwrap.h"
+#include "snopt7_c.h"
 
 inline double closed_interval_rand(double x0, double x1)
 {
@@ -23,7 +23,7 @@ int setRealParameter(snProblem *prob, char stropt[], double opt)
 void deleteSNOPT(snProblem *prob){};
 
 // The following routine fakes the snOptA interface and generates 100 random vectors. It will not touch the input
-// decision vector
+// decision vector. We use this implementation to test since the true library is commercial
 int solveA(snProblem *prob, int start, int nF, int n, double ObjAdd, int ObjRow, snFunA usrfun, int neA, int *iAfun,
            int *jAvar, double *A, int neG, int *iGfun, int *jGvar, double *xlow, double *xupp, double *Flow,
            double *Fupp, double *x, int *xstate, double *xmul, double *F, int *Fstate, double *Fmul, int *nS, int *nInf,

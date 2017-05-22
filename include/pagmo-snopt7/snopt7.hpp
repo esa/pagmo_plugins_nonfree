@@ -53,7 +53,7 @@ see https://www.gnu.org/licenses/. */
 #include <vector>
 
 extern "C" {
-#include "../../snopt7_c_lib/snopt_cwrap.h"
+#include "../../snopt7_c_lib/snopt7_c.h"
 }
 
 // The following lines are a workaround for the boost::is_object limit of 24 maximum arguments. When called with
@@ -501,8 +501,7 @@ We report the exact text of the original exception thrown:
 
         auto problem_name = s_to_C(prob.get_name());
 
-        // Here we call snInit, but the protect memory allocated against possible exception by ensuring deleteSNOPT will
-        // be called when the object spr is destroyed.
+        // Here we call snInit and ensure deleteSNOPT will be called whenever the object spr is destroyed.
         detail::sn_problem_raii spr(&snopt7_problem, problem_name.data(), empty_string, m_screen_output, snInit,
                                     deleteSNOPT);
         // Logic for the handling of constraints tolerances. The logic is as follows:
