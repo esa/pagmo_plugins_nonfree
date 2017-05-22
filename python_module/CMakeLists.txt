@@ -1,5 +1,5 @@
 # Hard-coded.
-include_directories(/home/dario/.local/include/pygmo)
+include_directories(${CMAKE_INSTALL_PREFIX}/include/pygmo)
 
 YACMA_PYTHON_MODULE(core core.cpp)
 
@@ -7,7 +7,7 @@ target_link_libraries(core PRIVATE pagmo_snopt7 Boost::disable_autolinking Boost
 
 add_library(pygmo SHARED IMPORTED)
 set_target_properties(pygmo PROPERTIES IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"
-    IMPORTED_LOCATION "/home/dario/.local/lib/python3.6/site-packages/pygmo/core.so")
+    IMPORTED_LOCATION "${CMAKE_INSTALL_PREFIX}/lib/python3.6/site-packages/pygmo/core.so")
 
 
 target_link_libraries(core PRIVATE pygmo)

@@ -225,6 +225,12 @@ html_favicon = 'docs/images/logo_favico.ico'
 #html_static_path = ['_static']
 html_static_path = ['_static']
 
+
+def setup(app):
+    app.add_stylesheet("pagmo.css")  # also can be a full URL
+    # app.add_stylesheet("ANOTHER.css")
+    # app.add_stylesheet("AND_ANOTHER.css")
+
 # Add any extra paths that contain custom files (such as robots.txt or
 # .htaccess) here, relative to this directory. These files are copied
 # directly to the root of the documentation.
@@ -284,6 +290,7 @@ html_static_path = ['_static']
 # The name of a javascript file (relative to the configuration directory) that
 # implements a search results scorer. If empty, the default will be used.
 #html_search_scorer = 'scorer.js'
+
 
 # Output file base name for HTML help builder.
 htmlhelp_basename = 'pagmodoc'
