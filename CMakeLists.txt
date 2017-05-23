@@ -108,7 +108,7 @@ if(PAGMO_SNOPT7_BUILD_PYTHON)
         message(FATAL_ERROR "The NumPy headers could not be located.")
     endif()
 
-    add_subdirectory("${CMAKE_SOURCE_DIR}/python_module")
+    add_subdirectory("${CMAKE_SOURCE_DIR}/pygmo_snopt7")
 
 endif()
 

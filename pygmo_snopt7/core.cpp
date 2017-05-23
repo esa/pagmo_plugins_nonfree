@@ -39,10 +39,11 @@ BOOST_PYTHON_MODULE(core)
 
     auto pygmo_module = bp::import("pygmo");
 
-    // auto my_uda_ = pygmo::expose_algorithm<my_uda>("my_uda", "My UDA.");
     auto &algorithm_class = pygmo::get_algorithm_class();
     // We require all algorithms to be def-ctible at the bare minimum.
     bp::class_<pagmo::snopt7> c("snopt7", "", bp::init<>());
+    c.def(bp::init<bool, std::string>(
+        (bp::arg("screen_output") = false, bp::arg("absolute_lib_path") = "/usr/local/lib/")));
     // Mark it as a C++ algorithm.
     c.attr("_pygmo_cpp_algorithm") = true;
 

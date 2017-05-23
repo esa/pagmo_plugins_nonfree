@@ -2,7 +2,6 @@
 # and that does nothing useful.
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/snopt7_c_lib)
 add_library(snopt7_c SHARED ../snopt7_c_lib/snopt7_c.c)
-install(DIRECTORY include/ DESTINATION include)
 
 function(ADD_PAGMO_SNOPT7_TESTCASE arg1)
     add_executable(${arg1} ${arg1}.cpp)

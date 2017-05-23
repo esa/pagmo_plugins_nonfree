@@ -5,20 +5,21 @@ YACMA_PYTHON_MODULE(core core.cpp)
 
 target_link_libraries(core PRIVATE pagmo_snopt7 Boost::disable_autolinking Boost::python Pagmo::pagmo)
 
-add_library(pygmo SHARED IMPORTED)
-set_target_properties(pygmo PROPERTIES IMPORTED_LINK_INTERFACE_LANGUAGES "CXX"
-    IMPORTED_LOCATION "${CMAKE_INSTALL_PREFIX}/lib/python3.6/site-packages/pygmo/core.so")
-
-
-target_link_libraries(core PRIVATE pygmo)
 target_include_directories(core SYSTEM PRIVATE "${YACMA_NUMPY_INCLUDE_DIR}")
 set_property(TARGET core PROPERTY CXX_STANDARD 11)
 set_property(TARGET core PROPERTY CXX_STANDARD_REQUIRED YES)
 set_property(TARGET core PROPERTY CXX_EXTENSIONS NO)
 
+# Helper file with version number.
+CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/_version.py.in" "${CMAKE_CURRENT_BINARY_DIR}/_version.py" @ONLY)
+
 # Setup the installation path.
+set(PYGMO_SNOPT7_INSTALL_PATH "${YACMA_PYTHON_MODULES_INSTALL_PATH}/pygmo_snopt7")
 install(TARGETS core
-RUNTIME DESTINATION "${YACMA_PYTHON_MODULES_INSTALL_PATH}"
-LIBRARY DESTINATION "${YACMA_PYTHON_MODULES_INSTALL_PATH}"
+ RUNTIME DESTINATION ${PYGMO_SNOPT7_INSTALL_PATH}
+ LIBRARY DESTINATION ${PYGMO_SNOPT7_INSTALL_PATH}
 )
 
+# Add the Python files.
+install(FILES __init__.py "${CMAKE_CURRENT_BINARY_DIR}/_version.py"
+     DESTINATION ${PYGMO_SNOPT7_INSTALL_PATH})
