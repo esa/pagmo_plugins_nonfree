@@ -760,7 +760,7 @@ We report the exact text of the original exception thrown:
     /// Get extra information about the algorithm.
     /**
      * @return a human-readable string containing useful information about the algorithm's properties
-     * (e.g., the Snopt7 user-set options, the selection/replacement policies, etc.). m_absolute_lib_path
+     * (e.g., the SNOPT7 user-set options, the selection/replacement policies, etc.), the snopt7_c library path
      */
     std::string get_extra_info() const
     {
