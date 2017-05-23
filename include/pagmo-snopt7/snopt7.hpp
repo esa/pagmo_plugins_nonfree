@@ -240,19 +240,19 @@ void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF,
             }
         }
     } catch (...) {
-        *Status = -100; // signals to snopt that things went south and it should stop.
+        *Status = -100; // signals to snopt7 that things went south and it should stop.
         info.m_eptr = std::current_exception();
     }
 }
 } // extern "C"
 } // detail namespace
 
-/// SNOPT7
+/// SNOPT 7 - (Sparse Nonlinear OPTimizer, Version 7)
 /**
  * \image html sol.png
  *
- * This class is a user-defined algorithm (UDA) that contains a plugin to the SNOPT7 solver,
- * a software package for large-scale nonlinear optimization. SNOPT7 is a powerful solver that is able to handle
+ * This class is a user-defined algorithm (UDA) that contains a plugin to the Sparse Nonlinear OPTimizer (SNOPT, V7)
+ * solver, a software package for large-scale nonlinear optimization. SNOPT7 is a powerful solver that is able to handle
  * robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities.
  *
  * \verbatim embed:rst:leading-asterisk
@@ -285,6 +285,11 @@ void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF,
  *
  * \verbatim embed:rst:leading-asterisk
  *
+ * .. note::
+ *
+ *    We developed this plugin for the SNOPT version 7.6, but nothing significant has changed in the fortran
+ *    files since the old days. As a consequence, as long as your C library has the symbols snInit, setIntParameter,
+ *    setRealParameter, deleteSNOPT and solveA this plugin will work also with older SNOPT versions.
  *
  * .. warning::
  *
@@ -345,7 +350,7 @@ public:
      * chioce, only one among the original SNOPT7 screen output and the pagmo logging system will
      * be activated.
      *
-     * @param screen_output when ``True`` will activate the screen outup from the SNOPT7 library, otherwise
+     * @param screen_output when ``true`` will activate the screen output from the SNOPT7 library, otherwise
      * will let pagmo regulate logs and screen_output via its pagmo::algorithm::set_verbosity mechanism.
      * @param absolute_lib_path The absolute path to the directory where the snopt7_c library is located.
      *
@@ -486,7 +491,7 @@ to:
 
 "LDFLAGS             = -avoid-version -lsnopt7"
 
-Assuming your FORTRAN library is called snopt7.
+Assuming your FORTRAN library is called snopt7 and is installed system wide.
 
 We report the exact text of the original exception thrown:
 
@@ -522,12 +527,12 @@ We report the exact text of the original exception thrown:
         }
         // We prevent to set the "Derivative option" option as pagmo sets it according to the value of
         // prob.has_gradient()
-        if (m_numeric_opts.count("Derivative option")) {
+        if (m_integer_opts.count("Derivative option")) {
             pagmo_throw(
                 std::invalid_argument,
                 R"(The option "Derivative option" was set by the user. In pagmo that is not allowed, as its value is automatically set according to the value returned by has_gradient() (true -> 3, false -> 0))");
         }
-        int res;
+        int res = 0;
         // We set all the other user defined options
         for (const auto &p : m_numeric_opts) {
             auto option_name = s_to_C(p.first);
@@ -543,7 +548,7 @@ We report the exact text of the original exception thrown:
         for (const auto &p : m_integer_opts) {
             auto option_name = s_to_C(p.first);
             int option_value(p.second);
-            res += setIntParameter(&snopt7_problem, option_name.data(), option_value);
+            res = setIntParameter(&snopt7_problem, option_name.data(), option_value);
             if (res > 0) {
                 pagmo_throw(std::invalid_argument,
                             "The option '" + p.first + "' was requested by the user to be set to the int value "
@@ -654,22 +659,16 @@ We report the exact text of the original exception thrown:
         if (m_verbosity > 0u) {
             print("\n", detail::snopt_statics<>::results.at(m_last_opt_res), "\n");
         }
-
-        // ------- Handle any exception that might have been thrown during the evolve call.
-        if (info.m_eptr) {
-            std::rethrow_exception(info.m_eptr);
-        }
-        // Store the log
-        m_log = std::move(info.m_log);
-
         // ------- We reinsert the solution if better -----------------------------------------------------------
-        // Compute the new fitness vector.
-        // vector_double final_f(F, F + prob.get_nf());
-        // vector_double final_x(x, x + prob.get_nx());
-
         // Store the new individual into the population, but only if it is improved.
         if (compare_fc(F, fit0, prob.get_nec(), prob.get_c_tol())) {
             replace_individual(pop, x, F);
+        }
+        // ------- Store the log --------------------------------------------------------------------------------
+        m_log = std::move(info.m_log);
+        // ------- Handle any exception that might have been thrown during the evolve call. ---------------------
+        if (info.m_eptr) {
+            std::rethrow_exception(info.m_eptr);
         }
         return pop;
     };
@@ -767,7 +766,7 @@ We report the exact text of the original exception thrown:
     {
         std::ostringstream ss;
         stream(ss, "\n\tPath to the snopt7_c library: ", m_absolute_lib_path);
-        if (m_verbosity) {
+        if (!m_screen_output) {
             stream(ss, "\n\tScreen output: (pagmo/pygmo) - verbosity ", std::to_string(m_verbosity));
         } else {
             stream(ss, "\n\tScreen output: (snopt7)");
@@ -821,18 +820,6 @@ We report the exact text of the original exception thrown:
     {
         m_integer_opts[name] = value;
     }
-    /// Set numeric option.
-    /**
-     * This method will set the optimisation numeric option \p name to \p value.
-     * The optimisation options are passed to the snOptA API when calling evolve().
-     *
-     * @param name of the option.
-     * @param value of the option.
-     */
-    void set_numeric_option(const std::string &name, double value)
-    {
-        m_numeric_opts[name] = value;
-    }
     /// Set integer options.
     /**
      * This method will set the optimisation integer options contained in \p m.
@@ -847,6 +834,26 @@ We report the exact text of the original exception thrown:
             set_integer_option(p.first, p.second);
         }
     }
+    /// Get integer options.
+    /**
+     * @return the name-value map of optimisation integer options.
+     */
+    std::map<std::string, int> get_integer_options() const
+    {
+        return m_integer_opts;
+    }
+    /// Set numeric option.
+    /**
+     * This method will set the optimisation numeric option \p name to \p value.
+     * The optimisation options are passed to the snOptA API when calling evolve().
+     *
+     * @param name of the option.
+     * @param value of the option.
+     */
+    void set_numeric_option(const std::string &name, double value)
+    {
+        m_numeric_opts[name] = value;
+    }
     /// Set numeric options.
     /**
      * This method will set the optimisation numeric options contained in \p m.
@@ -860,14 +867,6 @@ We report the exact text of the original exception thrown:
         for (const auto &p : m) {
             set_numeric_option(p.first, p.second);
         }
-    }
-    /// Get integer options.
-    /**
-     * @return the name-value map of optimisation integer options.
-     */
-    std::map<std::string, int> get_integer_options() const
-    {
-        return m_integer_opts;
     }
     /// Get numeric options.
     /**

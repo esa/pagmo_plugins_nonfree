@@ -12,12 +12,24 @@ void snInit(snProblem *prob, char *name, char *prtfile, int summOn){};
 
 int setIntParameter(snProblem *prob, char stropt[], int opt)
 {
-    return 0;
+    char *invalid;
+    invalid = "invalid_integer_option";
+    if (strcmp(stropt, invalid) == 0) {
+        return 1;
+    } else {
+        return 0;
+    }
 };
 
 int setRealParameter(snProblem *prob, char stropt[], double opt)
 {
-    return 0;
+    char *invalid;
+    invalid = "invalid_numeric_option";
+    if (strcmp(stropt, invalid) == 0) {
+        return 1;
+    } else {
+        return 0;
+    }
 };
 
 void deleteSNOPT(snProblem *prob){};
@@ -29,8 +41,9 @@ int solveA(snProblem *prob, int start, int nF, int n, double ObjAdd, int ObjRow,
            double *Fupp, double *x, int *xstate, double *xmul, double *F, int *Fstate, double *Fmul, int *nS, int *nInf,
            double *sInf)
 {
+    double retval = 1;
     double x_new[n];
-    int *Status = 0;
+    int Status = 0;
     int needF = 1;
     int needG = 1;
     char cu[1];
@@ -43,8 +56,12 @@ int solveA(snProblem *prob, int start, int nF, int n, double ObjAdd, int ObjRow,
             x_new[j] = closed_interval_rand(xlow[j], xupp[j]);
         }
         // Call usrfun (will call both fitness and gradient)
-        usrfun(Status, &n, x_new, &needF, &nF, F, &needG, &neG, G, cu, &lencu, prob->iu, &(prob->leniu), prob->ru,
+        usrfun(&Status, &n, x_new, &needF, &nF, F, &needG, &neG, G, cu, &lencu, prob->iu, &(prob->leniu), prob->ru,
                &(prob->lenru));
+        if (Status < 0) {
+            retval = 71;
+            break;
+        }
     }
-    return 1;
+    return retval;
 };
