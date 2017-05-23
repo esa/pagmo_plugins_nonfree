@@ -1,0 +1,23 @@
+language: cpp
+
+sudo: false
+
+matrix:
+  include:
+    - env: PAGMO_BUILD="DebugGCC48"
+      compiler: gcc
+      os: linux
+      addons:
+        apt:
+          sources:
+          - ubuntu-toolchain-r-test
+          packages:
+          - gcc-4.8
+          - g++-4.8
+          - binutils-gold
+
+script:
+    - mkdir build
+    - cd build
+    - source ../tools/install_deps.sh
+    - source ../tools/install_travis.sh
