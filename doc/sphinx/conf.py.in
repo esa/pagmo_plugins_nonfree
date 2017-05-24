@@ -42,8 +42,8 @@ extensions = [
 autoclass_content = 'both'
 
 # BREATHE configuration paths
-breathe_projects = {"pagmo-snopt7": "../doxygen/xml"}
-breathe_default_project = "pagmo-snopt7"
+breathe_projects = {"pagmo_plugins_nonfree": "../doxygen/xml"}
+breathe_default_project = "pagmo_plugins_nonfree"
 breathe_default_members = ('members',)
 
 # Add any paths that contain templates here, relative to this directory.
@@ -61,7 +61,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'pagmo-snopt7'
+project = 'pagmo_plugins_nonfree'
 copyright = '2017, pagmo development team'
 author = 'pagmo development team'
 
@@ -70,7 +70,7 @@ author = 'pagmo development team'
 # built documents.
 #
 # The short X.Y version.
-version = '@pagmo-snopt7_VERSION@'
+version = '@pagmo_plugins_nonfree_VERSION@'
 # The full version, including alpha/beta/rc tags.
 release = version
 
