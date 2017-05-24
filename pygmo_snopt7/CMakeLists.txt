@@ -1,4 +1,4 @@
-YACMA_PYTHON_MODULE(core core.cpp)
+YACMA_PYTHON_MODULE(core core.cpp docstrings.cpp)
 
 target_link_libraries(core PRIVATE pagmo_snopt7 Boost::disable_autolinking Boost::python Pagmo::pagmo)
 
