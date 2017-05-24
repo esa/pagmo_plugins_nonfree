@@ -2,7 +2,7 @@
 
 #include "docstrings.hpp"
 
-namespace pygmo_snopt7
+namespace pygmo
 {
 
 std::string snopt7_docstring()

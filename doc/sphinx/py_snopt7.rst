@@ -1,5 +1,5 @@
-Docs for the python class
-=========================
+Sparse Nonlinear OPTimizer (SNOPT)
+==================================
 
-.. autoclass:: pygmo_snopt7.snopt7
+.. autoclass:: pygmo_plugins_nonfree.snopt7
    :members:

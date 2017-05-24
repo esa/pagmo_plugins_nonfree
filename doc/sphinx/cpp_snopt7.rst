@@ -1,5 +1,5 @@
-Docs for the c++ class
-======================
+Sparse Nonlinear OPTimizer (SNOPT)
+==================================
 
 .. doxygenclass:: pagmo::snopt7
    :members:

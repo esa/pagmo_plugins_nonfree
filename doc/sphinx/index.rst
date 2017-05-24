@@ -1,19 +1,27 @@
 SNOPT7 plugin for pagmo / pygmo
 ===============================
 
-This is an affliated package of `pagmo/pygmo <https://esa.github.io/pagmo2/index.html>`_ adding the commercial
-Sparse Nonlinear OPTimizer (SNOPT) to the list of solvers.
+This is an affliated package of `pagmo/pygmo <https://esa.github.io/pagmo2/index.html>`_ adding some 
+commercial solvers to the list of algorithms. All the additions are developed as plugins, that is, they
+work loading the third party library at run-time.
 
-Unfortunately, SNOPT7 fortran code is only available acquiring a licence.
-If you do have such a licence, then you will also have the fortran files and can build them into the library
-snopt7 (one single library). Since this plugin wraps the C interface you will have to compile also  `the library snopt7_c <https://github.com/snopt/snopt-interface>`_, which is open
-source. We ask that when building such a library you link it to the fortran library. You can achieve this modifying the snopt-interface build system
-(e.g. using "LDFLAGS = -avoid-version -lsnopt7" in the Makefile).
+The user needs to have the library and the right to use it. 
 
+C++
+^^^
 Contents:
 
 .. toctree::
    :maxdepth: 1
 
    cpp_snopt7
+
+
+Python
+^^^^^^
+Contents:
+
+.. toctree::
+   :maxdepth: 1
+
    py_snopt7
