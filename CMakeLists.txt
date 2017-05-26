@@ -57,9 +57,10 @@ if(MINGW)
 endif()
 
 # Boost setup.
+include(YACMAPythonSetup)
 list(APPEND PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS system filesystem)
 if(PAGMO_PLUGINS_NONFREE_BUILD_PYTHON)
-    list(APPEND PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS python)
+    list(APPEND PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS python3)
 endif()
 message(STATUS "Required Boost libraries: ${PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS}")
 find_package(Boost 1.55.0 REQUIRED COMPONENTS "${PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS}")
@@ -97,15 +98,9 @@ endif()
 # Build the pagmo_plugins_nonfree module
 if(PAGMO_PLUGINS_NONFREE_BUILD_PYTHON)
 
-    include(YACMAPythonSetup)
-
     # Python version check.
     if(${PYTHON_VERSION_MAJOR} LESS 2 OR (${PYTHON_VERSION_MAJOR} EQUAL 2 AND ${PYTHON_VERSION_MINOR} LESS 7))
         message(FATAL_ERROR "Minimum supported Python version is 2.7.")
-    endif()
-
-    if(NOT YACMA_NUMPY_INCLUDE_DIR)
-        message(FATAL_ERROR "The NumPy headers could not be located.")
     endif()
 
     add_subdirectory("${CMAKE_SOURCE_DIR}/pygmo_plugins_nonfree")

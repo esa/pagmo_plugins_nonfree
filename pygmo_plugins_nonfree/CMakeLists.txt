@@ -1,8 +1,7 @@
 YACMA_PYTHON_MODULE(core core.cpp docstrings.cpp)
+find_package(Pygmo)
+target_link_libraries(core PRIVATE pagmo_plugins_nonfree Pygmo::pygmo)
 
-target_link_libraries(core PRIVATE pagmo_plugins_nonfree Boost::disable_autolinking Boost::python Pagmo::pagmo)
-
-target_include_directories(core SYSTEM PRIVATE "${YACMA_NUMPY_INCLUDE_DIR}")
 set_property(TARGET core PROPERTY CXX_STANDARD 11)
 set_property(TARGET core PROPERTY CXX_STANDARD_REQUIRED YES)
 set_property(TARGET core PROPERTY CXX_EXTENSIONS NO)
