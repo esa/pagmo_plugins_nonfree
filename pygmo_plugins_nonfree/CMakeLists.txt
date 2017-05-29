@@ -1,7 +1,23 @@
-YACMA_PYTHON_MODULE(core core.cpp docstrings.cpp)
-find_package(Pygmo)
-target_link_libraries(core PRIVATE pagmo_plugins_nonfree Pygmo::pygmo)
+# Python version check.
+if(${PYTHON_VERSION_MAJOR} LESS 2 OR (${PYTHON_VERSION_MAJOR} EQUAL 2 AND ${PYTHON_VERSION_MINOR} LESS 7))
+    message(FATAL_ERROR "Minimum supported Python version is 2.7.")
+endif()
 
+# Finding pygmo
+find_package(Pygmo)
+
+# Setting the rpath
+if(UNIX)
+    # On unix platforms, we set the rpath of the pygmo libraries
+    # to the lib subdirectory of the install prefix. This allows
+    # to install pygmo in nonstandard locations (e.g., ~/.local)
+    # without having to muck around with library search paths.
+    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+endif()
+
+# Create the module
+YACMA_PYTHON_MODULE(core core.cpp docstrings.cpp)
+target_link_libraries(core PRIVATE pagmo_plugins_nonfree Boost::python3 Boost::disable_autolinking Pygmo::pygmo)
 set_property(TARGET core PROPERTY CXX_STANDARD 11)
 set_property(TARGET core PROPERTY CXX_STANDARD_REQUIRED YES)
 set_property(TARGET core PROPERTY CXX_EXTENSIONS NO)

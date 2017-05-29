@@ -57,11 +57,6 @@ BOOST_PYTHON_MODULE(core)
     pygmo::expose_algo_log(snopt7_, pygmo::snopt7_get_log_docstring().c_str());
 
     // Expose the algorithm constructor from Algo.
-    // pygmo::algorithm_expose_init_cpp_uda<pagmo::snopt7>();
-    // Expose extract.
     algorithm_class.def("_cpp_extract", &pygmo::generic_cpp_extract<pagmo::algorithm, pagmo::snopt7>,
                         bp::return_internal_reference<>());
-
-    // Add the algorithm to the algorithms submodule.
-    // bp::scope().attr("algorithms").attr(name) = c;
 }

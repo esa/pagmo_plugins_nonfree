@@ -95,16 +95,9 @@ if(PAGMO_PLUGINS_NONFREE_BUILD_TESTS)
     add_subdirectory("${CMAKE_SOURCE_DIR}/tests")
 endif()
 
-# Build the pagmo_plugins_nonfree module
+# Build the pygmo_plugins_nonfree module
 if(PAGMO_PLUGINS_NONFREE_BUILD_PYTHON)
-
-    # Python version check.
-    if(${PYTHON_VERSION_MAJOR} LESS 2 OR (${PYTHON_VERSION_MAJOR} EQUAL 2 AND ${PYTHON_VERSION_MINOR} LESS 7))
-        message(FATAL_ERROR "Minimum supported Python version is 2.7.")
-    endif()
-
     add_subdirectory("${CMAKE_SOURCE_DIR}/pygmo_plugins_nonfree")
-
 endif()
 
 if(PAGMO_PLUGINS_NONFREE_INSTALL_HEADERS)
