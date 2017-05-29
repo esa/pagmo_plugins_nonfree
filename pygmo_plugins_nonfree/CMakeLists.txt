@@ -4,7 +4,7 @@ if(${PYTHON_VERSION_MAJOR} LESS 2 OR (${PYTHON_VERSION_MAJOR} EQUAL 2 AND ${PYTH
 endif()
 
 # Finding pygmo
-find_package(Pygmo)
+find_package(Pygmo REQUIRED)
 
 # Setting the rpath
 if(UNIX)
