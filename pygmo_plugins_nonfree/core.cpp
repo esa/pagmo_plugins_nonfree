@@ -25,4 +25,6 @@ BOOST_PYTHON_MODULE(core)
     // We expose the additional constructor
     snopt7_.def(bp::init<bool, std::string>(
         (bp::arg("screen_output") = false, bp::arg("absolute_lib_path") = "/usr/local/lib/")));
+    snopt7_.def("set_integer_option", &pagmo::snopt7::set_integer_option, "Set integer option", (bp::arg("name"), bp::arg("value")));
+    snopt7_.def("set_numeric_option", &pagmo::snopt7::set_numeric_option, "Set numeric option", (bp::arg("name"), bp::arg("value")));
 }

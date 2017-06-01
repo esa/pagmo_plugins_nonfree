@@ -50,9 +50,10 @@ int solveA(snProblem *prob, int start, int nF, int n, double ObjAdd, int ObjRow,
     int lencu = 0;
     double G[nF * n];
     srand(time(NULL));
-    for (int i = 0; i < 100; ++i) {
+    int i,j;
+    for (i = 0; i < 100; ++i) {
         // Random vector
-        for (int j = 0; j < n; ++j) {
+        for (j = 0; j < n; ++j) {
             x_new[j] = closed_interval_rand(xlow[j], xupp[j]);
         }
         // Call usrfun (will call both fitness and gradient)
