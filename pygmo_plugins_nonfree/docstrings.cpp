@@ -142,7 +142,7 @@ Examples:
 )";
 }
 
-std::string snopt7_set_integer_option_docstring();
+std::string snopt7_set_integer_option_docstring()
 {
     return R"(set_integer_option(name, value)
 
