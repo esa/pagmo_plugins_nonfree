@@ -34,9 +34,7 @@ set_replacement(population::size_type).
    If you do have such a licence, then you will also have the fortran files and can build them into the library
    snopt7 (one single library). In what follows, we assume the snopt7 fortran library is available in your
    system. Since pagmo wraps around the C interface you will have to compile also the library snopt7_c, which is open
-   source and can be obtained from https://github.com/snopt/snopt-interface. We ask that when building such a library
-   you link it to the fortran library. You can achieve this modifying the snopt-interface build system
-   (e.g. using "LDFLAGS = -avoid-version -lsnopt7" in the Makefile).
+   source and can be obtained from https://github.com/snopt/snopt-interface. 
 
 .. note::
 
@@ -65,7 +63,7 @@ set_replacement(population::size_type).
 Args:
    screen_output (``bool``): when True will activate the original screen output from SNOPT7 and deactivate the logging system based on
      :class:`~pygmo_snopt7.set_verbosity()`.
-   absolute_lib_path (``str``): the absolute path to the snopt7_c library in your system (remember that it needs to link to the snopt7 fortran library)
+   absolute_lib_path (``str``): the absolute path to the snopt7_c library in your system
 
 Raises:
    ArgumentError: for any conversion problems between the python types and the c++ signature
@@ -166,7 +164,6 @@ Major iterations limit      1000            or ncons if that is more
 Minor iterations limit      500             or 3*ncons if that is more
 Superbasics limit           None            n1 + 1, n1 = number of nonlinear variables
 New superbasics limit       99              controls early termination of QPs
-Objective row               1               row number of objective in F(x)
 Proximal point method       1               1 - satisfies linear constraints near x0
 Reduced Hessian dimension   2000            or Superbasics limit if that is less
 Violation limit             10.0            unscaled constraint violation limit

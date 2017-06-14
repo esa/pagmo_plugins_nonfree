@@ -235,9 +235,7 @@ void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF,
  *    If you do have such a licence, then you will also have the fortran files and can build them into the library
  *    snopt7 (one single library). In what follows, we assume the snopt7 fortran library is available in your
  *    system. Since pagmo wraps around the C interface you will have to compile also the library snopt7_c, which is open
- *    source and can be obtained from https://github.com/snopt/snopt-interface. We ask that when building such a library
- *    you link it to the fortran library. You can achieve this modifying the snopt-interface build system
- *    (e.g. using "LDFLAGS = -avoid-version -lsnopt7" in the Makefile).
+ *    source and can be obtained from https://github.com/snopt/snopt-interface.
  *
  * \endverbatim
  *
@@ -260,7 +258,8 @@ void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF,
  * .. note::
  *
  *    We developed this plugin for the SNOPT version 7.6, but nothing significant has changed in the fortran
- *    files since the old days. As a consequence, as long as your C library has the symbols snInit, setIntParameter,
+ *    files since the old days. As a consequence, as long as your snopt7_c library has the symbols snInit,
+ * setIntParameter,
  *    setRealParameter, deleteSNOPT and solveA this plugin will work also with older SNOPT versions.
  *
  * .. warning::
@@ -448,22 +447,8 @@ reasons:
  - A file with the full path name specified upon constructing the pagmo::snopt7 object is not found in your system.
  - The file is found, but it is not a library containing the necessary C interface symbols (is the file path pointing to
 the snopt_c library and not some other library / file?)
- - The library is found and it does contain the C interface symbols, but the fortran symbols are missing (e.g. _snlog,
-etc.).
-
-This third case is the most common. When building the snopt7_c library you have to make sure to specify to link to your
-FORTRAN snopt7 library (i.e. the one you paid for).
-If you have used the github project https://github.com/snopt/snopt-interface to build the snopt_c library, note that by
-default it will not link your FORTRAN library
-to the snopt7_c library it creates. You have to build it again and modify in the in the makefile the line
-
-"LDFLAGS             = -avoid-version"
-
-to:
-
-"LDFLAGS             = -avoid-version -lsnopt7"
-
-Assuming your FORTRAN library is called snopt7 and is installed system wide.
+ - The library is found and it does contain the C interface symbols, but it needs linking to some additional library
+and thus cannot be dlopened.
 
 We report the exact text of the original exception thrown:
 
