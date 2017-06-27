@@ -19,13 +19,13 @@ if [[ "${PAGMO_BUILD}" != manylinux* ]]; then
     conda config --add channels conda-forge --force
 
     # All builds will need these
-    conda_pkgs="boost>=1.56 cmake>=3.2 pagmo>=2"
+    conda_pkgs="boost>=1.56 cmake>=3.2 pagmo>=2.0"
 
     # Only Python builds will need these
     if [[ "${PAGMO_BUILD}" == "Python36" || "${PAGMO_BUILD}" == "OSXPython36" ]]; then
-        conda_pkgs="$conda_pkgs python=3.6 pygmo>=2"
+        conda_pkgs="$conda_pkgs python=3.6 pygmo>=2.0"
     elif [[ "${PAGMO_BUILD}" == "Python27" || "${PAGMO_BUILD}" == "OSXPython27" ]]; then
-        conda_pkgs="$conda_pkgs python=2.7 pygmo>=2"
+        conda_pkgs="$conda_pkgs python=2.7 pygmo>=2.0"
     fi
 
     if [[ "${PAGMO_BUILD}" == Python* ]]; then

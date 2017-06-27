@@ -33,5 +33,5 @@ install(TARGETS core
 )
 
 # Add the Python files.
-install(FILES __init__.py "${CMAKE_CURRENT_BINARY_DIR}/_version.py"
+install(FILES __init__.py test.py "${CMAKE_CURRENT_BINARY_DIR}/_version.py"
      DESTINATION ${PYGMO_PLUGINS_NONFREE_INSTALL_PATH})

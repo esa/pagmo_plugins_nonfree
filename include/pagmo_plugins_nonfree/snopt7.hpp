@@ -722,7 +722,7 @@ We report the exact text of the original exception thrown:
     std::string get_extra_info() const
     {
         std::ostringstream ss;
-        stream(ss, "\n\tPath to the snopt7_c library: ", m_absolute_lib_path);
+        stream(ss, "\tPath to the snopt7_c library: ", m_absolute_lib_path);
         if (!m_screen_output) {
             stream(ss, "\n\tScreen output: (pagmo/pygmo) - verbosity ", std::to_string(m_verbosity));
         } else {
