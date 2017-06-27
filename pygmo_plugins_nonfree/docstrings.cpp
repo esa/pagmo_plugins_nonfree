@@ -208,7 +208,7 @@ Examples:
     >>> algo = pg.algorithm(uda)
     >>> algo.set_verbosity(10)
     >>> pop = pg.population(udp,1)
-    >>> pop = algo.evolve(pop)
+    >>> pop = algo.evolve(pop) # doctest: +SKIP
     SNOPT7 plugin for pagmo/pygmo:
     The gradient sparsity is assumed dense: 130 components detected.
     The gradient is computed numerically by SNOPT7.
@@ -275,7 +275,7 @@ Examples:
     >>> algo = pg.algorithm(uda)
     >>> algo.set_verbosity(20)
     >>> pop = pg.population(udp,1)
-    >>> pop = algo.evolve(pop)
+    >>> pop = algo.evolve(pop) # doctest: +SKIP
     SNOPT7 plugin for pagmo/pygmo:
     The gradient sparsity is assumed dense: 130 components detected.
     The gradient is computed numerically by SNOPT7.
