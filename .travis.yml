@@ -5,16 +5,16 @@ sudo: false
 matrix:
   include:
     - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugGCC48"
-       compiler: gcc
-       os: linux
-       addons:
-         apt:
-           sources:
-           - ubuntu-toolchain-r-test
-           packages:
-           - gcc-4.8
-           - g++-4.8
-           - binutils-gold
+      compiler: gcc
+      os: linux
+      addons:
+        apt:
+          sources:
+          - ubuntu-toolchain-r-test
+          packages:
+          - gcc-4.8
+          - g++-4.8
+          - binutils-gold
     - env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseGCC48"
       compiler: gcc
       os: linux
