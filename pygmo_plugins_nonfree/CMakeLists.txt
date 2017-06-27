@@ -15,9 +15,16 @@ if(UNIX)
     set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 endif()
 
+# The name of the BP target to link to depends on the Python version.
+if(${PYTHON_VERSION_MAJOR} EQUAL 2)
+    set(PYGMO_BP_TARGET "Boost::python")
+else()
+    set(PYGMO_BP_TARGET "Boost::python3")
+endif()
+
 # Create the module
 YACMA_PYTHON_MODULE(core core.cpp docstrings.cpp)
-target_link_libraries(core PRIVATE pagmo_plugins_nonfree Boost::python3 Boost::disable_autolinking Pygmo::pygmo)
+target_link_libraries(core PRIVATE pagmo_plugins_nonfree ${PYGMO_BP_TARGET} Boost::disable_autolinking Pygmo::pygmo)
 set_property(TARGET core PROPERTY CXX_STANDARD 11)
 set_property(TARGET core PROPERTY CXX_STANDARD_REQUIRED YES)
 set_property(TARGET core PROPERTY CXX_EXTENSIONS NO)
