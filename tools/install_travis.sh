@@ -62,42 +62,15 @@ elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == OSXPython* ]]; then
     export CXX=clang++
     export CC=clang
-    # Install pagmo first.
-    cd ..;
-    mkdir build_pagmo;
-    cd build_pagmo;
-    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Debug -DPAGMO_WITH_EIGEN3=yes -DPAGMO_WITH_NLOPT=yes -DPAGMO_WITH_IPOPT=yes ../;
-    make install VERBOSE=1;
-    cd ../build;
-    # Now pygmo.
-    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_PYGMO=yes -DPAGMO_PLUGINS_NONFREE_BUILD_PAGMO=no -DCMAKE_CXX_FLAGS="-g0 -O2" ../;
+    # Install pygmo_plugins_nonfree.
+    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_PYTHON=yes -DPAGMO_PLUGINS_NONFREE_HEADERS=no ../;
     make install VERBOSE=1;
     ipcluster start --daemonize=True;
     # Give some time for the cluster to start up.
     sleep 20;
     # Move out of the build dir.
     cd ../tools
-    python -c "import pygmo; pygmo.test.run_test_suite(1)"
-
-    # Additional serialization tests.
-    python travis_additional_tests.py
-
-    # AP examples.
-    cd ../ap_examples/uda_basic;
-    mkdir build;
-    cd build;
-    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Debug ../;
-    make install VERBOSE=1;
-    cd ../../;
-    python test1.py
-
-    cd udp_basic;
-    mkdir build;
-    cd build;
-    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Debug ../;
-    make install VERBOSE=1;
-    cd ../../;
-    python test2.py
+    python -c "import pygmo_plugins_nonfree as pg7; pg7.test.run_test_suite(1)";
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == manylinux* ]]; then
     cd ..;
     docker pull ${DOCKER_IMAGE};
