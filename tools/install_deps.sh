@@ -7,7 +7,7 @@ set -x
 set -e
 
 # For the non manylinux builds (i.e. pip) we use conda and thus install and activate a conda environment
-if [[ "${PAGMO_BUILD}" != manylinux* ]]; then
+if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
     if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
         wget https://repo.continuum.io/miniconda/Miniconda2-latest-MacOSX-x86_64.sh -O miniconda.sh;
     else
@@ -22,13 +22,13 @@ if [[ "${PAGMO_BUILD}" != manylinux* ]]; then
     conda_pkgs="boost>=1.56 cmake>=3.2 pagmo>=2.0"
 
     # Only Python builds will need these
-    if [[ "${PAGMO_BUILD}" == "Python36" || "${PAGMO_BUILD}" == "OSXPython36" ]]; then
+    if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "Python36" || "${PAGMO_PLUGINS_NONFREE_BUILD}" == "OSXPython36" ]]; then
         conda_pkgs="$conda_pkgs python=3.6 pygmo>=2.0"
-    elif [[ "${PAGMO_BUILD}" == "Python27" || "${PAGMO_BUILD}" == "OSXPython27" ]]; then
+    elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "Python27" || "${PAGMO_PLUGINS_NONFREE_BUILD}" == "OSXPython27" ]]; then
         conda_pkgs="$conda_pkgs python=2.7 pygmo>=2.0"
     fi
 
-    if [[ "${PAGMO_BUILD}" == Python* ]]; then
+    if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
         conda_pkgs="$conda_pkgs graphviz doxygen"
     fi
 
