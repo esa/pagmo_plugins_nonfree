@@ -50,7 +50,7 @@ elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
     export CXX=g++-4.8
     export CC=gcc-4.8
     # Install pygmo_plugins_nonfree.
-    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Debug -PAGMO_PLUGINS_NONFREE_BUILD_PYTHON=yes -DPAGMO_PLUGINS_NONFREE_HEADERS=no ../;
+    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_PYTHON=yes -DPAGMO_PLUGINS_NONFREE_HEADERS=no ../;
     make install VERBOSE=1;
     ipcluster start --daemonize=True;
     # Give some time for the cluster to start up. The cluster may be needed in tests of archipelagos with ipyparallel islands
