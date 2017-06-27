@@ -4,7 +4,7 @@ sudo: false
 
 matrix:
   include:
-     - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugGCC48"
+    - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugGCC48"
        compiler: gcc
        os: linux
        addons:
@@ -15,7 +15,7 @@ matrix:
            - gcc-4.8
            - g++-4.8
            - binutils-gold
-     - env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseGCC48"
+    - env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseGCC48"
       compiler: gcc
       os: linux
       addons:
