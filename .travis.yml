@@ -74,7 +74,7 @@ matrix:
 #   - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXRelease"
 #     os: osx
 #     osx_image: xcode6.4
-    - env: PAGMO_BUILD="Python36"
+    - env: PAGMO_PLUGINS_NONFREE_BUILD="Python36"
       compiler: gcc
       os: linux
       addons:
@@ -84,7 +84,7 @@ matrix:
           packages:
           - gcc-4.8
           - g++-4.8
-    - env: PAGMO_BUILD="Python27"
+    - env: PAGMO_PLUGINS_NONFREE_BUILD="Python27"
       compiler: gcc
       os: linux
       addons:
