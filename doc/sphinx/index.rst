@@ -1,11 +1,24 @@
-SNOPT7 plugin for pagmo / pygmo
-===============================
+Plugins to commercial solvers for pagmo / pygmo
+===============================================
 
-This is an affliated package of `pagmo/pygmo <https://esa.github.io/pagmo2/index.html>`_ adding some 
-commercial solvers to the list of algorithms. All the additions are developed as plugins, that is, they
-work loading the third party library at run-time.
+.. image:: ../sphinx/docs/images/algo.png
+   :width: 15%
 
-The user needs to have the library and the right to use it. 
+.. image:: ../sphinx/docs/images/not_open_source.png
+   :width: 15%
+
+
+``pagmo_plugins_nonfree`` is an affliated package of `pagmo/pygmo <https://esa.github.io/pagmo2/index.html>`_. It adds some 
+commercial solvers to the list of User Defined Algorithms (UDAs). All the added UDAs are developed as plugins, that is, they
+work loading the third party library at run-time. The user needs to make sure to have the library and the right to use it. 
+
+Contents:
+
+.. toctree::
+   :maxdepth: 1
+
+   install
+   quickstart
 
 C++
 ^^^

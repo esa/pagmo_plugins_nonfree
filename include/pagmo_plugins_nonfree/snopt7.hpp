@@ -25,7 +25,7 @@
 #include <vector>
 
 extern "C" {
-#include "../../bogus_libs/snopt7_c_lib/snopt7_c.h"
+#include "bogus_libs/snopt7_c_lib/snopt7_c.h"
 }
 
 // The following lines are a workaround for the boost::is_object limit of 24 maximum arguments. When called with
@@ -223,9 +223,10 @@ void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF,
 /**
  * \image html sol.png
  *
- * This class is a user-defined algorithm (UDA) that contains a plugin to the Sparse Nonlinear OPTimizer (SNOPT, V7)
- * solver, a software package for large-scale nonlinear optimization. SNOPT7 is a powerful solver that is able to handle
- * robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities.
+ * This class is a user-defined algorithm (UDA) that contains a plugin to the Sparse Nonlinear OPTimizer (SNOPT)
+ * solver, a software package for large-scale nonlinear optimization. SNOPT is a powerful solver that is able to handle
+ * robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. Since the wrapper
+ * was developed arounf the version 7 of SNOPT the class is called pagmo::snopt7.
  *
  * \verbatim embed:rst:leading-asterisk
  *
@@ -259,12 +260,11 @@ void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF,
  *
  *    We developed this plugin for the SNOPT version 7.6, but nothing significant has changed in the fortran
  *    files since the old days. As a consequence, as long as your snopt7_c library has the symbols snInit,
- * setIntParameter,
- *    setRealParameter, deleteSNOPT and solveA this plugin will work also with older SNOPT versions.
+ *    setIntParameter, setRealParameter, deleteSNOPT and solveA this plugin will work also with older SNOPT versions.
  *
  * .. warning::
  *
- *    A moved-from :cpp:class:`pagmo::snopt` is destructible and assignable. Any other operation will result
+ *    A moved-from :cpp:class:`pagmo::snopt7` is destructible and assignable. Any other operation will result
  *    in undefined behaviour.
  *
  * .. warning::
@@ -298,9 +298,9 @@ public:
     using log_line_type = std::tuple<unsigned long, double, vector_double::size_type, double, bool>;
     /// Log type.
     /**
-     * The algorithm log is a collection of snopt::log_line_type data lines, stored in chronological order
+     * The algorithm log is a collection of snopt7::log_line_type data lines, stored in chronological order
      * during the optimisation if the verbosity of the algorithm is set to a nonzero value
-     * (see snopt::set_verbosity()).
+     * (see snopt7::set_verbosity()).
      */
     using log_type = std::vector<log_line_type>;
 
@@ -444,8 +444,10 @@ public:
 An error occurred while loading the snopt7_c library at run-time. This is typically caused by one of the following
 reasons:
 
- - A file with the full path name specified upon constructing the pagmo::snopt7 object is not found in your system.
- - The file is found, but it is not a library containing the necessary C interface symbols (is the file path pointing to
+ - A file with the full path name specified upon constructing the pagmo::snopt7 object is not found in your system. The full file
+ name was )" + m_absolute_lib_path
+                + "libsnopt7_c.so in UNIX and " + m_absolute_lib_path + "snopt7_c.dll in Windows." + R"(
+- The file is found, but it is not a library containing the necessary C interface symbols (is the file path pointing to
 the snopt_c library and not some other library / file?)
  - The library is found and it does contain the C interface symbols, but it needs linking to some additional library
 and thus cannot be dlopened.
@@ -632,10 +634,11 @@ We report the exact text of the original exception thrown:
     /// Set verbosity.
     /**
      * This method will set the algorithm's verbosity. If \p n is zero, no output is produced during the
-     * optimisation
-     * and no logging is performed. If \p n is nonzero, then every \p n objective function evaluations the status
-     * of the optimisation will be both printed to screen and recorded internally. See snopt::log_line_type and
-     * snopt::log_type for information on the logging format. The internal log can be fetched via get_log().
+     * optimisation and no logging is performed. If \p n is nonzero, then every \p n objective function evaluations the
+     * status of the optimisation will be both printed to screen and recorded internally. See snopt7::log_line_type and
+     * snopt7::log_type for information on the logging format. The internal log can be fetched via get_log().
+     *
+     * @param n the desired verbosity level.
      *
      * Example (verbosity 1):
      * @code{.unparsed}
@@ -673,7 +676,6 @@ We report the exact text of the original exception thrown:
      *
      * \endverbatim
      *
-     * @param n the desired verbosity level.
      */
     void set_verbosity(unsigned n)
     {

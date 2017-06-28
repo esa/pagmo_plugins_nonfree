@@ -227,7 +227,7 @@ html_static_path = ['_static']
 
 
 def setup(app):
-    app.add_stylesheet("pagmo.css")  # also can be a full URL
+    app.add_stylesheet("pagmo_plugins_nonfree.css")  # also can be a full URL
     # app.add_stylesheet("ANOTHER.css")
     # app.add_stylesheet("AND_ANOTHER.css")
 

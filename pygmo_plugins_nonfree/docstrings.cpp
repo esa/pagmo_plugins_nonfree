@@ -28,6 +28,14 @@ The selection and replacement strategies can be configured via set_selection(con
 set_selection(population::size_type), set_replacement(const std::string &) and
 set_replacement(population::size_type).
 
+Args:
+   screen_output (``bool``): when True will activate the original screen output from SNOPT7 and deactivate the logging system based on
+     :class:`~pygmo_snopt7.set_verbosity()`.
+   absolute_lib_path (``str``): the absolute path to the snopt7_c library in your system
+
+Raises:
+   ArgumentError: for any conversion problems between the python types and the c++ signature
+
 .. warning::
 
    Unfortunately, SNOPT7 fortran code is only available acquiring a licence.
@@ -60,13 +68,6 @@ set_replacement(population::size_type).
 
    https://web.stanford.edu/group/SOL/guides/sndoc7.pdf.
 
-Args:
-   screen_output (``bool``): when True will activate the original screen output from SNOPT7 and deactivate the logging system based on
-     :class:`~pygmo_snopt7.set_verbosity()`.
-   absolute_lib_path (``str``): the absolute path to the snopt7_c library in your system
-
-Raises:
-   ArgumentError: for any conversion problems between the python types and the c++ signature
 
 See also the docs of the C++ class :cpp:class:`pagmo::snopt7`.
 
@@ -149,6 +150,10 @@ Set integer option.
 This method will set the optimisation integer option \p name to \p value.
 The optimisation options are passed to the snOptA API when calling evolve().
 
+Args:
+   name (``string``): name of the option
+   value (``int``): value of the option
+
 The available integer options are listed in the following table:
 
 ==========================  ==============  ===================================================
@@ -192,9 +197,6 @@ Debug level                 0               0 - Normal, 1 - for developers
 Timing level                3               3 - print cpu times
 ==========================  ==============  ===================================================
 
-    * ``name`` (``string``), name of the option
-    * ``value`` (``int``), value of the option
-
 .. note::
 
    In case of invalid option name this function will be correctly executed, but a subsequent call to evolve() will raise a ValueError.
@@ -233,6 +235,10 @@ Set numeric option.
 This method will set the optimisation numeric option \p name to \p value.
 The optimisation options are passed to the snOptA API when calling evolve().
 
+Args:
+   name (``string``): name of the option
+   value (``int``): value of the option
+
 The available numeric options are listed in the following table:
 
 ============================  ==============  ===================================================
@@ -259,12 +265,9 @@ LU update tolerance           3.99            for NP ( 10.0 for LP)
 LU singularity tolerance      3.2e-11
 ============================  ==============  ===================================================
 
-    * ``name`` (``string``), name of the option
-    * ``value`` (``float``), value of the option
-
 .. note::
 
-   In case of invalid option name this function will be correctly executed, but a subsequent call to evolve() will raise a ValueError.
+   In case of invalid option name this function will not throw, but a subsequent call to evolve() will raise a ValueError.
 
 Examples:
     >>> import pygmo as pg

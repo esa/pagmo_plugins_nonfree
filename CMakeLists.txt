@@ -104,7 +104,7 @@ if(PAGMO_PLUGINS_NONFREE_BUILD_PYTHON)
     add_subdirectory("${CMAKE_SOURCE_DIR}/pygmo_plugins_nonfree")
 endif()
 
-if(PAGMO_PLUGINS_NONFREE_INSTALL_HEADERS)
+if(PAGMO_PLUGINS_NONFREE_HEADERS)
   install(DIRECTORY include/ DESTINATION include)
   install(FILES "${CMAKE_CURRENT_BINARY_DIR}/include/pagmo_plugins_nonfree/config.hpp" DESTINATION include/pagmo_plugins_nonfree)
 endif()
