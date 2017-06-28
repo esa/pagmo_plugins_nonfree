@@ -1,0 +1,88 @@
+@font-face {
+    font-family: 'bebas_neuebook';
+    src: url('bebasneue_book-webfont.woff2') format('woff2'),
+         url('bebasneue_book-webfont.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+body {
+    font-family: "Roboto", sans-serif;
+}
+
+code, pre {
+    font-family: "Space Mono", monospace;
+}
+
+.caption {
+    font-size: 12px;
+    font-style: italic;
+}
+
+.navbar-default .navbar-brand {
+    padding: 15px;
+    font-family: "bebas_neuebook";
+    font-weight: bold;
+    font-size: 30px;
+    color: #333333;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.admonition.note.alert.alert-info a {
+    color: #FFFFFF;
+}
+
+h1, .h1 {
+    font-family: "bebas_neuebook";
+    color: #333333;
+}
+
+h2, .h2 {
+    font-family: "bebas_neuebook";
+    color: #333333;
+}
+
+h3, .h3 {
+    font-family: "bebas_neuebook";
+    color: #333333;
+}
+
+.navbar-inverse {
+    background-color: #333333;
+    border-color: #333333;
+}
+
+a {
+    color: #9c1d1d;
+    text-decoration: none;
+}
+
+a:hover {
+    color: #ab5255;
+}
+
+code {
+    padding: 2px 4px;
+    font-size: 90%;
+    color: #9c1d1d;
+    background-color: #f1f1f1;
+    border-radius: 0;
+}
+
+.alert-info {
+    background-color: #789e6d;
+    border-color: #789e6d;
+    color: #ffffff;
+}
+
+.alert-warning {
+    background-color: #ffba4c;
+    border-color: #ffba4c;
+    color: #ffffff;
+}
