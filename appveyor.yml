@@ -43,7 +43,7 @@ install:
 build_script:
 - if [%BUILD_TYPE%]==[MSVC_64_Debug] mkdir build
 - if [%BUILD_TYPE%]==[MSVC_64_Debug] cd build
-- if [%BUILD_TYPE%]==[MSVC_64_Debug] cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGIND_NONFREE_BUILD_TESTS=YES  ..
+- if [%BUILD_TYPE%]==[MSVC_64_Debug] cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=YES  ..
 - if [%BUILD_TYPE%]==[MSVC_64_Debug] cmake --build . --config Debug --target install
 
 #- if [%BUILD_TYPE%]==[MSVC_64_Python35] mkdir build_pagmo
