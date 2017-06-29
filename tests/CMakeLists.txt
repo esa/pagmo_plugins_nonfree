@@ -3,14 +3,6 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/pagmo_plugins_nonfree/bogus_libs/snopt7_c_lib)
 add_library(snopt7_c SHARED ../include/pagmo_plugins_nonfree/bogus_libs/snopt7_c_lib/snopt7_c.c)
 
-if(YACMA_COMPILER_IS_MSVC)
-   # We need to undefine the macro max in Windows as some old headers (probably included by the boost dll library)
-   # define it and that screws up legit code such as std::numeric_limits<double>::max();
-    add_definitions(-DNOMINMAX)
-endif()
-
-
-
 function(ADD_PAGMO_SNOPT7_TESTCASE arg1)
     add_executable(${arg1} ${arg1}.cpp)
     target_link_libraries(${arg1} pagmo_plugins_nonfree)

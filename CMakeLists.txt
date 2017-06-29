@@ -38,8 +38,8 @@ endif()
 if(YACMA_COMPILER_IS_MSVC)
   # Disable the idiotic minmax macros on MSVC, some annoying warnings,
   # and enable the bigobj option.
-  list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG "-DBOOST_ALL_NO_LIB" "-DNOMINMAX" "/wd4459" "/wd4127" "/bigobj")
-  list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE "-DBOOST_ALL_NO_LIB" "-DNOMINMAX" "/wd4459" "/wd4127" "/bigobj")
+  list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG "-DNOMINMAX" "/wd4459" "/wd4127" "/bigobj")
+  list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE "-DNOMINMAX" "/wd4459" "/wd4127" "/bigobj")
 endif()
 if(YACMA_COMPILER_IS_INTELXX)
   # NOTE: on MSVC we use the push/pop pragmas, but they do not seem to work on Intel (the pragmas
@@ -88,7 +88,7 @@ target_include_directories(pagmo_plugins_nonfree INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
     $<INSTALL_INTERFACE:include>)
 
-target_link_libraries(pagmo_plugins_nonfree INTERFACE Boost::system Boost::filesystem Pagmo::pagmo ${CMAKE_DL_LIBS})
+target_link_libraries(pagmo_plugins_nonfree INTERFACE Boost::disable_autolinking Boost::system Boost::filesystem Pagmo::pagmo ${CMAKE_DL_LIBS})
 
 # Configure config.hpp.
 configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in" "${CMAKE_CURRENT_BINARY_DIR}/include/pagmo_plugins_nonfree/config.hpp" @ONLY)
