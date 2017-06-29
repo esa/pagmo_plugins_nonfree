@@ -481,7 +481,7 @@ We report the exact text of the original exception thrown:
             const double min_tol = *std::min_element(c_tol.begin(), c_tol.end());
             if (min_tol > 0.) {
                 auto option_name = s_to_C("Major feasibility tolerance");
-                auto res = setRealParameter(&snopt7_problem, option_name.data(), min_tol);
+                res = setRealParameter(&snopt7_problem, option_name.data(), min_tol);
                 assert(res == 0);
             }
         }
