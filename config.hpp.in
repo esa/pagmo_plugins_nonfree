@@ -29,14 +29,6 @@ see https://www.gnu.org/licenses/. */
 #ifndef PAGMO_PLUGINS_NONFREE_CONFIG_HPP
 #define PAGMO_PLUGINS_NONFREE_CONFIG_HPP
 
-// We need to undefine the macro max in Windows as some old headers (probably included by the boost dll library)
-// define it and that screws up legit code such as std::numeric_limits<double>::max();
-#if defined(_MSC_VER)
-#if defined(max)
-#undef max
-#endif
-#endif
-
 // Start of defines instantiated by CMake.
 // clang-format off
 #define PAGMO_PLUGINS_NONFREE_VERSION @pagmo_plugins_nonfree_VERSION@

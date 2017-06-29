@@ -15,7 +15,6 @@
 #include <string>
 #include <vector>
 
-#include <pagmo_plugins_nonfree/config.hpp>
 #include <pagmo_plugins_nonfree/snopt7.hpp>
 
 using namespace pagmo;
