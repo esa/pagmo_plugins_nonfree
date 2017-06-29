@@ -41,16 +41,18 @@ int solveA(snProblem *prob, int start, int nF, int n, double ObjAdd, int ObjRow,
            double *Fupp, double *x, int *xstate, double *xmul, double *F, int *Fstate, double *Fmul, int *nS, int *nInf,
            double *sInf)
 {
-    double retval = 1;
-    double x_new[n];
+    const int newn = n;
+    const int newnF = nF;
+    int retval = 1;
+    double x_new[newn];
     int Status = 0;
     int needF = 1;
     int needG = 1;
     char cu[1];
     int lencu = 0;
-    double G[nF * n];
+    double G[newnF * newn];
     srand(time(NULL));
-    int i,j;
+    int i, j;
     for (i = 0; i < 100; ++i) {
         // Random vector
         for (j = 0; j < n; ++j) {
