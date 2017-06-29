@@ -474,14 +474,15 @@ We report the exact text of the original exception thrown:
         // - compute the minimum tolerance min_tol among those returned by  problem.c_tol(). If zero, ignore
         //   it and use the SNOPT7 default value for "Major feasibility tolerance" (1e-6). Otherwise, use min_tol as
         //   the value for "Major feasibility tolerance".
+        int res = 0;
         if (prob.get_nc() && !m_numeric_opts.count("Major feasibility tolerance")) {
             const auto c_tol = prob.get_c_tol();
             assert(!c_tol.empty());
             const double min_tol = *std::min_element(c_tol.begin(), c_tol.end());
             if (min_tol > 0.) {
                 auto option_name = s_to_C("Major feasibility tolerance");
-                auto result = setRealParameter(&snopt7_problem, option_name.data(), min_tol);
-                assert(result == 0);
+                auto res = setRealParameter(&snopt7_problem, option_name.data(), min_tol);
+                assert(res == 0);
             }
         }
         // We prevent to set the "Derivative option" option as pagmo sets it according to the value of
@@ -491,7 +492,7 @@ We report the exact text of the original exception thrown:
                 std::invalid_argument,
                 R"(The option "Derivative option" was set by the user. In pagmo that is not allowed, as its value is automatically set according to the value returned by has_gradient() (true -> 3, false -> 0))");
         }
-        int res = 0;
+        res = 0;
         // We set all the other user defined options
         for (const auto &p : m_numeric_opts) {
             auto option_name = s_to_C(p.first);
@@ -590,10 +591,10 @@ We report the exact text of the original exception thrown:
             jGvar[i] = static_cast<int>(sparsity[i].second);
         }
         if (prob.has_gradient()) {
-            auto res = setIntParameter(&snopt7_problem, &std::string("Derivative option")[0], 3);
+            res = setIntParameter(&snopt7_problem, &std::string("Derivative option")[0], 3);
             assert(res == 0);
         } else {
-            auto res = setIntParameter(&snopt7_problem, &std::string("Derivative option")[0], 0);
+            res = setIntParameter(&snopt7_problem, &std::string("Derivative option")[0], 0);
             assert(res == 0);
         }
 
