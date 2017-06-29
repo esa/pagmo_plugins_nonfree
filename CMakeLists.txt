@@ -56,6 +56,11 @@ if(MINGW)
 	list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE "-Wa,-mbig-obj")
 endif()
 
+# Pagmo setup.
+message(STATUS "\nFinding the pagmo package:")
+find_package(Pagmo REQUIRED)
+message(STATUS "End of finding the pagmo package\n")
+
 # Boost setup.
 include(YACMAPythonSetup)
 list(APPEND PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS system filesystem)
@@ -71,12 +76,9 @@ find_package(Boost 1.61.0 REQUIRED COMPONENTS "${PAGMO_PLUGINS_NONFREE_REQUIRED_
 if(NOT Boost_FOUND)
     message(FATAL_ERROR "Not all requested Boost components were found, exiting.")
 endif()
-message(STATUS "Detected Boost version: ${Boost_VERSION}")
-message(STATUS "Boost include dirs: ${Boost_INCLUDE_DIRS}")
+#message(STATUS "Detected Boost version: ${Boost_VERSION}")
+#message(STATUS "Boost include dirs: ${Boost_INCLUDE_DIRS}")
 message(STATUS "Boost libraries paths: ${Boost_LIBRARIES}")
-
-# Pagmo setup.
-find_package(Pagmo REQUIRED)
 
 # Setup of the header-only pagmo_plugins_nonfree library.
 add_library(pagmo_plugins_nonfree INTERFACE)
