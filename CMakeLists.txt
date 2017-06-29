@@ -38,8 +38,8 @@ endif()
 if(YACMA_COMPILER_IS_MSVC)
   # Disable the idiotic minmax macros on MSVC, some annoying warnings,
   # and enable the bigobj option.
-  list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG "-DBOOST_ALL_NO_LIB -DNOMINMAX" "/wd4459" "/wd4127" "/bigobj")
-  list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE "-DBOOST_ALL_NO_LIB -DNOMINMAX" "/wd4459" "/wd4127" "/bigobj")
+  list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG "-DBOOST_ALL_NO_LIB" "-DNOMINMAX" "/wd4459" "/wd4127" "/bigobj")
+  list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE "-DBOOST_ALL_NO_LIB" "-DNOMINMAX" "/wd4459" "/wd4127" "/bigobj")
 endif()
 if(YACMA_COMPILER_IS_INTELXX)
   # NOTE: on MSVC we use the push/pop pragmas, but they do not seem to work on Intel (the pragmas
