@@ -51,7 +51,8 @@ int solveA(snProblem *prob, int start, int nF, int n, double ObjAdd, int ObjRow,
     char cu[1];
     int lencu = 0;
     double *G = malloc(sizeof(double) * nF * n);
-    srand(time(NULL));
+    srand(static_cast<unsigned int>(time(NULL)));
+
     int i, j;
     for (i = 0; i < 100; ++i) {
         // Random vector
