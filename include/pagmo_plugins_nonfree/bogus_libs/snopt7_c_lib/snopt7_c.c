@@ -41,16 +41,16 @@ int solveA(snProblem *prob, int start, int nF, int n, double ObjAdd, int ObjRow,
            double *Fupp, double *x, int *xstate, double *xmul, double *F, int *Fstate, double *Fmul, int *nS, int *nInf,
            double *sInf)
 {
-    const int newn = n;
-    const int newnF = nF;
     int retval = 1;
-    double x_new[newn];
+    double *x_new
+        = malloc(sizeof(double)
+                 * n); // C99 does have variable-length arrays (VLAs), but Microsoft's compiler doesn't support them.
     int Status = 0;
     int needF = 1;
     int needG = 1;
     char cu[1];
     int lencu = 0;
-    double G[newnF * newn];
+    double *G = malloc(sizeof(double) * nF * n);
     srand(time(NULL));
     int i, j;
     for (i = 0; i < 100; ++i) {
@@ -66,5 +66,7 @@ int solveA(snProblem *prob, int start, int nF, int n, double ObjAdd, int ObjRow,
             break;
         }
     }
+    free(x_new);
+    free(G);
     return retval;
 };
