@@ -84,8 +84,8 @@ elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
     fi
     echo "Sphinx ran successfully";
     make doctest;
-    if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "Python27" ]]; then
-        # Stop here if this is the Python27 build. Docs are uploaded only in the Python36 build.
+    if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != "Python36" ]]; then
+        # Stop here. Docs are uploaded only in the Python36 build.
         exit 0;
     fi
     if [[ "${TRAVIS_PULL_REQUEST}" != "false" ]]; then
@@ -99,31 +99,31 @@ elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
     # Move out the resulting documentation.
     mv _build/html /home/travis/sphinx;
     # Checkout a new copy of the repo, for pushing to gh-pages.
-#   cd ../../../;
-#   git config --global push.default simple
-#   git config --global user.name "Travis CI"
-#   git config --global user.email "bluescarni@gmail.com"
-#   set +x
-#   git clone "https://${GH_TOKEN}@github.com/esa/pagmo2.git" pagmo2_gh_pages -q
-#   set -x
-#   cd pagmo2_gh_pages
-#   git checkout -b gh-pages --track origin/gh-pages;
-#   git rm -fr *;
-#   mv /home/travis/sphinx/* .;
-#   git add *;
-#   # We assume here that a failure in commit means that there's nothing
-#   # to commit.
-#   git commit -m "Update Sphinx documentation, commit ${TRAVIS_COMMIT} [skip ci]." || exit 0
-#   PUSH_COUNTER=0
-#   until git push -q
-#   do
-#       git pull -q
-#       PUSH_COUNTER=$((PUSH_COUNTER + 1))
-#       if [ "$PUSH_COUNTER" -gt 3 ]; then
-#           echo "Push failed, aborting.";
-#           exit 1;
-#       fi
-#   done
+    cd ../../../;
+    git config --global push.default simple
+    git config --global user.name "Travis CI"
+    git config --global user.email "darioizzo@gmail.com"
+    set +x
+    git clone "https://${GH_TOKEN}@github.com/esa/pagmo_plugins_nonfree.git" pagmo_plugins_nonfree_gh_pages -q
+    set -x
+    cd pagmo_plugins_nonfree_gh_pages
+    git checkout -b gh-pages --track origin/gh-pages;
+    git rm -fr *;
+    mv /home/travis/sphinx/* .;
+    git add *;
+    # We assume here that a failure in commit means that there's nothing
+    # to commit.
+    git commit -m "Update Sphinx documentation, commit ${TRAVIS_COMMIT} [skip ci]." || exit 0
+    PUSH_COUNTER=0
+    until git push -q
+    do
+        git pull -q
+        PUSH_COUNTER=$((PUSH_COUNTER + 1))
+        if [ "$PUSH_COUNTER" -gt 3 ]; then
+            echo "Push failed, aborting.";
+            exit 1;
+        fi
+    done
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == OSXPython* ]]; then
     export CXX=clang++
     export CC=clang
