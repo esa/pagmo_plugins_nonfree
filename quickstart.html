@@ -181,7 +181,8 @@
 29
 30
 31
-32</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;pagmo/algorithm.hpp&gt;</span><span class="cp"></span>
+32
+33</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;pagmo/algorithm.hpp&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;pagmo/archipelago.hpp&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;pagmo/problem.hpp&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;pagmo/problems/rosenbrock.hpp&gt;</span><span class="cp"></span>
@@ -191,21 +192,22 @@
 
 <span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 <span class="p">{</span>
-    <span class="c1">// 1 - Instantiate a pagmo problem constructing it from a UDP</span>
-    <span class="c1">// (user defined problem).</span>
+    <span class="c1">// 1 - Instantiate a pagmo problem constructing it from the Rosenbrock</span>
+    <span class="c1">// UDP (user defined problem).</span>
     <span class="n">problem</span> <span class="n">prob</span><span class="p">{</span><span class="n">rosenbrock</span><span class="p">(</span><span class="mi">30</span><span class="p">)};</span>
 
-    <span class="c1">// 2 - Instantiate a pagmo_plugins_nonfree algorithm, in this case SNOPT. THis assumes a library snopt_c is found in</span>
+    <span class="c1">// 2 - Instantiate a pagmo_plugins_nonfree algorithm, in this case SNOPT. THis assumes a library snopt7_c is found</span>
+    <span class="c1">// in</span>
     <span class="c1">// the path &quot;/usr/local/lib/&quot;. Otherwise you will get a runtime error.</span>
     <span class="n">algorithm</span> <span class="n">algo</span><span class="p">(</span><span class="n">snopt7</span><span class="p">(</span><span class="nb">false</span><span class="p">,</span> <span class="s">&quot;/usr/local/lib/&quot;</span><span class="p">));</span>
 
     <span class="c1">// 3 - Instantiate an archipelago with 16 islands having each 1 individual (the initial guess)</span>
     <span class="n">archipelago</span> <span class="n">archi</span><span class="p">{</span><span class="mi">16</span><span class="p">,</span> <span class="n">algo</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="mi">1</span><span class="p">};</span>
 
-    <span class="c1">// 4 - Run the evolution in parallel on the 16 separate islands.</span>
+    <span class="c1">// 4 - Run the snopt7 calls in parallel on the 16 separate islands.</span>
     <span class="n">archi</span><span class="p">.</span><span class="n">evolve</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 
-    <span class="c1">// 5 - Wait for the evolutions to be finished</span>
+    <span class="c1">// 5 - Wait for the snopt7 calls to be finished</span>
     <span class="n">archi</span><span class="p">.</span><span class="n">wait</span><span class="p">();</span>
 
     <span class="c1">// 6 - Print the fitness of the best solution in each island</span>

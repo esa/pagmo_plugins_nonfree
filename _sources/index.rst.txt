@@ -1,11 +1,13 @@
 Plugins to commercial solvers for pagmo / pygmo
 ===============================================
 
-.. image:: ../sphinx/docs/images/algo.png
+.. image:: ../sphinx/docs/images/pagmo_logo.png
+   :target: https://esa.github.io/pagmo2/index.html
    :width: 15%
 
-.. image:: ../sphinx/docs/images/not_open_source.png
-   :width: 15%
+.. image:: ../sphinx/docs/images/algo.png
+   :target: index.html
+   :width: 25%
 
 
 ``pagmo_plugins_nonfree`` is an affliated package of `pagmo/pygmo <https://esa.github.io/pagmo2/index.html>`_. It adds some 

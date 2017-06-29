@@ -3,6 +3,8 @@
 Installation guide
 ==================
 
+.. contents::
+
 .. _cpp_install:
 
 C++
@@ -10,8 +12,8 @@ C++
 
 pagmo_plugins_nonfree is a header-only library which has the following third-party dependencies:
 
-* `Boost <http://www.boost.org/>`__, **mandatory**, header-only
-* `pagmo <https://esa.github.io/pagmo2/index.html>`__, header-only
+* `Boost <http://www.boost.org/>`__, **mandatory**, version 1.61.0 minimum. Headers and the compiled libraries boost_system and boost_filesystem are needed. 
+* `pagmo <https://esa.github.io/pagmo2/index.html>`__, **mandatory**, header-only
 
 After making sure the dependencies above are installed in your system, you can download the
 pagmo source code from the `GitHub release page <https://github.com/esa/pagmo_plugins_nonfree/releases>`__. Alternatively,
