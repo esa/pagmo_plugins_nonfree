@@ -55,12 +55,12 @@ unsigned throwing_udp::counter = 0u;
 BOOST_AUTO_TEST_CASE(construction)
 {
     // We test construction of the snopt7 uda
-    BOOST_CHECK_NO_THROW((snopt7{false, "./"}));
-    BOOST_CHECK_NO_THROW((snopt7{true, "./"}));
+    BOOST_CHECK_NO_THROW((snopt7{false, "C:\\projects\\pagmo-plugins-nonfree\\build\\tests\\Debug\\"}));
+    BOOST_CHECK_NO_THROW((snopt7{true, "C:\\projects\\pagmo-plugins-nonfree\\build\\tests\\Debug\\"}));
     BOOST_CHECK_NO_THROW((snopt7{true, "I CAN PUT WHATEVER IN HERE"}));
     // We test construction of a snopt7 pagmo algorithm
-    BOOST_CHECK_NO_THROW((algorithm{snopt7{false, "./"}}));
-    BOOST_CHECK_NO_THROW((algorithm{snopt7{true, "./"}}));
+    BOOST_CHECK_NO_THROW((algorithm{snopt7{false, "C:\\projects\\pagmo-plugins-nonfree\\build\\tests\\Debug\\"}}));
+    BOOST_CHECK_NO_THROW((algorithm{snopt7{true, "C:\\projects\\pagmo-plugins-nonfree\\build\\tests\\Debug\\"}}));
     BOOST_CHECK_NO_THROW((algorithm{snopt7{true, "I CAN PUT WHATEVER IN HERE"}}));
 }
 
@@ -68,7 +68,7 @@ BOOST_AUTO_TEST_CASE(option_setting_mechanism)
 {
     // We test the mechanism to set the snopt7 options
     // 1 - set integer options
-    snopt7 uda{snopt7{true, "./"}};
+    snopt7 uda{snopt7{true, "C:\\projects\\pagmo-plugins-nonfree\\build\\tests\\Debug\\"}};
     uda.set_integer_option("my_int_option1", 1);
     uda.set_integer_options({{"my_int_option2", 2}, {"my_int_option3", 3}});
     BOOST_CHECK_EQUAL(uda.get_integer_options()["my_int_option1"], 1);
@@ -130,14 +130,14 @@ BOOST_AUTO_TEST_CASE(evolve)
     }
 
     // We now test the mechanism to rethrow exceptions thrown by the usrfun
-    snopt7 uda{false, "./"};
+    snopt7 uda{false, "C:\\projects\\pagmo-plugins-nonfree\\build\\tests\\Debug\\"};
     uda.set_verbosity(1u);
     population pop{throwing_udp{}, 1u};
     BOOST_CHECK_THROW(uda.evolve(pop), std::invalid_argument);
 }
 BOOST_AUTO_TEST_CASE(streams_and_log)
 {
-    snopt7 uda{false, "./"};
+    snopt7 uda{false, "C:\\projects\\pagmo-plugins-nonfree\\build\\tests\\Debug\\"};
     population pop{cec2006{1}, 1u};
     uda.set_verbosity(1u);
     pop = uda.evolve(pop);
@@ -153,7 +153,7 @@ BOOST_AUTO_TEST_CASE(serialization_test)
     // Make one evolution
     problem prob{cec2006{7u}};
     population pop{prob, 10u, 23u};
-    algorithm algo{snopt7{false, "./"}};
+    algorithm algo{snopt7{false, "C:\\projects\\pagmo-plugins-nonfree\\build\\tests\\Debug\\"}};
     algo.set_verbosity(1u);
     algo.extract<snopt7>()->set_integer_option("some_int", 4);
     algo.extract<snopt7>()->set_numeric_option("some_float", 2.2);
