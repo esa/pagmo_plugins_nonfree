@@ -328,7 +328,12 @@ public:
      */
     snopt7(bool screen_output = false, std::string absolute_lib_path = "/usr/local/lib/")
         : m_absolute_lib_path(absolute_lib_path), m_integer_opts(), m_numeric_opts(), m_screen_output(screen_output),
-          m_verbosity(0), m_log(){};
+          m_verbosity(0), m_log()
+    {
+#ifdef _MSC_VER
+        std::replace(absolute_lib_path.begin(), absolute_lib_path.end(), '/', '\\'); // replace to backslashes
+#endif
+    };
 
     /// Evolve population.
     /**
