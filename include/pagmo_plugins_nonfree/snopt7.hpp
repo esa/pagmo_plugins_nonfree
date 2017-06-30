@@ -323,7 +323,8 @@ public:
      *
      * @param screen_output when ``true`` will activate the screen output from the SNOPT7 library, otherwise
      * will let pagmo regulate logs and screen_output via its pagmo::algorithm::set_verbosity mechanism.
-     * @param absolute_lib_path The absolute path to the directory where the snopt7_c library is located.
+     * @param absolute_lib_path The absolute path to the directory where the snopt7_c library is located. In Windows
+     * systems the constructor converts all forward slashes into backward slashes.
      *
      */
     snopt7(bool screen_output = false, std::string absolute_lib_path = "/usr/local/lib/")
