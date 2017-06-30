@@ -211,7 +211,7 @@ is deactivated in this plugin for pagmo.</p>
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
 <li><code class="docutils literal"><span class="pre">screen_output</span></code>: when <code class="docutils literal"><span class="pre">true</span></code> will activate the screen output from the SNOPT7 library, otherwise will let pagmo regulate logs and screen_output via its pagmo::algorithm::set_verbosity mechanism. </li>
-<li><code class="docutils literal"><span class="pre">absolute_lib_path</span></code>: The absolute path to the directory where the snopt7_c library is located. </li>
+<li><code class="docutils literal"><span class="pre">absolute_lib_path</span></code>: The absolute path to the directory where the snopt7_c library is located. In Windows systems the constructor converts all forward slashes into backward slashes. </li>
 </ul>
 </dd>
 </dl>
