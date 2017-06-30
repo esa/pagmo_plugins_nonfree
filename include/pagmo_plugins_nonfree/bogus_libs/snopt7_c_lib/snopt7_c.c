@@ -3,14 +3,15 @@
 
 #include "snopt7_c.h"
 
-inline double closed_interval_rand(double x0, double x1)
+
+inline double  closed_interval_rand(double x0, double x1)
 {
     return x0 + (x1 - x0) * rand() / ((double)RAND_MAX);
 }
 
-void snInit(snProblem *prob, char *name, char *prtfile, int summOn){};
+__PAGMO_VISIBLE void snInit(snProblem *prob, char *name, char *prtfile, int summOn){};
 
-int setIntParameter(snProblem *prob, char stropt[], int opt)
+__PAGMO_VISIBLE int setIntParameter(snProblem *prob, char stropt[], int opt)
 {
     char *invalid;
     invalid = "invalid_integer_option";
@@ -21,7 +22,7 @@ int setIntParameter(snProblem *prob, char stropt[], int opt)
     }
 };
 
-int setRealParameter(snProblem *prob, char stropt[], double opt)
+__PAGMO_VISIBLE int setRealParameter(snProblem *prob, char stropt[], double opt)
 {
     char *invalid;
     invalid = "invalid_numeric_option";
@@ -32,11 +33,11 @@ int setRealParameter(snProblem *prob, char stropt[], double opt)
     }
 };
 
-void deleteSNOPT(snProblem *prob){};
+__PAGMO_VISIBLE void deleteSNOPT(snProblem *prob){};
 
 // The following routine fakes the snOptA interface and generates 100 random vectors. It will not touch the input
 // decision vector. We use this implementation to test since the true library is commercial
-int solveA(snProblem *prob, int start, int nF, int n, double ObjAdd, int ObjRow, snFunA usrfun, int neA, int *iAfun,
+__PAGMO_VISIBLE int solveA(snProblem *prob, int start, int nF, int n, double ObjAdd, int ObjRow, snFunA usrfun, int neA, int *iAfun,
            int *jAvar, double *A, int neG, int *iGfun, int *jGvar, double *xlow, double *xupp, double *Flow,
            double *Fupp, double *x, int *xstate, double *xmul, double *F, int *Fstate, double *Fmul, int *nS, int *nInf,
            double *sInf)

@@ -460,7 +460,7 @@ and thus cannot be dlopened.
 
 We report the exact text of the original exception thrown:
 
- )" + std::string(e.what()).substr(0, 250));
+ )" + std::string(e.what()));
             pagmo_throw(std::invalid_argument, message);
         }
         // ------------------------- END SNOPT7 PLUGIN -------------------------------------------------------------
