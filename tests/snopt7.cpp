@@ -95,7 +95,7 @@ BOOST_AUTO_TEST_CASE(evolve)
 {
     {
         // We start testing the throws if the problem in the population is not suitable for snopt7
-        snopt7 uda{true, "C:\\projects\\pagmo-plugins-nonfree\\build\\tests\Debug\\"};
+        snopt7 uda{true, "C:\\projects\\pagmo-plugins-nonfree\\build\\tests\\Debug\\"};
         BOOST_CHECK_THROW(uda.evolve(population{zdt{1}, 20u}), std::invalid_argument);
         BOOST_CHECK_THROW(uda.evolve(population{inventory{}, 20u}), std::invalid_argument);
         BOOST_CHECK_THROW(uda.evolve(population{ackley{10}, 0u}), std::invalid_argument);
