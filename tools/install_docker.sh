@@ -79,7 +79,7 @@ make -j2 install > /dev/null
 cd ..
 
 # pagmo & pygmo https://github.com/esa/pagmo2/releases/tag/v2.4
-wget https://github.com/esa/pagmo2/releases/tag/v${PAGMO_VERSION}.tar.gz --no-verbose
+wget https://github.com/esa/pagmo2/archive/v${PAGMO_VERSION}.tar.gz --no-verbose
 tar xzf ${EIGENPAGMO_VERSION3_VERSION}
 cd pagmo-${EIGEN3_VERSION}
 mkdir build_pagmo
