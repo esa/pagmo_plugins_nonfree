@@ -10,16 +10,16 @@ CMAKE_VERSION="3.8.0"
 BOOST_VERSION="1.63.0"
 PAGMO_VERSION="2.4"
 
-if [[ ${PAGMO_BUILD} == *36 ]]; then
+if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *36 ]]; then
 	PYTHON_DIR="cp36-cp36m"
-elif [[ ${PAGMO_BUILD} == *35 ]]; then
+elif [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *35 ]]; then
 	PYTHON_DIR="cp35-cp35m"
-elif [[ ${PAGMO_BUILD} == *34 ]]; then
+elif [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *34 ]]; then
 	PYTHON_DIR="cp34-cp34m"
-elif [[ ${PAGMO_BUILD} == *27 ]]; then
+elif [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *27 ]]; then
 	PYTHON_DIR="cp27-cp27mu"
 else
-	echo "Invalid build type: ${PAGMO_BUILD}"
+	echo "Invalid build type: ${PAGMO_PLUGINS_NONFREE_BUILD}"
 	exit 1
 fi
 

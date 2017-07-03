@@ -19,6 +19,8 @@
 
 #ifdef _MSC_VER
 #define SNOPT7C_LIB ".\\snopt7_c.dll"
+#elif defined __APPLE__
+#define SNOPT7C_LIB "./libsnopt7_c.dylib"
 #else
 #define SNOPT7C_LIB "./libsnopt7_c.so"
 #endif
