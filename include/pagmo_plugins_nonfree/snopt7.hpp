@@ -580,8 +580,8 @@ We report the exact text of the original exception thrown:
         snopt7_problem.iu = (int *)(&info);
 
         // -------- Linear Part Of the Problem. As pagmo does not support linear problems we do not use this -------
-        int neA = 0;  // We switch off the linear part of the fitness
-        int lenA = 1; // Thats the minimum length allowed
+        int neA = 0;        // We switch off the linear part of the fitness
+        unsigned lenA = 1u; // Thats the minimum length allowed
         std::vector<int> iAfun(lenA);
         std::vector<int> jAvar(lenA);
         vector_double A(lenA);
@@ -589,7 +589,7 @@ We report the exact text of the original exception thrown:
         // -------- Non Linear Part Of the Problem. ----------------------------------------------------------------
         auto sparsity = prob.gradient_sparsity();
         int neG = static_cast<int>(sparsity.size());
-        int lenG = neG;
+        auto lenG = sparsity.size();
         std::vector<int> iGfun(lenG);
         std::vector<int> jGvar(lenG);
         for (decltype(sparsity.size()) i = 0u; i < sparsity.size(); ++i) {
