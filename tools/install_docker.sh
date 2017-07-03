@@ -78,6 +78,9 @@ cd nlopt-${NLOPT_VERSION}
 make -j2 install > /dev/null
 cd ..
 
+# Python deps (numpy is needed to install pygmo)
+/opt/python/${PYTHON_DIR}/bin/pip install cloudpickle numpy
+
 # pagmo & pygmo wget https://github.com/esa/pagmo2/archive/v2.4.tar.gz
 wget https://github.com/esa/pagmo2/archive/v${PAGMO_VERSION}.tar.gz -O pagmo2.tar.gz --no-verbose
 tar xzf pagmo2.tar.gz
@@ -91,10 +94,6 @@ mkdir build_pygmo
 cd build_pygmo
 cmake -DCMAKE_BUILD_TYPE=Release -DPAGMO_BUILD_PYGMO=yes -DPAGMO_BUILD_PAGMO=no -DPYTHON_EXECUTABLE=/opt/python/${PYTHON_DIR}/bin/python ../;
 make -j2 install
-
-
-# Python deps
-/opt/python/${PYTHON_DIR}/bin/pip install cloudpickle numpy
 
 # pagmo_plugins_nonfree
 cd /pagmo_plugins_nonfree
