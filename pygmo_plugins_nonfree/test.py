@@ -14,7 +14,7 @@ class snopt7_test_case(_ut.TestCase):
         import pygmo as pg
         from .core import snopt7
         uda = snopt7(screen_output=False,
-                     absolute_lib_path="\\usr\\local\\lib\\")
+                     absolute_lib_path="/usr/local/lib/")
         algo = pg.algorithm(uda)
         algo.extract(snopt7).set_integer_option("Major Iteration Limit", 1000)
         algo.extract(snopt7).set_numeric_option(
