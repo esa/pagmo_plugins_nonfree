@@ -61,12 +61,12 @@ make install > /dev/null
 cd ..
 cd ..
 
-# Boost
+# Boost (python, system, filesystem libs needed)
 wget https://downloads.sourceforge.net/project/boost/boost/${BOOST_VERSION}/boost_`echo ${BOOST_VERSION}|tr "." "_"`.tar.bz2 --no-verbose
 tar xjf boost_`echo ${BOOST_VERSION}|tr "." "_"`.tar.bz2
 cd boost_`echo ${BOOST_VERSION}|tr "." "_"`
 sh bootstrap.sh --with-python=/opt/python/${PYTHON_DIR}/bin/python > /dev/null
-./bjam --toolset=gcc link=shared threading=multi cxxflags="-std=c++11" variant=release --with-python -j2 install > /dev/null
+./bjam --toolset=gcc link=shared threading=multi cxxflags="-std=c++11" variant=release --with-python --with-system --with-filesystem -j2 install > /dev/null
 cd ..
 
 # NLopt
