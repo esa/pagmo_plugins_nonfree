@@ -1,6 +1,6 @@
 environment:
   matrix:
-    - BUILD_TYPE: "MSVC_64_Debug"
+    - BUILD_TYPE: "MSVC_64_Release"
       COMPILER: MSVC15
       PLATFORM: "x64"
     #- BUILD_TYPE: "MSVC_64_Python36"
@@ -17,11 +17,11 @@ environment:
     PLATFORMTOOLSET: "v140"
 
 install:
-- if [%BUILD_TYPE%]==[MSVC_64_Debug] set PATH=C:\Miniconda36-x64\Scripts;%PATH%
-- if [%BUILD_TYPE%]==[MSVC_64_Debug] conda config --add channels conda-forge --force
-- if [%BUILD_TYPE%]==[MSVC_64_Debug] conda create -y --name pagmo_plugins_nonfree python=3.6 cmake boost eigen nlopt pagmo pygmo
+- if [%BUILD_TYPE%]==[MSVC_64_Release] set PATH=C:\Miniconda36-x64\Scripts;%PATH%
+- if [%BUILD_TYPE%]==[MSVC_64_Release] conda config --add channels conda-forge --force
+- if [%BUILD_TYPE%]==[MSVC_64_Release] conda create -y --name pagmo_plugins_nonfree python=3.6 cmake boost eigen nlopt pagmo pygmo
 # NOTE: need to use "call" because otherwise it won't work within an if block.
-- if [%BUILD_TYPE%]==[MSVC_64_Debug] call activate pagmo_plugins_nonfree
+- if [%BUILD_TYPE%]==[MSVC_64_Release] call activate pagmo_plugins_nonfree
 
 #- if [%BUILD_TYPE%]==[MSVC_64_Python35] set PATH=C:\Miniconda35-x64\Scripts;%PATH%
 #- if [%BUILD_TYPE%]==[MSVC_64_Python35] conda config --add channels conda-forge --force
@@ -41,11 +41,11 @@ install:
 #- if [%BUILD_TYPE%]==[MinGW_64_Python36] rename "C:\Program Files\Git\usr\bin\sh.exe" "sh2.exe"
 
 build_script:
-- if [%BUILD_TYPE%]==[MSVC_64_Debug] mkdir build
-- if [%BUILD_TYPE%]==[MSVC_64_Debug] cd build
-- if [%BUILD_TYPE%]==[MSVC_64_Debug] cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=YES  ..
-- if [%BUILD_TYPE%]==[MSVC_64_Debug] cmake --build . --config Debug --target install
-- if [%BUILD_TYPE%]==[MSVC_64_Debug] cp tests\Debug\snopt7_c.dll tests\
+- if [%BUILD_TYPE%]==[MSVC_64_Release] mkdir build
+- if [%BUILD_TYPE%]==[MSVC_64_Release] cd build
+- if [%BUILD_TYPE%]==[MSVC_64_Release] cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_BUILD_TYPE=Release -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=YES  ..
+- if [%BUILD_TYPE%]==[MSVC_64_Release] cmake --build . --config Release --target install
+- if [%BUILD_TYPE%]==[MSVC_64_Release] cp tests\Release\snopt7_c.dll tests\
 
 #- if [%BUILD_TYPE%]==[MSVC_64_Python35] mkdir build_pagmo
 #- if [%BUILD_TYPE%]==[MSVC_64_Python35] cd build_pagmo
@@ -74,7 +74,7 @@ build_script:
 #- if [%BUILD_TYPE%]==[MinGW_64_Python36] C:\Python36-x64\python.exe tools\install_appveyor_mingw.py
 
 test_script:
-- if [%BUILD_TYPE%]==[MSVC_64_Debug] ctest --output-on-failure
+- if [%BUILD_TYPE%]==[MSVC_64_Release] ctest --output-on-failure
 
 #- if [%BUILD_TYPE%]==[MSVC_64_Python35] start /b ipcluster start
 #- if [%BUILD_TYPE%]==[MSVC_64_Python35] timeout 20
