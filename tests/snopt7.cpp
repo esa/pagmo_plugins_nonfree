@@ -60,7 +60,6 @@ unsigned throwing_udp::counter = 0u;
 
 BOOST_AUTO_TEST_CASE(construction)
 {
-    std::cout << boost::filesystem::current_path().string() << std::endl;
     // We test construction of the snopt7 uda
     BOOST_CHECK_NO_THROW((snopt7{false, SNOPT7C_LIB}));
     BOOST_CHECK_NO_THROW((snopt7{true, "./"}));
