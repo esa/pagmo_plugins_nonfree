@@ -80,8 +80,8 @@ cd ..
 
 # pagmo & pygmo https://github.com/esa/pagmo2/releases/tag/v2.4
 wget https://github.com/esa/pagmo2/archive/v${PAGMO_VERSION}.tar.gz --no-verbose
-tar xzf ${PAGMO_VERSION}
-cd pagmo-${PAGMO_VERSION}
+tar xzf v${PAGMO_VERSION}.tar.gz
+cd pagmo2-${PAGMO_VERSION}
 mkdir build_pagmo
 cd build_pagmo
 cmake ../ -DPAGMO_WITH_EIGEN3=yes -DPAGMO_WITH_NLOPT=yes -DCMAKE_BUILD_TYPE=Release
@@ -91,6 +91,7 @@ mkdir build_pygmo
 cd build_pygmo
 cmake -DCMAKE_BUILD_TYPE=Release -DPAGMO_BUILD_PYGMO=yes -DPAGMO_BUILD_PAGMO=no -DPYTHON_EXECUTABLE=/opt/python/${PYTHON_DIR}/bin/python ../;
 make -j2 install
+
 
 # Python deps
 /opt/python/${PYTHON_DIR}/bin/pip install cloudpickle numpy
