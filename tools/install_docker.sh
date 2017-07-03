@@ -80,8 +80,8 @@ cd ..
 
 # pagmo & pygmo https://github.com/esa/pagmo2/releases/tag/v2.4
 wget https://github.com/esa/pagmo2/archive/v${PAGMO_VERSION}.tar.gz --no-verbose
-tar xzf ${EIGENPAGMO_VERSION3_VERSION}
-cd pagmo-${EIGEN3_VERSION}
+tar xzf ${PAGMO_VERSION}
+cd pagmo-${PAGMO_VERSION}
 mkdir build_pagmo
 cd build_pagmo
 cmake ../ -DPAGMO_WITH_EIGEN3=yes -DPAGMO_WITH_NLOPT=yes -DCMAKE_BUILD_TYPE=Release
