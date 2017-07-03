@@ -6,11 +6,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-// We solve the library madness in windows
+// When in windows symbols must be explictly marked for export
 #ifdef _WIN32
-	#define __PAGMO_VISIBLE __declspec(dllexport)
+#define __PAGMO_VISIBLE __declspec(dllexport)
 #else
-	#define __PAGMO_VISIBLE __attribute__ ((visibility("default")))
+#define __PAGMO_VISIBLE __attribute__((visibility("default")))
 #endif
 
 typedef void (*isnLog)(int *iAbort, int *info, int *HQNType, int KTcond[], int *MjrPrt, int *minimz, int *n, int *nb,
@@ -47,8 +47,8 @@ typedef void (*snFunA)(int *Status, int *n, double x[], int *needF, int *neF, do
                        double G[], char cu[], int *lencu, int iu[], int *leniu, double ru[], int *lenru);
 
 double closed_interval_rand(double x0, double x1);
-//void snInit(snProblem *prob, char *name, char *prtfile, int summOn);
- 
+// void snInit(snProblem *prob, char *name, char *prtfile, int summOn);
+
 typedef struct {
     char *name;
 

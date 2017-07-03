@@ -4,6 +4,7 @@
 #include <algorithm> // std::min_element
 #include <boost/dll/import.hpp>
 #include <boost/dll/shared_library.hpp>
+#include <boost/filesystem.hpp>
 #include <exception>
 #include <iomanip>
 #include <limits> // std::numeric_limits
@@ -327,13 +328,16 @@ public:
      * systems the constructor converts all forward slashes into backward slashes.
      *
      */
-    snopt7(bool screen_output = false, std::string absolute_lib_path = "/usr/local/lib/")
-        : m_absolute_lib_path(absolute_lib_path), m_integer_opts(), m_numeric_opts(), m_screen_output(screen_output),
+    snopt7(bool screen_output = false, std::string snopt7_c_library = "/usr/local/lib/libsnopt7_c.so")
+        : m_snopt7_c_library(snopt7_c_library), m_integer_opts(), m_numeric_opts(), m_screen_output(screen_output),
           m_verbosity(0), m_log()
     {
-#ifdef _MSC_VER
-        std::replace(absolute_lib_path.begin(), absolute_lib_path.end(), '/', '\\'); // replace to backslashes
-#endif
+        boost::filesystem::path path_to_lib(m_snopt7_c_library);
+        if (!boost::filesystem::is_regular_file(path_to_lib)) {
+            pagmo_throw(std::invalid_argument,
+                        "The snopt7_c library file was detected to be: " + path_to_lib.string()
+                            + " but it does not appear to be a file");
+        }
     };
 
     /// Evolve population.
@@ -413,8 +417,8 @@ public:
         try {
             // Here we import at runtime the snopt7_c library and protect the whole try block with a mutex
             std::lock_guard<std::mutex> lock(detail::snopt_statics<>::library_load_mutex);
-            boost::dll::shared_library libsnopt7_c(m_absolute_lib_path + "snopt7_c",
-                                                   boost::dll::load_mode::append_decorations);
+            boost::filesystem::path path_to_lib(m_snopt7_c_library);
+            boost::dll::shared_library libsnopt7_c(path_to_lib);
             // We then load the symbols we need for the SNOPT7 plugin
             snInit = boost::dll::import<void(snProblem *, char *, char *,
                                              int)>( // type of the function to import
@@ -450,11 +454,10 @@ public:
 An error occurred while loading the snopt7_c library at run-time. This is typically caused by one of the following
 reasons:
 
- - A file with the full path name specified upon constructing the pagmo::snopt7 object is not found in your system. The full file
- name was )" + m_absolute_lib_path
-                + "libsnopt7_c.so in UNIX and " + m_absolute_lib_path + "snopt7_c.dll in Windows." + R"(
-- The file is found, but it is not a library containing the necessary C interface symbols (is the file path pointing to
-the snopt_c library and not some other library / file?)
+- The file declared to be the snopt7_c library, i.e. )"
+                + m_snopt7_c_library
+                + R"(, is not a shared library containing the necessary C interface symbols (is the file path really pointing to
+the snopt7_c library and not some other library / file?)
  - The library is found and it does contain the C interface symbols, but it needs linking to some additional library
 and thus cannot be dlopened.
 
@@ -731,7 +734,7 @@ We report the exact text of the original exception thrown:
     std::string get_extra_info() const
     {
         std::ostringstream ss;
-        stream(ss, "\tPath to the snopt7_c library: ", m_absolute_lib_path);
+        stream(ss, "\tName of the snopt7_c library: ", m_snopt7_c_library);
         if (!m_screen_output) {
             stream(ss, "\n\tScreen output: (pagmo/pygmo) - verbosity ", std::to_string(m_verbosity));
         } else {
@@ -770,7 +773,7 @@ We report the exact text of the original exception thrown:
     template <typename Archive>
     void serialize(Archive &ar)
     {
-        ar(cereal::base_class<not_population_based>(this), m_absolute_lib_path, m_integer_opts, m_numeric_opts,
+        ar(cereal::base_class<not_population_based>(this), m_snopt7_c_library, m_integer_opts, m_numeric_opts,
            m_last_opt_res, m_screen_output, m_verbosity, m_log);
     }
 
@@ -872,7 +875,7 @@ We report the exact text of the original exception thrown:
 
 private:
     // The absolute path to the snopt7 lib
-    std::string m_absolute_lib_path;
+    std::string m_snopt7_c_library;
     // Options maps.
     std::map<std::string, int> m_integer_opts;
     std::map<std::string, double> m_numeric_opts;

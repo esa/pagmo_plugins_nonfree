@@ -17,6 +17,12 @@
 
 #include <pagmo_plugins_nonfree/snopt7.hpp>
 
+#ifdef _MSC_VER
+#define SNOPT7C_LIB "snopt7_c.dll"
+#else
+#define SNOPT7C_LIB "libsnopt7_c.so"
+#endif
+
 using namespace pagmo;
 
 // a throwing problem. It throws every 50 evals
@@ -55,20 +61,20 @@ unsigned throwing_udp::counter = 0u;
 BOOST_AUTO_TEST_CASE(construction)
 {
     // We test construction of the snopt7 uda
-    BOOST_CHECK_NO_THROW((snopt7{false, "./"}));
-    BOOST_CHECK_NO_THROW((snopt7{true, "./"}));
-    BOOST_CHECK_NO_THROW((snopt7{true, "I CAN PUT WHATEVER IN HERE"}));
+    BOOST_CHECK_NO_THROW((snopt7{false, SNOPT7C_LIB}));
+    BOOST_CHECK_THROW((snopt7{true, "./"}), std::invalid_argument);
+    BOOST_CHECK_THROW((snopt7{true, "I CANNOT PUT WHATEVER IN HERE"}), std::invalid_argument);
     // We test construction of a snopt7 pagmo algorithm
-    BOOST_CHECK_NO_THROW((algorithm{snopt7{false, "./"}}));
-    BOOST_CHECK_NO_THROW((algorithm{snopt7{true, "./"}}));
-    BOOST_CHECK_NO_THROW((algorithm{snopt7{true, "I CAN PUT WHATEVER IN HERE"}}));
+    BOOST_CHECK_NO_THROW((algorithm{snopt7{false, SNOPT7C_LIB}}));
+    BOOST_CHECK_NO_THROW((algorithm{snopt7{true, SNOPT7C_LIB}}));
+    BOOST_CHECK_THROW((algorithm{snopt7{true, "I CANNOT PUT WHATEVER IN HERE"}}), std::invalid_argument);
 }
 
 BOOST_AUTO_TEST_CASE(option_setting_mechanism)
 {
     // We test the mechanism to set the snopt7 options
     // 1 - set integer options
-    snopt7 uda{snopt7{true, "./"}};
+    snopt7 uda{snopt7{true, SNOPT7C_LIB}};
     uda.set_integer_option("my_int_option1", 1);
     uda.set_integer_options({{"my_int_option2", 2}, {"my_int_option3", 3}});
     BOOST_CHECK_EQUAL(uda.get_integer_options()["my_int_option1"], 1);
@@ -95,16 +101,12 @@ BOOST_AUTO_TEST_CASE(evolve)
 {
     {
         // We start testing the throws if the problem in the population is not suitable for snopt7
-        snopt7 uda{true, "./"};
+        snopt7 uda{true, SNOPT7C_LIB};
         BOOST_CHECK_THROW(uda.evolve(population{zdt{1}, 20u}), std::invalid_argument);
         BOOST_CHECK_THROW(uda.evolve(population{inventory{}, 20u}), std::invalid_argument);
         BOOST_CHECK_THROW(uda.evolve(population{ackley{10}, 0u}), std::invalid_argument);
 
-        // We test the throw if the library does not exist
-        {
-            snopt7 uda_wrong_lib_path{true, "I_DO_NOT_EXIST"};
-            BOOST_CHECK_THROW(uda_wrong_lib_path.evolve(population{ackley{10}, 1u}), std::invalid_argument);
-        }
+        // We test the throw if the library is not well formed
 
         // We test the throw if the user has tried to set the derivative option
         uda.set_integer_option("Derivative option", 2);
@@ -130,14 +132,14 @@ BOOST_AUTO_TEST_CASE(evolve)
     }
 
     // We now test the mechanism to rethrow exceptions thrown by the usrfun
-    snopt7 uda{false, "./"};
+    snopt7 uda{false, SNOPT7C_LIB};
     uda.set_verbosity(1u);
     population pop{throwing_udp{}, 1u};
     BOOST_CHECK_THROW(uda.evolve(pop), std::invalid_argument);
 }
 BOOST_AUTO_TEST_CASE(streams_and_log)
 {
-    snopt7 uda{false, "./"};
+    snopt7 uda{false, SNOPT7C_LIB};
     population pop{cec2006{1}, 1u};
     uda.set_verbosity(1u);
     pop = uda.evolve(pop);
@@ -145,7 +147,7 @@ BOOST_AUTO_TEST_CASE(streams_and_log)
     uda.set_verbosity(23u);
     BOOST_CHECK(uda.get_verbosity() == 23u);
     BOOST_CHECK(uda.get_name().find("SNOPT7") != std::string::npos);
-    BOOST_CHECK(uda.get_extra_info().find("Path to the snopt7_c library") != std::string::npos);
+    BOOST_CHECK(uda.get_extra_info().find("Name of the snopt7_c library") != std::string::npos);
 }
 
 BOOST_AUTO_TEST_CASE(serialization_test)
@@ -153,7 +155,7 @@ BOOST_AUTO_TEST_CASE(serialization_test)
     // Make one evolution
     problem prob{cec2006{7u}};
     population pop{prob, 10u, 23u};
-    algorithm algo{snopt7{false, "./"}};
+    algorithm algo{snopt7{false, SNOPT7C_LIB}};
     algo.set_verbosity(1u);
     algo.extract<snopt7>()->set_integer_option("some_int", 4);
     algo.extract<snopt7>()->set_numeric_option("some_float", 2.2);
