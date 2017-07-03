@@ -172,7 +172,7 @@ void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF,
     try {
         if (*needF > 0) {
             auto fit = p.fitness(dv);
-            for (int i = 0; i < *nF; ++i) {
+            for (size_t i = 0u; i < static_cast<size_t>(*nF); ++i) {
                 F[i] = fit[i];
             }
 
@@ -208,7 +208,7 @@ void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF,
 
         if (*needG > 0 && p.has_gradient()) {
             auto grad = p.gradient(dv);
-            for (int i = 0; i < *neG; ++i) {
+            for (size_t i = 0u; i < static_cast<size_t>(*neG); ++i) {
                 G[i] = grad[i];
             }
         }
@@ -524,9 +524,9 @@ We report the exact text of the original exception thrown:
         }
 
         // ------- We define various inputs to call the snOptA interface
-        int Cold = 0;                             // Cold start
-        int nF = static_cast<int>(prob.get_nf()); // Fitness dimension
-        int n = static_cast<int>(prob.get_nx());  // Decision vector dimension
+        int Cold = 0;            // Cold start
+        auto nF = prob.get_nf(); // Fitness dimension
+        auto n = prob.get_nx();  // Decision vector dimension
 
         // ------- Setting the bounds. -----------------------------------------------------------------------------
         vector_double xlow(n), xupp(n);
@@ -618,10 +618,11 @@ We report the exact text of the original exception thrown:
                 print("The gradient is computed numerically by SNOPT7.\n");
             }
         }
-        m_last_opt_res = solveA(&snopt7_problem, Cold, nF, n, ObjAdd, ObjRow, detail::snopt_fitness_wrapper, neA,
-                                iAfun.data(), jAvar.data(), A.data(), neG, iGfun.data(), jGvar.data(), xlow.data(),
-                                xupp.data(), Flow.data(), Fupp.data(), x.data(), xstate.data(), xmul.data(), F.data(),
-                                Fstate.data(), Fmul.data(), &nS, &nInf, &sInf);
+        m_last_opt_res
+            = solveA(&snopt7_problem, Cold, static_cast<int>(nF), static_cast<int>(n), ObjAdd, ObjRow,
+                     detail::snopt_fitness_wrapper, neA, iAfun.data(), jAvar.data(), A.data(), neG, iGfun.data(),
+                     jGvar.data(), xlow.data(), xupp.data(), Flow.data(), Fupp.data(), x.data(), xstate.data(),
+                     xmul.data(), F.data(), Fstate.data(), Fmul.data(), &nS, &nInf, &sInf);
         if (m_verbosity > 0u) {
             print("\n", detail::snopt_statics<>::results.at(m_last_opt_res), "\n");
         }
