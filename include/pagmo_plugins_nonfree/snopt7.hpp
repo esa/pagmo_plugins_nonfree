@@ -330,15 +330,7 @@ public:
      */
     snopt7(bool screen_output = false, std::string snopt7_c_library = "/usr/local/lib/libsnopt7_c.so")
         : m_snopt7_c_library(snopt7_c_library), m_integer_opts(), m_numeric_opts(), m_screen_output(screen_output),
-          m_verbosity(0), m_log()
-    {
-        boost::filesystem::path path_to_lib(m_snopt7_c_library);
-        if (!boost::filesystem::is_regular_file(path_to_lib)) {
-            pagmo_throw(std::invalid_argument,
-                        "The snopt7_c library file was detected to be: " + path_to_lib.string()
-                            + " but it does not appear to be a file");
-        }
-    };
+          m_verbosity(0), m_log(){};
 
     /// Evolve population.
     /**
@@ -418,6 +410,11 @@ public:
             // Here we import at runtime the snopt7_c library and protect the whole try block with a mutex
             std::lock_guard<std::mutex> lock(detail::snopt_statics<>::library_load_mutex);
             boost::filesystem::path path_to_lib(m_snopt7_c_library);
+            if (!boost::filesystem::is_regular_file(path_to_lib)) {
+                pagmo_throw(std::invalid_argument,
+                            "The snopt7_c library path was constructed to be: " + path_to_lib.string()
+                                + " and it does not appear to be a file");
+            }
             boost::dll::shared_library libsnopt7_c(path_to_lib);
             // We then load the symbols we need for the SNOPT7 plugin
             snInit = boost::dll::import<void(snProblem *, char *, char *,

@@ -18,9 +18,9 @@
 #include <pagmo_plugins_nonfree/snopt7.hpp>
 
 #ifdef _MSC_VER
-#define SNOPT7C_LIB "snopt7_c.dll"
+#define SNOPT7C_LIB ".\\snopt7_c.dll"
 #else
-#define SNOPT7C_LIB "libsnopt7_c.so"
+#define SNOPT7C_LIB "./libsnopt7_c.so"
 #endif
 
 using namespace pagmo;
@@ -60,14 +60,15 @@ unsigned throwing_udp::counter = 0u;
 
 BOOST_AUTO_TEST_CASE(construction)
 {
+    std::cout << boost::filesystem::current_path().string() << std::endl;
     // We test construction of the snopt7 uda
     BOOST_CHECK_NO_THROW((snopt7{false, SNOPT7C_LIB}));
-    BOOST_CHECK_THROW((snopt7{true, "./"}), std::invalid_argument);
-    BOOST_CHECK_THROW((snopt7{true, "I CANNOT PUT WHATEVER IN HERE"}), std::invalid_argument);
+    BOOST_CHECK_NO_THROW((snopt7{true, "./"}));
+    BOOST_CHECK_NO_THROW((snopt7{true, "I CAN PUT WHATEVER IN HERE"}));
     // We test construction of a snopt7 pagmo algorithm
     BOOST_CHECK_NO_THROW((algorithm{snopt7{false, SNOPT7C_LIB}}));
     BOOST_CHECK_NO_THROW((algorithm{snopt7{true, SNOPT7C_LIB}}));
-    BOOST_CHECK_THROW((algorithm{snopt7{true, "I CANNOT PUT WHATEVER IN HERE"}}), std::invalid_argument);
+    BOOST_CHECK_NO_THROW((algorithm{snopt7{true, "I CAN PUT WHATEVER IN HERE"}}));
 }
 
 BOOST_AUTO_TEST_CASE(option_setting_mechanism)
@@ -107,6 +108,8 @@ BOOST_AUTO_TEST_CASE(evolve)
         BOOST_CHECK_THROW(uda.evolve(population{ackley{10}, 0u}), std::invalid_argument);
 
         // We test the throw if the library is not well formed
+        BOOST_CHECK_THROW(snopt7(true, "IDONOTEXIST").evolve(population{ackley{10}, 0u}), std::invalid_argument);
+        BOOST_CHECK_THROW(snopt7(false, "IDONOTEXIST").evolve(population{ackley{10}, 0u}), std::invalid_argument);
 
         // We test the throw if the user has tried to set the derivative option
         uda.set_integer_option("Derivative option", 2);
