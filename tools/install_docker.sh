@@ -78,8 +78,8 @@ cd nlopt-${NLOPT_VERSION}
 make -j2 install > /dev/null
 cd ..
 
-# pagmo & pygmo
-wget https://github.com/esa/pagmo2/archive/v${PAGMO_VERSION}.tar.gz -o pagmo2.tar.gz --no-verbose
+# pagmo & pygmo wget https://github.com/esa/pagmo2/archive/v2.4.tar.gz
+wget https://github.com/esa/pagmo2/archive/v${PAGMO_VERSION}.tar.gz -O pagmo2.tar.gz --no-verbose
 tar xzf pagmo2.tar.gz
 cd pagmo2-${PAGMO_VERSION}
 mkdir build_pagmo
