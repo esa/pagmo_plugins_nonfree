@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.2)
 
-project(pagmo_plugins_nonfree VERSION 0.1)
+set(PAGMO_PROJECT_VERSION 2.4)
+project(pagmo_plugins_nonfree VERSION ${PAGMO_PROJECT_VERSION})
 
 enable_testing()
 
@@ -105,6 +106,17 @@ endif()
 # Build the pygmo_plugins_nonfree module
 if(PAGMO_PLUGINS_NONFREE_BUILD_PYTHON)
     add_subdirectory("${CMAKE_SOURCE_DIR}/pygmo_plugins_nonfree")
+    if(MINGW OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+        message(STATUS "Creating the files for the generation of a binary wheel.")
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/wheel_setup.py" "${CMAKE_CURRENT_BINARY_DIR}/wheel/setup.py" @ONLY)
+        if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+            # NOTE: this is necessary on linux but harmful on mingw.
+            configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/wheel_setup.cfg" "${CMAKE_CURRENT_BINARY_DIR}/wheel/setup.cfg" @ONLY)
+        endif()
+        if(MINGW)
+            configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/mingw_wheel_libs_python${PYTHON_VERSION_MAJOR}.txt" "${CMAKE_CURRENT_BINARY_DIR}/wheel/mingw_wheel_libs_python${PYTHON_VERSION_MAJOR}.txt" @ONLY)
+        endif()
+    endif()
 endif()
 
 if(PAGMO_PLUGINS_NONFREE_HEADERS)
