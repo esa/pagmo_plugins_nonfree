@@ -82,7 +82,7 @@ run_command(r'7z x -aoa -oC:\\ eigen3.7z', verbose=False)
 wget(r'https://github.com/esa/pagmo2/archive/v2.4.tar.gz', 'pagmo.tar.gz')
 run_command(r'7z x -aoa -oC:\\ pagmo.tar.gz', verbose=True)
 run_command(r'7z x -aoa -oC:\\ C:\\pagmo.tar', verbose=True)
-#run_command(r'ls -al C:\\', verbose=True)
+run_command(r'dir C:\\', verbose=True)
 run_command(r'cd Perl', verbose=True)
 
 sys.exit()
