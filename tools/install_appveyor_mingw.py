@@ -88,16 +88,6 @@ run_command(
     r'cmake -G "MinGW Makefiles" ..  -DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DPAGMO_WITH_EIGEN3=yes -DPAGMO_WITH_NLOPT=yes -DCMAKE_BUILD_TYPE=Release ')
 run_command(r'mingw32-make install VERBOSE=1 -j2')
 os.chdir('..\\')
-os.makedirs('build_pygmo')
-os.chdir('build_pygmo')
-run_command(r'cmake -G "MinGW Makefiles" ..  -DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DPAGMO_BUILD_PYGMO=yes -DPAGMO_BUILD_PAGMO=no -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-s -DBoost_PYTHON_LIBRARY_RELEASE=c:\\local\\lib\\libboost_python' +
-            (python_version[0] if python_version[0] == '3' else r'') + r'-mgw62-mt-1_63.dll -DPYTHON_EXECUTABLE=C:\\Python' + python_version + r'\\python.exe -DPYTHON_LIBRARY=C:\\Python' + python_version + r'\\libs\\python' + python_version + r'.dll' +
-            r' -DPYTHON_INCLUDE_DIR=C:\\Python' + python_version + r'\\include')
-run_command(r'mingw32-make install VERBOSE=1 -j2')
-
-sys.exit()
-
-# Setup of the dependencies for a Python build.
 if is_python_build:
     if 'Python36' in BUILD_TYPE:
         python_version = '36'
@@ -107,6 +97,16 @@ if is_python_build:
         python_version = '27'
     else:
         raise RuntimeError('Unsupported Python build: ' + BUILD_TYPE)
+    os.makedirs('build_pygmo')
+    os.chdir('build_pygmo')
+    run_command(r'cmake -G "MinGW Makefiles" ..  -DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DPAGMO_BUILD_PYGMO=yes -DPAGMO_BUILD_PAGMO=no -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-s -DBoost_PYTHON_LIBRARY_RELEASE=c:\\local\\lib\\libboost_python' +
+                (python_version[0] if python_version[0] == '3' else r'') + r'-mgw62-mt-1_63.dll -DPYTHON_EXECUTABLE=C:\\Python' + python_version + r'\\python.exe -DPYTHON_LIBRARY=C:\\Python' + python_version + r'\\libs\\python' + python_version + r'.dll' +
+                r' -DPYTHON_INCLUDE_DIR=C:\\Python' + python_version + r'\\include')
+    run_command(r'mingw32-make install VERBOSE=1 -j2')
+    os.chdir('..\\')
+
+# Setup of the dependencies for a Python build.
+if is_python_build:
     python_package = r'python' + python_version + r'_mingw_64.7z'
     boost_python_package = r'boost_python_' + python_version + r'_mingw_64.7z'
     # Remove any existing Python installation.
@@ -139,8 +139,6 @@ if is_python_build:
 os.environ['PATH'] = os.environ['PATH'] + r';c:\\local\\lib'
 
 # Proceed to the build.
-common_cmake_opts = r'-DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DPAGMO_WITH_EIGEN3=yes -DPAGMO_WITH_NLOPT=yes'
-
 # Configuration step.
 if is_python_build:
     os.makedirs('build_pagmo')
@@ -156,10 +154,10 @@ if is_python_build:
                 r' -DPYTHON_INCLUDE_DIR=C:\\Python' + python_version + r'\\include')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
 elif 'Debug' in BUILD_TYPE:
-    os.makedirs('build_pagmo')
-    os.chdir('build_pagmo')
-    run_command(r'cmake -G "MinGW Makefiles" .. -DCMAKE_BUILD_TYPE=Debug -DPAGMO_BUILD_TESTS=yes -DPAGMO_BUILD_TUTORIALS=yes ' +
-                common_cmake_opts + r' -DCMAKE_CXX_FLAGS_DEBUG="-g0 -Os"')
+    os.makedirs('build')
+    os.chdir('build')
+    run_command(r'cmake -G "MinGW Makefiles" .. -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes ' +
+                r' -DCMAKE_CXX_FLAGS_DEBUG="-g0 -Os"')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
     run_command(r'ctest')
 else:
