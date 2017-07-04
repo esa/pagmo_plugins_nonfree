@@ -122,8 +122,8 @@ if is_python_build:
     # NOTE: at the moment we have troubles installing ipyparallel.
     # Just skip it.
     run_command(pip + ' install cloudpickle')
-    if is_release_build:
-        run_command(pip + ' install twine')
+    # if is_release_build:
+    run_command(pip + ' install twine')
 
     # Install pygmo
     os.chdir('c:\\projects\\pagmo2-2.4')
@@ -176,5 +176,4 @@ if is_python_build:
     run_command(
         pinterp + r' -c "import pygmo_plugins_nonfree; pygmo_plugins_nonfree.test.run_test_suite(1)"', directory=r'c:\\')
     # if is_release_build:
-    run_command(twine + r' upload -u ci4esa dist\\' +
-                os.listdir('dist')[0])
+    run_command(twine + r' upload -u ci4esa dist\\' + os.listdir('dist')[0])
