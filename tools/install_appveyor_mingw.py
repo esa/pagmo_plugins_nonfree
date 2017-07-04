@@ -80,11 +80,9 @@ run_command(r'7z x -aoa -oC:\\ eigen3.7z', verbose=False)
 # Get pagmo frm git, install the headers, also for pygmo but without
 # building the library
 wget(r'https://github.com/esa/pagmo2/archive/v2.4.tar.gz', 'pagmo.tar.gz')
-run_command(r'7z x -aoa -oC:\\ pagmo.tar.gz', verbose=True)
-run_command(r'7z x -aoa -oC:\\ C:\\pagmo.tar', verbose=True)
-run_command(r'dir C:\\', verbose=True)
-run_command(r'pwd', verbose=True)
-run_command(r'cd C:\\local', verbose=True)
+run_command(r'7z x -aoa -oC:\\projects pagmo.tar.gz', verbose=True)
+run_command(r'7z x -aoa -oC:\\projects C:\\projects\\pagmo.tar', verbose=True)
+run_command(r'cd ../pagmo2-2.4', verbose=True)
 
 sys.exit()
 
