@@ -170,7 +170,7 @@ if is_python_build:
     wheel_libs = 'mingw_wheel_libs_python{}.txt'.format(python_version[0])
     DLL_LIST = [_[:-1] for _ in open(wheel_libs, 'r').readlines()]
     for _ in DLL_LIST:
-        shutil.copy(_, 'pygmo')
+        shutil.copy(_, 'pygmo_plugins_nonfree')
     run_command(pinterp + r' setup.py bdist_wheel')
     os.environ['PATH'] = ORIGINAL_PATH
     run_command(pip + r' install dist\\' + os.listdir('dist')[0])
