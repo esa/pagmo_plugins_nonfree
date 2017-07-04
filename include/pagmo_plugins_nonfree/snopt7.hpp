@@ -235,9 +235,9 @@ void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF,
  *
  *    Unfortunately, SNOPT7 fortran code is only available acquiring a licence.
  *    If you do have such a licence, then you will also have the fortran files and can build them into the library
- *    snopt7 (one single library). In what follows, we assume the snopt7 fortran library is available in your
- *    system. Since pagmo wraps around the C interface you will have to compile also the library snopt7_c, which is open
- *    source and can be obtained from https://github.com/snopt/snopt-interface.
+ *    snopt7 (one single library). In what follows, we assume the library snopt7_c is available, which is open
+ *    source and can be obtained from https://github.com/snopt/snopt-interface. This library will link to your fortran
+ *    snopt7 library.
  *
  * \endverbatim
  *
@@ -324,8 +324,7 @@ public:
      *
      * @param screen_output when ``true`` will activate the screen output from the SNOPT7 library, otherwise
      * will let pagmo regulate logs and screen_output via its pagmo::algorithm::set_verbosity mechanism.
-     * @param absolute_lib_path The absolute path to the directory where the snopt7_c library is located. In Windows
-     * systems the constructor converts all forward slashes into backward slashes.
+     * @param snopt7_c_library The path to the snopt7_c library.
      *
      */
     snopt7(bool screen_output = false, std::string snopt7_c_library = "/usr/local/lib/libsnopt7_c.so")
@@ -454,9 +453,9 @@ reasons:
 - The file declared to be the snopt7_c library, i.e. )"
                 + m_snopt7_c_library
                 + R"(, is not a shared library containing the necessary C interface symbols (is the file path really pointing to
-the snopt7_c library and not some other library / file?)
- - The library is found and it does contain the C interface symbols, but it needs linking to some additional library
-and thus cannot be dlopened.
+a valid shared library?)
+ - The library is found and it does contain the C interface symbols, but it needs linking to some additional libraries that are not found
+at run-time.
 
 We report the exact text of the original exception thrown:
 
