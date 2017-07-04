@@ -103,7 +103,7 @@ if is_python_build:
                 (python_version[0] if python_version[0] == '3' else r'') + r'-mgw62-mt-1_63.dll -DPYTHON_EXECUTABLE=C:\\Python' + python_version + r'\\python.exe -DPYTHON_LIBRARY=C:\\Python' + python_version + r'\\libs\\python' + python_version + r'.dll' +
                 r' -DPYTHON_INCLUDE_DIR=C:\\Python' + python_version + r'\\include')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
-    os.chdir('..\\')
+    os.chdir('..\\pagmo_plugins_nonfree')
 
 # Setup of the dependencies for a Python build.
 if is_python_build:
@@ -156,7 +156,7 @@ if is_python_build:
 elif 'Debug' in BUILD_TYPE:
     os.makedirs('build')
     os.chdir('build')
-    run_command(r'cmake -G "MinGW Makefiles" .. -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes -DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DBoost_SYSTEM_LIBRARY_DEBUG=c:\\local\\lib\\libboost_system-mgw62-mt-1_63.dll -DBoost_FILESYSTEM_LIBRARY_DEBUG=c:\\local\\lib\\libboost_filesystem-mgw62-mt-1_63.dll -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes ' +
+    run_command(r'cmake -G "MinGW Makefiles" .. -DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes ' +
                 r' -DCMAKE_CXX_FLAGS_DEBUG="-g0 -Os"')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
     run_command(r'ctest')
