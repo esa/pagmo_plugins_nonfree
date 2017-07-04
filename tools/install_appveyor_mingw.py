@@ -143,9 +143,8 @@ if is_python_build:
     os.chdir('C:\projects\pagmo-plugins-nonfree')
     os.makedirs('build')
     os.chdir('build')
-    run_command(r'cmake -G "MinGW Makefiles" ..  -DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DPAGMO_PLUGINS_NONFREE_BUILD_PYTHON=yes -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=no -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-s -DBoost_PYTHON_LIBRARY_RELEASE=c:\\local\\lib\\libboost_python' +
-                (python_version[0] if python_version[0] == '3' else r'') + r'-mgw62-mt-1_63.dll -DPYTHON_EXECUTABLE=C:\\Python' + python_version + r'\\python.exe -DPYTHON_LIBRARY=C:\\Python' + python_version + r'\\libs\\python' + python_version + r'.dll' +
-                r' -DPYTHON_INCLUDE_DIR=C:\\Python' + python_version + r'\\include')
+    run_command(r'cmake -G "MinGW Makefiles" ..  -DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DPAGMO_PLUGINS_NONFREE_BUILD_PYTHON=yes -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=no -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-s -DPYTHON_EXECUTABLE=C:\\Python' + python_version + r'\\python.exe -DPYTHON_LIBRARY=C:\\Python' + python_version +
+                r'\\libs\\python' + python_version + r'.dll' + r' -DPYTHON_INCLUDE_DIR=C:\\Python' + python_version + r'\\include')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
 elif 'Debug' in BUILD_TYPE:
     os.chdir('C:\projects\pagmo-plugins-nonfree')
@@ -163,7 +162,7 @@ else:
 if is_python_build:
     # Run the Python tests.
     run_command(
-        pinterp + r' -c "import pygmo; pygmo.test.run_test_suite(1)"')
+        pinterp + r' -c "import pygmo_plugins_nonfree; pygmo_plugins_nonfree.test.run_test_suite(1)"')
     # Build the wheel.
     import shutil
     os.chdir('wheel')
@@ -176,7 +175,7 @@ if is_python_build:
     os.environ['PATH'] = ORIGINAL_PATH
     run_command(pip + r' install dist\\' + os.listdir('dist')[0])
     run_command(
-        pinterp + r' -c "import pygmo; pygmo.test.run_test_suite(1)"', directory=r'c:\\')
+        pinterp + r' -c "import pygmo_plugins_nonfree; pygmo_plugins_nonfree.test.run_test_suite(1)"', directory=r'c:\\')
     if is_release_build:
         run_command(twine + r' upload -u ci4esa dist\\' +
                     os.listdir('dist')[0])
