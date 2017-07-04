@@ -25,7 +25,7 @@ matrix:
   - env: PAGMO_PLUGINS_NONFREE_BUILD="manylinux64Py34" DOCKER_IMAGE="quay.io/pypa/manylinux1_x86_64"
     sudo: required
     services:
-   - docker
+    - docker
 # - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugGCC48"
 #   compiler: gcc
 #   os: linux
