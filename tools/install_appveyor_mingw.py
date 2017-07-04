@@ -129,9 +129,8 @@ if is_python_build:
     os.chdir('c:\\projects\\pagmo2-2.4')
     os.makedirs('build_pygmo')
     os.chdir('build_pygmo')
-    run_command(r'cmake -G "MinGW Makefiles" ..  -DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DPAGMO_BUILD_PYGMO=yes -DPAGMO_BUILD_PAGMO=no -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-s -DBoost_PYTHON_LIBRARY_RELEASE=c:\\local\\lib\\libboost_python' +
-                (python_version[0] if python_version[0] == '3' else r'') + r'-mgw62-mt-1_63.dll -DPYTHON_EXECUTABLE=C:\\Python' + python_version + r'\\python.exe -DPYTHON_LIBRARY=C:\\Python' + python_version + r'\\libs\\python' + python_version + r'.dll' +
-                r' -DPYTHON_INCLUDE_DIR=C:\\Python' + python_version + r'\\include')
+    run_command(r'cmake -G "MinGW Makefiles" ..  -DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DPAGMO_BUILD_PYGMO=yes -DPAGMO_BUILD_PAGMO=no -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-s  -DPYTHON_EXECUTABLE=C:\\Python' + python_version + r'\\python.exe -DPYTHON_LIBRARY=C:\\Python' + python_version +
+                r'\\libs\\python' + python_version + r'.dll' + r' -DPYTHON_INCLUDE_DIR=C:\\Python' + python_version + r'\\include')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
 
 # Set the path so that the precompiled libs can be found.
