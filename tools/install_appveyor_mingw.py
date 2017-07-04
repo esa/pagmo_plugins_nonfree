@@ -77,8 +77,7 @@ run_command(r'7z x -aoa -oC:\\ boost.7z', verbose=False)
 run_command(r'7z x -aoa -oC:\\ nlopt.7z', verbose=False)
 run_command(r'7z x -aoa -oC:\\ eigen3.7z', verbose=False)
 
-# Get pagmo from git, install the headers, also for pygmo but without
-# building the library
+# Get pagmo from git, install the headers, also for pygmo
 wget(r'https://github.com/esa/pagmo2/archive/v2.4.tar.gz', 'pagmo.tar.gz')
 run_command(r'7z x -aoa -oC:\\projects pagmo.tar.gz', verbose=False)
 run_command(r'7z x -aoa -oC:\\projects C:\\projects\\pagmo.tar', verbose=False)
@@ -87,6 +86,13 @@ os.makedirs('build_pagmo')
 os.chdir('build_pagmo')
 run_command(
     r'cmake -G "MinGW Makefiles" ..  -DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DPAGMO_WITH_EIGEN3=yes -DPAGMO_WITH_NLOPT=yes -DCMAKE_BUILD_TYPE=Release ')
+run_command(r'mingw32-make install VERBOSE=1 -j2')
+os.chdir('..\\')
+os.makedirs('build_pygmo')
+os.chdir('build_pygmo')
+run_command(r'cmake -G "MinGW Makefiles" ..  -DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DPAGMO_BUILD_PYGMO=yes -DPAGMO_BUILD_PAGMO=no -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-s -DBoost_PYTHON_LIBRARY_RELEASE=c:\\local\\lib\\libboost_python' +
+            (python_version[0] if python_version[0] == '3' else r'') + r'-mgw62-mt-1_63.dll -DPYTHON_EXECUTABLE=C:\\Python' + python_version + r'\\python.exe -DPYTHON_LIBRARY=C:\\Python' + python_version + r'\\libs\\python' + python_version + r'.dll' +
+            r' -DPYTHON_INCLUDE_DIR=C:\\Python' + python_version + r'\\include')
 run_command(r'mingw32-make install VERBOSE=1 -j2')
 
 sys.exit()
