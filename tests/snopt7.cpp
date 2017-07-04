@@ -17,10 +17,12 @@
 
 #include <pagmo_plugins_nonfree/snopt7.hpp>
 
-#if defined(_MSC_VER) || defined(__MINGW32__)
+#ifdef _MSC_VER
 #define SNOPT7C_LIB ".\\snopt7_c.dll"
 #elif defined __APPLE__
 #define SNOPT7C_LIB "./libsnopt7_c.dylib"
+#elif defined __MINGW32__
+#define SNOPT7C_LIB ".\\libsnopt7_c.dll"
 #else
 #define SNOPT7C_LIB "./libsnopt7_c.so"
 #endif
