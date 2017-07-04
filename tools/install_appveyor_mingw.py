@@ -105,7 +105,7 @@ if is_python_build:
     run_command(r'mingw32-make install VERBOSE=1 -j2')
     os.chdir('..\\')
 
-os.chdir('pagmo_plugins_nonfree')
+os.chdir('pagmo-plugins-nonfree')
 
 # Setup of the dependencies for a Python build.
 if is_python_build:
