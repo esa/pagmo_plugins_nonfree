@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>C++: Sparse Nonlinear OPTimizer (SNOPT) &#8212; pagmo_plugins_nonfree 0.1 documentation</title>
+    <title>C++: Sparse Nonlinear OPTimizer (SNOPT) &#8212; pagmo_plugins_nonfree 0.2 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -17,7 +17,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.1',
+        VERSION:     '0.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -52,7 +52,7 @@
         </button>
         <a class="navbar-brand" href="index.html"><span><img src="_static/logo_small_html.png"></span>
            </a>
-        <span class="navbar-text navbar-version pull-left"><b>0.1</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.2</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -143,9 +143,9 @@
 <p class="first admonition-title">Warning</p>
 <p class="last">Unfortunately, SNOPT7 fortran code is only available acquiring a licence.
 If you do have such a licence, then you will also have the fortran files and can build them into the library
-snopt7 (one single library). In what follows, we assume the snopt7 fortran library is available in your
-system. Since pagmo wraps around the C interface you will have to compile also the library snopt7_c, which is open
-source and can be obtained from <a class="reference external" href="https://github.com/snopt/snopt-interface">https://github.com/snopt/snopt-interface</a>.</p>
+snopt7 (one single library). In what follows, we assume the library snopt7_c is available, which is open
+source and can be obtained from <a class="reference external" href="https://github.com/snopt/snopt-interface">https://github.com/snopt/snopt-interface</a>. This library will link to your fortran
+snopt7 library.</p>
 </div>
 </p>
 <p>SNOPT7 supports only single-objective minimisation, using a sequential quadratic programming (SQP) algorithm. Search directions are obtained from QP subproblems that minimize a quadratic model of the Lagrangian function subject to linearized constraints. An augmented Lagrangian merit function is reduced along each search direction to ensure convergence from any starting point.</p>
@@ -204,14 +204,14 @@ is deactivated in this plugin for pagmo.</p>
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">
 <dt id="_CPPv2N5pagmo6snopt76snopt7EbNSt6stringE">
-<span id="pagmo::snopt7::snopt7__b.ss"></span><span class="target" id="pagmo_plugins_nonfreeclasspagmo_1_1snopt7_1a6f40cecb8af187de16fb2694ee5d711f"></span><code class="descname">snopt7</code><span class="sig-paren">(</span>bool <em>screen_output</em> = false, std::string <em>absolute_lib_path</em> = &quot;/usr/local/lib/&quot;<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo6snopt76snopt7EbNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="pagmo::snopt7::snopt7__b.ss"></span><span class="target" id="pagmo_plugins_nonfreeclasspagmo_1_1snopt7_1a02d4d48ff2021e13a5664a4a8dbae46f"></span><code class="descname">snopt7</code><span class="sig-paren">(</span>bool <em>screen_output</em> = false, std::string <em>snopt7_c_library</em> = &quot;/usr/local/lib/libsnopt7_c.so&quot;<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo6snopt76snopt7EbNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Constructor. </p>
 <p>The algorithm SNOPT7 can be constructed in two different ways, according to the user chioce, only one among the original SNOPT7 screen output and the pagmo logging system will be activated.</p>
 <p><dl class="docutils">
 <dt><strong>Parameters</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
 <li><code class="docutils literal"><span class="pre">screen_output</span></code>: when <code class="docutils literal"><span class="pre">true</span></code> will activate the screen output from the SNOPT7 library, otherwise will let pagmo regulate logs and screen_output via its pagmo::algorithm::set_verbosity mechanism. </li>
-<li><code class="docutils literal"><span class="pre">absolute_lib_path</span></code>: The absolute path to the directory where the snopt7_c library is located. In Windows systems the constructor converts all forward slashes into backward slashes. </li>
+<li><code class="docutils literal"><span class="pre">snopt7_c_library</span></code>: The path to the snopt7_c library. </li>
 </ul>
 </dd>
 </dl>
