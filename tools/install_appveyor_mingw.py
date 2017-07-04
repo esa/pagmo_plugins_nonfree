@@ -111,14 +111,14 @@ os.chdir('C:\projects\pagmo-plugins-nonfree')
 if is_python_build:
     python_package = r'python' + python_version + r'_mingw_64.7z'
     boost_python_package = r'boost_python_' + python_version + r'_mingw_64.7z'
-    # Remove any existing Python installation.
+    # Remove all existing Python installation.
     rm_fr(r'c:\\Python' + python_version)
     # Set paths.
     pinterp = r'c:\\Python' + python_version + r'\\python.exe'
     pip = r'c:\\Python' + python_version + r'\\scripts\\pip'
     twine = r'c:\\Python' + python_version + r'\\scripts\\twine'
-    pygmo_install_path = r'C:\\Python' + \
-        python_version + r'\\Lib\\site-packages\\pygmo'
+    pygmo_plugins_nonfree_install_path = r'C:\\Python' + \
+        python_version + r'\\Lib\\site-packages\\pygmo_plugins_nonfree'
     # Get Python.
     wget(r'https://github.com/bluescarni/binary_deps/raw/master/' +
          python_package, 'python.7z')
@@ -143,17 +143,10 @@ os.environ['PATH'] = os.environ['PATH'] + r';c:\\local\\lib'
 # Proceed to the build.
 # Configuration step.
 if is_python_build:
-    os.makedirs('build_pagmo')
-    os.chdir('build_pagmo')
-    run_command(
-        r'cmake -G "MinGW Makefiles" ..  -DCMAKE_BUILD_TYPE=Release ' + common_cmake_opts)
-    run_command(r'mingw32-make install VERBOSE=1 -j2')
-    os.chdir('..')
-    os.makedirs('build_pygmo')
-    os.chdir('build_pygmo')
-    run_command(r'cmake -G "MinGW Makefiles" ..  -DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DPAGMO_BUILD_PYGMO=yes -DPAGMO_BUILD_PAGMO=no -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-s -DBoost_PYTHON_LIBRARY_RELEASE=c:\\local\\lib\\libboost_python' +
-                (python_version[0] if python_version[0] == '3' else r'') + r'-mgw62-mt-1_63.dll -DPYTHON_EXECUTABLE=C:\\Python' + python_version + r'\\python.exe -DPYTHON_LIBRARY=C:\\Python' + python_version + r'\\libs\\python' + python_version + r'.dll' +
-                r' -DPYTHON_INCLUDE_DIR=C:\\Python' + python_version + r'\\include')
+    os.makedirs('build')
+    os.chdir('build')
+    run_command(r'cmake -G "MinGW Makefiles" ..  -DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DPAGMO_PLUGINS_NONFREE_BUILD_PYTHON=yes -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=no -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-s -DBoost_PYTHON_LIBRARY_RELEASE=c:\\local\\lib\\libboost_python' +
+                (python_version[0] if python_version[0] == '3' else r'') + r'- mgw62 - mt - 1_63.dll)
     run_command(r'mingw32-make install VERBOSE=1 -j2')
 elif 'Debug' in BUILD_TYPE:
     os.makedirs('build')
@@ -170,7 +163,7 @@ else:
 if is_python_build:
     # Run the Python tests.
     run_command(
-        pinterp + r' -c "import pygmo; pygmo.test.run_test_suite(1)"')
+        pinterp + r' -c "import pygmo_plugins_nonfree; pygmo_plugins_nonfree.test.run_test_suite(1)"')
     # Build the wheel.
     import shutil
     os.chdir('wheel')
@@ -183,7 +176,7 @@ if is_python_build:
     os.environ['PATH'] = ORIGINAL_PATH
     run_command(pip + r' install dist\\' + os.listdir('dist')[0])
     run_command(
-        pinterp + r' -c "import pygmo; pygmo.test.run_test_suite(1)"', directory=r'c:\\')
+        pinterp + r' -c "import pygmo_plugins_nonfree; pygmo_plugins_nonfree.test.run_test_suite(1)"', directory=r'c:\\')
     if is_release_build:
         run_command(twine + r' upload -u ci4esa dist\\' +
                     os.listdir('dist')[0])
