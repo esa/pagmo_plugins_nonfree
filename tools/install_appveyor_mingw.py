@@ -103,7 +103,9 @@ if is_python_build:
                 (python_version[0] if python_version[0] == '3' else r'') + r'-mgw62-mt-1_63.dll -DPYTHON_EXECUTABLE=C:\\Python' + python_version + r'\\python.exe -DPYTHON_LIBRARY=C:\\Python' + python_version + r'\\libs\\python' + python_version + r'.dll' +
                 r' -DPYTHON_INCLUDE_DIR=C:\\Python' + python_version + r'\\include')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
-    os.chdir('..\\pagmo_plugins_nonfree')
+    os.chdir('..\\')
+
+os.chdir('pagmo_plugins_nonfree')
 
 # Setup of the dependencies for a Python build.
 if is_python_build:
