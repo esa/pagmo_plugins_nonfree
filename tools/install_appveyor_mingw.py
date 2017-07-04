@@ -80,9 +80,14 @@ run_command(r'7z x -aoa -oC:\\ eigen3.7z', verbose=False)
 # Get pagmo from git, install the headers, also for pygmo but without
 # building the library
 wget(r'https://github.com/esa/pagmo2/archive/v2.4.tar.gz', 'pagmo.tar.gz')
-run_command(r'7z x -aoa -oC:\\projects pagmo.tar.gz', verbose=True)
-run_command(r'7z x -aoa -oC:\\projects C:\\projects\\pagmo.tar', verbose=True)
+run_command(r'7z x -aoa -oC:\\projects pagmo.tar.gz', verbose=False)
+run_command(r'7z x -aoa -oC:\\projects C:\\projects\\pagmo.tar', verbose=False)
 os.chdir('..\\pagmo2-2.4')
+os.makedirs('build_pagmo')
+os.chdir('build_pagmo')
+run_command(
+    r'cmake -G "MinGW Makefiles" ..  -DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DPAGMO_WITH_EIGEN3=yes -DPAGMO_WITH_NLOPT=yes -DCMAKE_BUILD_TYPE=Release ')
+run_command(r'mingw32-make install VERBOSE=1 -j2')
 
 sys.exit()
 
