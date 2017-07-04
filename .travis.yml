@@ -1,7 +1,6 @@
 language: cpp
 sudo: false
 env:
-  
   global:
     # github token 
     - secure: eOd7E587x23pubciUUEO3T5jmHph+901Y5/x+Sw9t9X9kpFolJrXIwrkpTffUgrYLls5RJD4+S5Z89idkxLz8RqUEfSwUeewkuNC2Xn1Li/Nw3XRjOiieawbGJ50PAMYO7tS0wbhB11xdfQysM+bMPGh5Xg3SBMSJSrrYGokCw815YidnPbpc1+Em7qBYkStr6t8ILoqVpA469LINkoFBN9UWW3E/5SfwbIbNtValJx+06I6ccWr6HfJkde+VlC+/z6TFOZrdrU05XCbAfVfzLgsUt7uSm2FBi29vdF7H/VghuJAZdQ2B6pBCqJ9INzOHITIZlqinj2swrjhzpiO2CH2eDeRnEkSTJe5wnhig/rqXWcJkItoZbpZQ0w50NvLi4gkDBeR5xTQLQvErF6wPinghkZIymZGDxc5HozV/JJbORbANTHL1UDxRTliD/DNiIew6f0qXUCuxJ8JC6cq8ICzcVTeET/GfMH/vkqqWSoLZJgsvh+CIBN7jB19kVolUPYWjqhFIYm7dCGCAwuIq6guKxiKIUMS8kfXqVkfIqhXZEHiGpJeIno5DW0HBCheVHKp8htvolv5SeBA0VTNGw1/82/k99A6rQ4MJ+e0JPjraOUXQ/8Yn6GyPYcGxVCzSgB0B/dIdevN4Foo9jIA4C/D/twEFWhTeEb9jz7lzlU=
@@ -26,102 +25,102 @@ matrix:
     sudo: required
     services:
     - docker
- - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugGCC48"
-   compiler: gcc
-   os: linux
-   addons:
-     apt:
-       sources:
-       - ubuntu-toolchain-r-test
-       packages:
-       - gcc-4.8
-       - g++-4.8
-       - binutils-gold
- - env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseGCC48"
-   compiler: gcc
-   os: linux
-   addons:
-     apt:
-       sources:
-       - ubuntu-toolchain-r-test
-       packages:
-       - gcc-4.8
-       - g++-4.8
-       - binutils-gold
- - env: PAGMO_PLUGINS_NONFREE_BUILD="CoverageGCC5"
-   compiler: gcc
-   os: linux
-   addons:
-     apt:
-       sources:
-       - ubuntu-toolchain-r-test
-       packages:
-       - gcc-5
-       - g++-5
-       - binutils-gold
- - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugGCC6"
-   compiler: gcc
-   os: linux
-   addons:
-     apt:
-       sources:
-       - ubuntu-toolchain-r-test
-       packages:
-       - gcc-6
-       - g++-6
-       - binutils-gold
- - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugClang38"
-   compiler: clang
-   os: linux
-   addons:
-     apt:
-       sources:
-       - llvm-toolchain-precise-3.8
-       - ubuntu-toolchain-r-test
-       packages:
-       - clang-3.8
- - env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseClang38"
-   compiler: clang
-   os: linux
-   addons:
-     apt:
-       sources:
-       - llvm-toolchain-precise-3.8
-       - ubuntu-toolchain-r-test
-       packages:
-       - clang-3.8
- - env: PAGMO_PLUGINS_NONFREE_BUILD="Python36"
-   compiler: gcc
-   os: linux
-   addons:
-     apt:
-       sources:
-       - ubuntu-toolchain-r-test
-       packages:
-       - gcc-4.8
-       - g++-4.8
- - env: PAGMO_PLUGINS_NONFREE_BUILD="Python27"
-   compiler: gcc
-   os: linux
-   addons:
-     apt:
-       sources:
-       - ubuntu-toolchain-r-test
-       packages:
-       - gcc-4.8
-       - g++-4.8
- - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXDebug"
-   os: osx
-   osx_image: xcode6.4
- - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXRelease"
-   os: osx
-   osx_image: xcode6.4
- - env: PAGMO_BUILD="OSXPython36"
-   os: osx
-   osx_image: xcode6.4
- - env: PAGMO_BUILD="OSXPython27"
-   os: osx
-   osx_image: xcode6.4
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugGCC48"
+    compiler: gcc
+    os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - gcc-4.8
+        - g++-4.8
+        - binutils-gold
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseGCC48"
+    compiler: gcc
+    os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - gcc-4.8
+        - g++-4.8
+        - binutils-gold
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="CoverageGCC5"
+    compiler: gcc
+    os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - gcc-5
+        - g++-5
+        - binutils-gold
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugGCC6"
+    compiler: gcc
+    os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - gcc-6
+        - g++-6
+        - binutils-gold
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugClang38"
+    compiler: clang
+    os: linux
+    addons:
+      apt:
+        sources:
+        - llvm-toolchain-precise-3.8
+        - ubuntu-toolchain-r-test
+        packages:
+        - clang-3.8
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseClang38"
+    compiler: clang
+    os: linux
+    addons:
+      apt:
+        sources:
+        - llvm-toolchain-precise-3.8
+        - ubuntu-toolchain-r-test
+        packages:
+        - clang-3.8
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="Python36"
+    compiler: gcc
+    os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - gcc-4.8
+        - g++-4.8
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="Python27"
+    compiler: gcc
+    os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - gcc-4.8
+        - g++-4.8
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXDebug"
+    os: osx
+    osx_image: xcode6.4
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXRelease"
+    os: osx
+    osx_image: xcode6.4
+  - env: PAGMO_BUILD="OSXPython36"
+    os: osx
+    osx_image: xcode6.4
+  - env: PAGMO_BUILD="OSXPython27"
+    os: osx
+    osx_image: xcode6.4
 script:
 - mkdir build
 - cd build
