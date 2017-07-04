@@ -161,6 +161,7 @@ elif 'Debug' in BUILD_TYPE:
     run_command(r'cmake -G "MinGW Makefiles" .. -DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes ' +
                 r' -DCMAKE_CXX_FLAGS_DEBUG="-g0 -Os"')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
+    run_command(r'dir tests/ ')
     run_command(r'ctest')
 else:
     raise RuntimeError('Unsupported build type: ' + BUILD_TYPE)
