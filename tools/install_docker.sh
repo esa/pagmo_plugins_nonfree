@@ -110,7 +110,7 @@ cp -a `find /usr/local/lib -type d -iname 'pygmo_plugins_nonfree'` ./
 auditwheel repair dist/pygmo_plugins_nonfree* -w ./dist2
 # Try to install it and run the tests.
 cd /
-/opt/python/${PYTHON_DIR}/bin/pip install /pagmo2/build/wheel/dist2/pygmo_plugins_nonfree*
+/opt/python/${PYTHON_DIR}/bin/pip install /pagmo_plugins_nonfree/build/wheel/dist2/pygmo_plugins_nonfree*
 /opt/python/${PYTHON_DIR}/bin/python -c "import pygmo_plugins_nonfree; pygmo_plugins_nonfree.test.run_test_suite(1)"
 
 # Upload to pypi. This variable will contain something if this is a tagged build (vx.y.z), otherwise it will be empty.
@@ -118,5 +118,5 @@ cd /
 #if [[ "${PAGMO_RELEASE_VERSION}" != "" ]]; then
 #    echo "Release build detected, uploading to PyPi."
 #    /opt/python/${PYTHON_DIR}/bin/pip install twine
-#	/opt/python/${PYTHON_DIR}/bin/twine upload -u ci4esa /pagmo2/build/wheel/dist2/pygmo*
+#	/opt/python/${PYTHON_DIR}/bin/twine upload -u ci4esa /pagmo_plugins_nonfree/build/wheel/dist2/pygmo_plugins_nonfree*
 #fi
