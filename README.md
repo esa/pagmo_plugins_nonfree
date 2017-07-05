@@ -6,4 +6,4 @@ pagmo_plugins_nonfree
 [![Build status](https://ci.appveyor.com/api/projects/status/g5d3g4sgm437a05a?svg=true)](https://ci.appveyor.com/project/ci4esa/pagmo-plugins-nonfree)
 
 
-Preliminary documentation can be found here https://esa.github.io/pagmo_plugins_nonfree/
+Project documentation can be found here https://esa.github.io/pagmo_plugins_nonfree/
