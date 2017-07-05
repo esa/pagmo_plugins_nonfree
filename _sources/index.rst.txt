@@ -3,11 +3,31 @@ Plugins to commercial solvers for pagmo / pygmo
 
 .. image:: ../sphinx/docs/images/pagmo_logo.png
    :target: https://esa.github.io/pagmo2/index.html
-   :width: 15%
+   :width: 12%
 
 .. image:: ../sphinx/docs/images/algo.png
    :target: index.html
-   :width: 25%
+   :width: 12%
+
+.. image:: ../sphinx/docs/images/prob.png
+   :target: index.html
+   :width: 12%
+
+.. image:: ../sphinx/docs/images/pop.png
+   :target: index.html
+   :width: 12%
+
+.. image:: ../sphinx/docs/images/island.png
+   :target: index.html
+   :width: 12%
+
+.. image:: ../sphinx/docs/images/archi.png
+   :target: index.html
+   :width: 12%
+
+.. image:: ../sphinx/docs/images/migration.png
+   :target: index.html
+   :width: 12%
 
 
 ``pagmo_plugins_nonfree`` is an affliated package of `pagmo/pygmo <https://esa.github.io/pagmo2/index.html>`_. It adds some 
