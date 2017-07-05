@@ -85,6 +85,7 @@ elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
     echo "Sphinx ran successfully";
     make doctest;
     if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != "Python36" ]]; then
+        echo "${PAGMO_PLUGINS_NONFREE_BUILD} build detected, skipping the docs upload. Only available for Python36 builds";
         # Stop here. Docs are uploaded only in the Python36 build.
         exit 0;
     fi
