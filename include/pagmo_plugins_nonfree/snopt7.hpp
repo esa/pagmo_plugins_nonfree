@@ -362,7 +362,6 @@ public:
      *
      * @throws std::invalid_argument in the following cases:
      * - the population's problem is multi-objective or stochastic
-     * - the population's problem does not provide gradient information,
      * - the population is empty.
      * @throws unspecified any exception thrown by the public interface of pagmo::problem or
      * pagmo::not_population_based.
@@ -380,9 +379,8 @@ public:
         // PREAMBLE-------------------------------------------------------------------------------------------------
         // We start by checking that the problem is suitable for this particular algorithm.
         if (prob.get_nobj() != 1u) {
-            pagmo_throw(std::invalid_argument,
-                        "Multiple objectives detected in " + prob.get_name() + " instance. " + get_name()
-                            + " cannot deal with them");
+            pagmo_throw(std::invalid_argument, "Multiple objectives detected in " + prob.get_name() + " instance. "
+                                                   + get_name() + " cannot deal with them");
         }
         if (prob.is_stochastic()) {
             pagmo_throw(std::invalid_argument,
@@ -410,9 +408,8 @@ public:
             std::lock_guard<std::mutex> lock(detail::snopt_statics<>::library_load_mutex);
             boost::filesystem::path path_to_lib(m_snopt7_c_library);
             if (!boost::filesystem::is_regular_file(path_to_lib)) {
-                pagmo_throw(std::invalid_argument,
-                            "The snopt7_c library path was constructed to be: " + path_to_lib.string()
-                                + " and it does not appear to be a file");
+                pagmo_throw(std::invalid_argument, "The snopt7_c library path was constructed to be: "
+                                                       + path_to_lib.string() + " and it does not appear to be a file");
             }
             boost::dll::shared_library libsnopt7_c(path_to_lib);
             // We then load the symbols we need for the SNOPT7 plugin
@@ -420,22 +417,22 @@ public:
                                              int)>( // type of the function to import
                 libsnopt7_c,                        // the library
                 "snInit"                            // name of the function to import
-                );
+            );
 
             setIntParameter = boost::dll::import<int(snProblem *, char[], int)>( // type of the function to import
                 libsnopt7_c,                                                     // the library
                 "setIntParameter"                                                // name of the function to import
-                );
+            );
 
             setRealParameter = boost::dll::import<int(snProblem *, char[], double)>( // type of the function to import
                 libsnopt7_c,                                                         // the library
                 "setRealParameter"                                                   // name of the function to import
-                );
+            );
 
             deleteSNOPT = boost::dll::import<void(snProblem *)>( // type of the function to import
                 libsnopt7_c,                                     // the library
                 "deleteSNOPT"                                    // name of the function to import
-                );
+            );
 
             solveA = boost::dll::import<int(snProblem *, int, int, int, double, int, snFunA, int, int *, int *,
                                             double *, int, int *, int *, double *, double *, double *, double *,
@@ -443,7 +440,7 @@ public:
                                             double *)>( // type of the function to import
                 libsnopt7_c,                            // the library
                 "solveA"                                // name of the function to import
-                );
+            );
         } catch (const std::exception &e) {
             std::string message(
                 R"(

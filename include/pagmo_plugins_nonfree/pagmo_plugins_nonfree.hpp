@@ -3,5 +3,7 @@
 
 #include <pagmo_plugins_nonfree/config.hpp>
 #include <pagmo_plugins_nonfree/snopt7.hpp>
+#include <pagmo_plugins_nonfree/worhp.hpp>
+
 
 #endif
