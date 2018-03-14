@@ -1,7 +1,7 @@
 #ifndef PAGMO_WORHP_HPP
 #define PAGMO_WORHP_HPP
 
-#include <algorithm> // std::min_element
+#include <algorithm> // std::min_element, std::sort, std::remove_if
 #include <boost/dll/import.hpp>
 #include <boost/dll/shared_library.hpp>
 #include <boost/filesystem.hpp>
@@ -215,7 +215,7 @@ public:
         std::function<void(OptVar*, Workspace*, Params*, Control*)> StatusMsg;
         std::function<void(OptVar*, Workspace*, Params*, Control*)> WorhpFree;
         std::function<void(OptVar*, Workspace*, Params*, Control*)> WorhpFidif;
-
+        std::function<void(worhp_print_t)> SetWorhpPrint;
 
         // We then try to load the library at run time and locate the symbols used.
         try {
@@ -242,6 +242,11 @@ public:
                 <void(int*, char*, Params*)>(    // type of the function to import
                 libworhp,                        // the library
                 "ReadParams"                     // name of the function to import
+            );
+            SetWorhpPrint = boost::dll::import
+                <void(worhp_print_t)>(    // type of the function to import
+                libworhp,                        // the library
+                "SetWorhpPrint"                     // name of the function to import
             );
             GetUserAction = boost::dll::import
                 <bool(const Control*, int)>(     // type of the function to import
@@ -313,27 +318,63 @@ We report the exact text of the original exception thrown:
         int n_xml_param;
         ReadParams(&n_xml_param, const_cast<char*>("param.xml"), &par);
 
-        // USI-2: Specify problem dimensions
+       // USI-2: Specify problem dimensions
         opt.n = dim;
         opt.m = prob.get_nc(); // number of constraints
         auto n_eq = prob.get_nec();
+        // Get the sparsity pattern of the gradient
+        auto pagmo_gs = prob.gradient_sparsity();
+        // Determine where the gradients of the constraints start.
+        const auto it = std::lower_bound(pagmo_gs.begin(), pagmo_gs.end(), sparsity_pattern::value_type(1u, 0u));
+        // Split the sparsity into f and g parts
+        sparsity_pattern fs(pagmo_gs.begin(), it);
+        sparsity_pattern gs(it, pagmo_gs.end());
 
-        // Specify nonzeros of derivative matrixes (TODO: sparse representation)
-        wsp.DF.nnz = WorhpMatrix_Init_Dense;
-        wsp.DG.nnz = WorhpMatrix_Init_Dense;
-        wsp.HM.nnz = WorhpMatrix_Init_Dense;
+        // NOTE: Worhp requires a single sparsity pattern for the hessian of the lagrangian (that is,
+        // the pattern must be valid for objfun and all constraints), but we provide a separate sparsity pattern for
+        // objfun and every constraint. We will thus need to merge our sparsity patterns in a single sparsity
+        // pattern.
+        sparsity_pattern merged_hs;
+        if (prob.has_hessians_sparsity()) {
+            // Store the original hessians sparsity only if it is user-provided.
+            auto hs = prob.hessians_sparsity();
+            for (const auto &sp : hs) {
+                // NOTE: we need to create a separate copy each time as std::set_union() requires distinct ranges.
+                const auto old_merged_hs(merged_hs);
+                merged_hs.clear();
+                std::set_union(old_merged_hs.begin(), old_merged_hs.end(), sp.begin(), sp.end(),
+                                std::back_inserter(merged_hs));
+            }
+        } else {
+            // If the hessians sparsity is not user-provided, dense patterns are assumed.
+            merged_hs = detail::dense_hessian(prob.get_nx());
+        }
+        wsp.DF.nnz = fs.size();
+        wsp.DG.nnz = gs.size();
+        wsp.HM.nnz = merged_hs.size();
+
+        // This flag informs Worhp that f and g cannot be evaluated seperately (TODO: remove if pagmo will implement a caching system)
+        par.FGtogether = true;
+
+        // We deal with the gradient
+        if (prob.has_gradient()) {
+            par.UserDF = false; // TODO: MAKE true!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!erty54e654634b67 67bn567 756b7n7567g77f674vb76bv
+            par.UserDG = false;
+        } else {
+            par.UserDF = false;
+            par.UserDG = false;
+        }
+        if (prob.has_hessians()) {
+            par.UserHM = false; // TODO: MAKE true!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!erty54e654634b67 67bn567 756b7n7567g77f674vb76bv
+        } else {
+            par.UserHM = false;
+        }
 
         // USI-3: Allocate solver memory
         WorhpInit(&opt, &wsp, &par, &cnt);
 
-        // USI-5: Set initial values
-        // Specify a derivative free case (TODO: add user gradients, hessians if present)
-        par.UserDF = false;
-        par.UserDG = false;  
-        par.UserHM = false;
-        par.UserHMstructure = false;
-        // We do not provide estimates for the initial values of the dual variables by default.
-        par.InitialLMest = true;
+
+        // USI-5: Set initial values and deal with gradients / hessians
         // We define the initial value for the chromosome
         // We init the starting point using the inherited methods from not_population_based
         auto sel_xf = select_individual(pop);
@@ -349,22 +390,87 @@ We report the exact text of the original exception thrown:
         // USI-6: Set the constraint bounds
         // Box bounds
         for (decltype(opt.n) i = 0; i < opt.n; ++i) {
-            //opt.Lambda[i] = 0;
+            opt.Lambda[i] = 0;
             opt.XL[i] = lb[i];
             opt.XU[i] = ub[i];
         }
         // Equality constraints
         for (decltype(n_eq) i = 0u; i < n_eq; ++i) {
-            //opt.Mu[i] = 0;
+            opt.Mu[i] = 0;
             opt.GL[i] = 0;
             opt.GU[i] = 0;
         }
         // Inequality constraints
         for (decltype(opt.m) i = n_eq; i < opt.m; ++i) {
-            //opt.Mu[i] = 0;
+            opt.Mu[i] = 0;
             opt.GL[i] = -par.Infty;
             opt.GU[i] = 0;
         }
+
+        /*
+        * Specify matrix structures in CS format, using Fortran indexing,
+        * i.e. 1...N instead of 0...N-1, to describe the matrix structure.
+        */
+        // Assign sparsity structure to DF 
+        if (wsp.DF.NeedStructure)
+        {
+            for (decltype(fs.size()) i = 0; i < fs.size(); ++i) {
+                wsp.DF.row[i] = fs[i].second + 1; // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
+            }
+        }
+        // Assign sparsity structure to DG
+        if (wsp.DG.NeedStructure)
+        {
+            // Sort the gradient sparsity as returned by pagmo method gradient_sparsity according to worhp twisted choice. 
+            // Lexicographic from right to left, i.e. ((1,0),(2,0),(0,1),(1,1), )
+            std::sort(gs.begin(), gs.end(), [](std::pair<vector_double::size_type, vector_double::size_type> &x, std::pair<vector_double::size_type, vector_double::size_type> &y) -> bool
+                { 
+                    return (x.second < y.second || (!(y.second < x.second) && x.first < y.first));
+                }
+            );
+            for (decltype(gs.size()) i = 0u; i < gs.size(); ++i) {
+                wsp.DG.row[i] = gs[i].first;        // NOTE: no need for +1 here as in pagmo 0 is the objfun already stripped from here.
+                wsp.DG.col[i] = gs[i].second + 1;   // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
+            }
+        }
+        // Assign sparsity structure to HM
+        if (wsp.HM.NeedStructure)
+        {
+print("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD", merged_hs, "\n");
+            /*
+            * In WORHP the HM sparsity requires lower triangular entries first,
+            * then all the diagonal elements (also the zeros) (cani maledetti^2)
+            */
+            // We remove the diagonal entries from the hessian sparsity as merged from pagmo (if present)
+            auto it2 = std::remove_if(merged_hs.begin(), merged_hs.end(), [](std::pair<vector_double::size_type, vector_double::size_type> &x) -> bool
+                {
+                    return (x.first == x.second);
+                }
+            );
+            merged_hs.resize(it2 - merged_hs.begin());
+
+            // Sort the resulting hessian of the lagrangian sparsity according to worhp twisted choice. 
+            // Lexicographic from right to left, i.e. ((1,0),(2,0),(0,1),(1,1), )
+            std::sort(merged_hs.begin(), merged_hs.end(), [](std::pair<vector_double::size_type, vector_double::size_type> &x, std::pair<vector_double::size_type, vector_double::size_type> &y) -> bool
+                { 
+                    return (x.second < y.second || (!(y.second < x.second) && x.first < y.first));
+                }
+            );
+
+            // Strict lower triangle
+            for (decltype(merged_hs.size()) i = 0u; i < merged_hs.size(); ++i) {
+                wsp.HM.row[i] = merged_hs[i].first + 1;    // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
+                wsp.HM.col[i] = merged_hs[i].second + 1;   // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
+            }
+
+            // Diagonal
+            for (decltype(dim) i = 0; i < dim; ++i)
+            {
+                wsp.HM.row[merged_hs.size() + i] = i + 1;
+                wsp.HM.col[merged_hs.size() + i] = i + 1;
+            }
+        }
+
 
         // USI-7: Run the solver
         /*
@@ -576,6 +682,8 @@ We report the exact text of the original exception thrown:
 
    
 private:
+    // Used to suppress screen output from worhp
+    static void no_screen_output (int, const char []) {};
     // Objective function
     void UserF(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop) const 
     {
