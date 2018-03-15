@@ -32,7 +32,8 @@ extern "C" {
 namespace pagmo
 {
 
-namespace detail {
+namespace detail
+{
 
 // Usual trick with global read-only data useful to the WORHP wrapper.
 template <typename = void>
@@ -47,7 +48,6 @@ typename worhp_statics<T>::mutex_t worhp_statics<T>::library_load_mutex;
 
 } // end of namespace detail
 
-
 /// WORHP - (We Optimize Really Huge Problems)
 /**
  * \image html worhp.png
@@ -55,28 +55,31 @@ typename worhp_statics<T>::mutex_t worhp_statics<T>::library_load_mutex;
  * This class is a user-defined algorithm (UDA) that contains a plugin to the WORHP (We Optimize Really Huge Problems)
  * solver, a software package for large-scale nonlinear optimization. WORHP is a powerful solver that is able to handle
  * robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. The wrapper
- * was developed around the version 1.12 of WORHP and the Full Feature Interface (FFI) useing the Unified Solver Interface
- *  and the Reverse Communication paradigm (see worhp user manual).
+ * was developed around the version 1.12 of WORHP and the Full Feature Interface (FFI) useing the Unified Solver
+ * Interface and the Reverse Communication paradigm (see worhp user manual).
  *
  * \verbatim embed:rst:leading-asterisk
  *
  * .. warning::
  *
- *    Unfortunately, the WORHP library is only available acquiring a licence. You can consult the web pages at (https://worhp.de/)
- *    for further information. There you will be able to download the correct library for your architecture and obtain a license file.
- *    You will be able to specify the location of the downloaded library when constructing this UDA.
+ *    Unfortunately, the WORHP library is only available acquiring a licence. You can consult the web pages at
+ * (https://worhp.de/) for further information. There you will be able to download the correct library for your
+ * architecture and obtain a license file. You will be able to specify the location of the downloaded library when
+ * constructing this UDA.
  *
  * \endverbatim
  *
  *
  * Worhp is designed to efficiently solve small- to large-scale constrained optimisation problems, where
- * the objective function and the constraints are sufficiently smooth, and may be linear, quadratic or nonlinear. It is designed to
- * find locally optimal points of optimisation problems, which may be globally optimal, depending on the problem structure, the
- * initial guess and other factors. Worhp combines  a  Sequential  Quadratic  Programming  (SQP)  method  on  the general nonlinear level
- * with a primal-dual Interior Point (IP) method on the quadratic subproblem level, to generate a sequence of search directions, which
- * are subject to line search using the Augmented Lagrangian or L1 merit function.
- * 
- * Worhp needs first and second order derivatives, which can be supplied by the user, or approximated by finite differences or quasi-Newton methods.
+ * the objective function and the constraints are sufficiently smooth, and may be linear, quadratic or nonlinear. It is
+ * designed to find locally optimal points of optimisation problems, which may be globally optimal, depending on the
+ * problem structure, the initial guess and other factors. Worhp combines  a  Sequential  Quadratic  Programming  (SQP)
+ * method  on  the general nonlinear level with a primal-dual Interior Point (IP) method on the quadratic subproblem
+ * level, to generate a sequence of search directions, which are subject to line search using the Augmented Lagrangian
+ * or L1 merit function.
+ *
+ * Worhp needs first and second order derivatives, which can be supplied by the user, or approximated by finite
+ * differences or quasi-Newton methods.
  *
  * In order to support pagmo's population-based optimisation model, worhp::evolve() will select
  * a single individual from the input pagmo::population to be optimised.
@@ -90,8 +93,8 @@ typename worhp_statics<T>::mutex_t worhp_statics<T>::library_load_mutex;
  *
  * .. note::
  *
- *    We developed this plugin for the WORHP version 1.12, but it will also work woth different versions of the library as far
- *    as the API has not changed and the following symbols are found: 
+ *    We developed this plugin for the WORHP version 1.12, but it will also work woth different versions of the library
+ * as far as the API has not changed and the following symbols are found:
  *
  * .. warning::
  *
@@ -143,17 +146,16 @@ public:
      *
      */
     worhp(bool screen_output = false, std::string worhp_library = "/usr/local/lib/libworhp.so")
-        : m_worhp_library(worhp_library), m_screen_output(screen_output)  {};
+        : m_worhp_library(worhp_library), m_screen_output(screen_output){};
 
     /// Evolve population.
     /**
-     * This method will select an individual from \p pop, optimise it using the WORHP USI interface, replace an individual
-     * in \p pop with the optimised individual, and finally return \p pop.
-     * The individual selection and replacement criteria can be set via set_selection(const std::string &),
-     * set_selection(population::size_type), set_replacement(const std::string &) and
-     * set_replacement(population::size_type). The WORHP solver will then run until one of the stopping criteria
-     * is satisfied, and the return status of the WORHP solver will be recorded (it can be fetched with
-     * get_last_opt_result()).
+     * This method will select an individual from \p pop, optimise it using the WORHP USI interface, replace an
+     * individual in \p pop with the optimised individual, and finally return \p pop. The individual selection and
+     * replacement criteria can be set via set_selection(const std::string &), set_selection(population::size_type),
+     * set_replacement(const std::string &) and set_replacement(population::size_type). The WORHP solver will then run
+     * until one of the stopping criteria is satisfied, and the return status of the WORHP solver will be recorded (it
+     * can be fetched with get_last_opt_result()).
      *
      * \verbatim embed:rst:leading-asterisk
      *
@@ -180,7 +182,8 @@ public:
     population evolve(population pop) const
     {
         // We store some useful properties
-        const auto &prob = pop.get_problem(); // This is a const reference, so using set_seed, for example, will not work
+        const auto &prob
+            = pop.get_problem(); // This is a const reference, so using set_seed, for example, will not work
         auto dim = prob.get_nx();
         const auto bounds = prob.get_bounds();
         const auto &lb = bounds.first;
@@ -189,9 +192,8 @@ public:
         // PREAMBLE-------------------------------------------------------------------------------------------------
         // We start by checking that the problem is suitable for this particular algorithm.
         if (prob.get_nobj() != 1u) {
-            pagmo_throw(std::invalid_argument,
-                        "Multiple objectives detected in " + prob.get_name() + " instance. " + get_name()
-                            + " cannot deal with them");
+            pagmo_throw(std::invalid_argument, "Multiple objectives detected in " + prob.get_name() + " instance. "
+                                                   + get_name() + " cannot deal with them");
         }
         if (prob.is_stochastic()) {
             pagmo_throw(std::invalid_argument,
@@ -205,16 +207,16 @@ public:
 
         // ------------------------- WORHP PLUGIN (we attempt loading the worhp library at run-time)--------------
         // We first declare the prototypes of the functions used from the library
-        std::function<void(int*, char*, Params*)> ReadParams;
-        std::function<void(OptVar*, Workspace*, Params*, Control*)> WorhpPreInit;
-        std::function<void(OptVar*, Workspace*, Params*, Control*)> WorhpInit;
-        std::function<bool(const Control*, int)> GetUserAction;
-        std::function<bool(Control*, int)> DoneUserAction;
-        std::function<void(OptVar*, Workspace*, Params*, Control*)> IterationOutput;
-        std::function<void(OptVar*, Workspace*, Params*, Control*)> Worhp;
-        std::function<void(OptVar*, Workspace*, Params*, Control*)> StatusMsg;
-        std::function<void(OptVar*, Workspace*, Params*, Control*)> WorhpFree;
-        std::function<void(OptVar*, Workspace*, Params*, Control*)> WorhpFidif;
+        std::function<void(int *, char *, Params *)> ReadParams;
+        std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpPreInit;
+        std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpInit;
+        std::function<bool(const Control *, int)> GetUserAction;
+        std::function<bool(Control *, int)> DoneUserAction;
+        std::function<void(OptVar *, Workspace *, Params *, Control *)> IterationOutput;
+        std::function<void(OptVar *, Workspace *, Params *, Control *)> Worhp;
+        std::function<void(OptVar *, Workspace *, Params *, Control *)> StatusMsg;
+        std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpFree;
+        std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpFidif;
         std::function<void(worhp_print_t)> SetWorhpPrint;
 
         // We then try to load the library at run time and locate the symbols used.
@@ -228,60 +230,56 @@ public:
             }
             boost::dll::shared_library libworhp(path_to_lib);
             // We then load the symbols we need for the WORHP plugin
-            WorhpPreInit = boost::dll::import
-                <void(OptVar*, Workspace*, Params*, Control*)>(     // type of the function to import
-                libworhp,                                           // the library
-                "WorhpPreInit"                                      // name of the function to import
+            WorhpPreInit = boost::dll::import<void(OptVar *, Workspace *, Params *,
+                                                   Control *)>( // type of the function to import
+                libworhp,                                       // the library
+                "WorhpPreInit"                                  // name of the function to import
             );
-            WorhpInit = boost::dll::import
-                <void(OptVar*, Workspace*, Params*, Control*)>(    // type of the function to import
-                libworhp,                                          // the library
-                "WorhpInit"                                        // name of the function to import
+            WorhpInit = boost::dll::import<void(OptVar *, Workspace *, Params *,
+                                                Control *)>( // type of the function to import
+                libworhp,                                    // the library
+                "WorhpInit"                                  // name of the function to import
             );
-            ReadParams = boost::dll::import
-                <void(int*, char*, Params*)>(    // type of the function to import
-                libworhp,                        // the library
-                "ReadParams"                     // name of the function to import
+            ReadParams = boost::dll::import<void(int *, char *, Params *)>( // type of the function to import
+                libworhp,                                                   // the library
+                "ReadParams"                                                // name of the function to import
             );
-            SetWorhpPrint = boost::dll::import
-                <void(worhp_print_t)>(    // type of the function to import
-                libworhp,                        // the library
-                "SetWorhpPrint"                     // name of the function to import
+            SetWorhpPrint = boost::dll::import<void(worhp_print_t)>( // type of the function to import
+                libworhp,                                            // the library
+                "SetWorhpPrint"                                      // name of the function to import
             );
-            GetUserAction = boost::dll::import
-                <bool(const Control*, int)>(     // type of the function to import
-                libworhp,                        // the library
-                "GetUserAction"                  // name of the function to import
+            GetUserAction = boost::dll::import<bool(const Control *, int)>( // type of the function to import
+                libworhp,                                                   // the library
+                "GetUserAction"                                             // name of the function to import
             );
-            DoneUserAction = boost::dll::import
-                <bool(Control*, int)>(           // type of the function to import
-                libworhp,                        // the library
-                "DoneUserAction"                 // name of the function to import
+            DoneUserAction = boost::dll::import<bool(Control *, int)>( // type of the function to import
+                libworhp,                                              // the library
+                "DoneUserAction"                                       // name of the function to import
             );
-            IterationOutput = boost::dll::import
-                <void(OptVar*, Workspace*, Params*, Control*)>(    // type of the function to import
+            IterationOutput = boost::dll::import<void(OptVar *, Workspace *, Params *,
+                                                      Control *)>( // type of the function to import
                 libworhp,                                          // the library
                 "IterationOutput"                                  // name of the function to import
             );
-            Worhp = boost::dll::import
-                <void(OptVar*, Workspace*, Params*, Control*)>(    // type of the function to import
-                libworhp,                                          // the library
-                "Worhp"                                            // name of the function to import
+            Worhp = boost::dll::import<void(OptVar *, Workspace *, Params *,
+                                            Control *)>( // type of the function to import
+                libworhp,                                // the library
+                "Worhp"                                  // name of the function to import
             );
-            StatusMsg = boost::dll::import
-                <void(OptVar*, Workspace*, Params*, Control*)>(    // type of the function to import
-                libworhp,                                          // the library
-                "StatusMsg"                                        // name of the function to import
+            StatusMsg = boost::dll::import<void(OptVar *, Workspace *, Params *,
+                                                Control *)>( // type of the function to import
+                libworhp,                                    // the library
+                "StatusMsg"                                  // name of the function to import
             );
-            WorhpFree = boost::dll::import
-                <void(OptVar*, Workspace*, Params*, Control*)>(    // type of the function to import
-                libworhp,                                          // the library
-                "WorhpFree"                                        // name of the function to import
+            WorhpFree = boost::dll::import<void(OptVar *, Workspace *, Params *,
+                                                Control *)>( // type of the function to import
+                libworhp,                                    // the library
+                "WorhpFree"                                  // name of the function to import
             );
-            WorhpFidif = boost::dll::import
-                <void(OptVar*, Workspace*, Params*, Control*)>(    // type of the function to import
-                libworhp,                                          // the library
-                "WorhpFidif"                                       // name of the function to import
+            WorhpFidif = boost::dll::import<void(OptVar *, Workspace *, Params *,
+                                                 Control *)>( // type of the function to import
+                libworhp,                                     // the library
+                "WorhpFidif"                                  // name of the function to import
             );
         } catch (const std::exception &e) {
             std::string message(
@@ -305,20 +303,20 @@ We report the exact text of the original exception thrown:
 
         // With reference to the worhp User Manual (V1.12)
         // USI-0:  Call WorhpPreInit to properly initialise the (empty) data structures.
-        OptVar    opt;
+        OptVar opt;
         Workspace wsp;
-        Params    par;
-        Control   cnt;
+        Params par;
+        Control cnt;
         WorhpPreInit(&opt, &wsp, &par, &cnt);
 
         // USI-1: Read parameters from XML
-        // Note that a file named "param.xml" will be searched in the current directory only if the environment variable WORHP_PARAM_FILE
-        // is not set. Otherwise the WORHP_PARAM_FILE will be used. The number of parameterts that are not getting default values will
-        // be stored in n_xml_param
+        // Note that a file named "param.xml" will be searched in the current directory only if the environment variable
+        // WORHP_PARAM_FILE is not set. Otherwise the WORHP_PARAM_FILE will be used. The number of parameterts that are
+        // not getting default values will be stored in n_xml_param
         int n_xml_param;
-        ReadParams(&n_xml_param, const_cast<char*>("param.xml"), &par);
+        ReadParams(&n_xml_param, const_cast<char *>("param.xml"), &par);
 
-       // USI-2: Specify problem dimensions
+        // USI-2: Specify problem dimensions
         opt.n = dim;
         opt.m = prob.get_nc(); // number of constraints
         auto n_eq = prob.get_nec();
@@ -343,7 +341,7 @@ We report the exact text of the original exception thrown:
                 const auto old_merged_hs(merged_hs);
                 merged_hs.clear();
                 std::set_union(old_merged_hs.begin(), old_merged_hs.end(), sp.begin(), sp.end(),
-                                std::back_inserter(merged_hs));
+                               std::back_inserter(merged_hs));
             }
         } else {
             // If the hessians sparsity is not user-provided, dense patterns are assumed.
@@ -353,26 +351,32 @@ We report the exact text of the original exception thrown:
         wsp.DG.nnz = gs.size();
         wsp.HM.nnz = merged_hs.size();
 
-        // This flag informs Worhp that f and g cannot be evaluated seperately (TODO: remove if pagmo will implement a caching system)
+        // This flag informs Worhp that f and g cannot be evaluated seperately (TODO: remove if pagmo will implement a
+        // caching system)
         par.FGtogether = true;
 
         // We deal with the gradient
         if (prob.has_gradient()) {
-            par.UserDF = false; // TODO: MAKE true!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!erty54e654634b67 67bn567 756b7n7567g77f674vb76bv
-            par.UserDG = false;
+            par.UserDF
+                = true; // TODO: MAKE
+                        // true!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!erty54e654634b67
+                        // 67bn567 756b7n7567g77f674vb76bv
+            par.UserDG = true;
         } else {
             par.UserDF = false;
             par.UserDG = false;
         }
         if (prob.has_hessians()) {
-            par.UserHM = false; // TODO: MAKE true!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!erty54e654634b67 67bn567 756b7n7567g77f674vb76bv
+            par.UserHM
+                = false; // TODO: MAKE
+                         // true!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!erty54e654634b67
+                         // 67bn567 756b7n7567g77f674vb76bv
         } else {
             par.UserHM = false;
         }
 
         // USI-3: Allocate solver memory
         WorhpInit(&opt, &wsp, &par, &cnt);
-
 
         // USI-5: Set initial values and deal with gradients / hessians
         // We define the initial value for the chromosome
@@ -384,7 +388,7 @@ We report the exact text of the original exception thrown:
         }
         opt.F = wsp.ScaleObj * f0[0];
         for (decltype(opt.m) i = 0; i < opt.m; ++i) {
-            opt.G[i] = f0[i+1];
+            opt.G[i] = f0[i + 1];
         }
 
         // USI-6: Set the constraint bounds
@@ -408,127 +412,174 @@ We report the exact text of the original exception thrown:
         }
 
         /*
-        * Specify matrix structures in CS format, using Fortran indexing,
-        * i.e. 1...N instead of 0...N-1, to describe the matrix structure.
-        */
-        // Assign sparsity structure to DF 
-        if (wsp.DF.NeedStructure)
-        {
-            for (decltype(fs.size()) i = 0; i < fs.size(); ++i) {
-                wsp.DF.row[i] = fs[i].second + 1; // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
-            }
-        }
-        // Assign sparsity structure to DG
-        if (wsp.DG.NeedStructure)
-        {
-            // Sort the gradient sparsity as returned by pagmo method gradient_sparsity according to worhp twisted choice. 
-            // Lexicographic from right to left, i.e. ((1,0),(2,0),(0,1),(1,1), )
-            std::sort(gs.begin(), gs.end(), [](std::pair<vector_double::size_type, vector_double::size_type> &x, std::pair<vector_double::size_type, vector_double::size_type> &y) -> bool
-                { 
-                    return (x.second < y.second || (!(y.second < x.second) && x.first < y.first));
-                }
-            );
-            for (decltype(gs.size()) i = 0u; i < gs.size(); ++i) {
-                wsp.DG.row[i] = gs[i].first;        // NOTE: no need for +1 here as in pagmo 0 is the objfun already stripped from here.
-                wsp.DG.col[i] = gs[i].second + 1;   // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
-            }
-        }
-        // Assign sparsity structure to HM
-        if (wsp.HM.NeedStructure)
-        {
-print("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD", merged_hs, "\n");
-            /*
-            * In WORHP the HM sparsity requires lower triangular entries first,
-            * then all the diagonal elements (also the zeros) (cani maledetti^2)
-            */
-            // We remove the diagonal entries from the hessian sparsity as merged from pagmo (if present)
-            auto it2 = std::remove_if(merged_hs.begin(), merged_hs.end(), [](std::pair<vector_double::size_type, vector_double::size_type> &x) -> bool
-                {
-                    return (x.first == x.second);
-                }
-            );
-            merged_hs.resize(it2 - merged_hs.begin());
+         * Specify matrix structures in CS format, using Fortran indexing,
+         * i.e. 1...N instead of 0...N-1, to describe the matrix structure.
+         */
 
-            // Sort the resulting hessian of the lagrangian sparsity according to worhp twisted choice. 
+        // -------------------------------------------------------------------------------------------------------------------------
+        // Assign sparsity structure to DF
+        if (wsp.DF.NeedStructure) {
+            for (decltype(fs.size()) i = 0; i < fs.size(); ++i) {
+                wsp.DF.row[i]
+                    = fs[i].second + 1; // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
+            }
+        }
+
+        // -------------------------------------------------------------------------------------------------------------------------
+        // Create the corresponding index map between pagmo and worhp sparse representation of the gradient
+        std::vector<vector_double::size_type> gs_idx_map(gs.size());
+        std::iota(gs_idx_map.begin(), gs_idx_map.end(), 0);
+        std::sort(gs_idx_map.begin(), gs_idx_map.end(),
+                  [&gs](std::vector<vector_double::size_type>::size_type &idx1,
+                        std::vector<vector_double::size_type>::size_type &idx2) -> bool {
+                      return (gs[idx1].second < gs[idx2].second
+                              || (!(gs[idx2].second < gs[idx1].second) && gs[idx1].first < gs[idx2].first));
+                  });
+        // Assign sparsity structure to DG if not dense.
+        if (wsp.DG.NeedStructure) {
+            // Sort the gradient sparsity as returned by pagmo method gradient_sparsity according to worhp twisted
+            // choice. Lexicographic from right to left, i.e. ((1,0),(2,0),(0,1),(1,1), ). We also need to remember the
+            // map between sorted and unsorted indeces for reuse when actually computing the gradient in pagmo and
+            // assigning the val in worhp. We sort the first time to store the index map.
+            std::sort(gs_idx_map.begin(), gs_idx_map.end(),
+                      [&gs](std::vector<vector_double::size_type>::size_type &idx1,
+                            std::vector<vector_double::size_type>::size_type &idx2) -> bool {
+                          return (gs[idx1].second < gs[idx2].second
+                                  || (!(gs[idx2].second < gs[idx1].second) && gs[idx1].first < gs[idx2].first));
+                      });
+            // we sort the second time to sort the gradient.
+            std::sort(gs.begin(), gs.end(),
+                      [](std::pair<vector_double::size_type, vector_double::size_type> &x,
+                         std::pair<vector_double::size_type, vector_double::size_type> &y) -> bool {
+                          return (x.second < y.second || (!(y.second < x.second) && x.first < y.first));
+                      });
+            for (decltype(gs.size()) i = 0u; i < gs.size(); ++i) {
+                wsp.DG.row[i]
+                    = gs[i].first; // NOTE: no need for +1 here as in pagmo 0 is the objfun already stripped from here.
+                wsp.DG.col[i]
+                    = gs[i].second + 1; // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
+            }
+        }
+
+        // -------------------------------------------------------------------------------------------------------------------------
+        // Create the corresponding index map between pagmo and worhp sparse representation of the lower triangular part
+        // of the hessian of the lagrangian
+        std::vector<vector_double::size_type> hs_idx_map(merged_hs.size());
+        std::iota(hs_idx_map.begin(), hs_idx_map.end(), 0);
+        // We remove the diagonal entries from the hessian sparsity as merged from pagmo (if present)
+        auto it2 = std::remove_if(hs_idx_map.begin(), hs_idx_map.end(),
+                                  [merged_hs](std::vector<vector_double::size_type>::size_type &idx) -> bool {
+                                      return (merged_hs[idx].first == merged_hs[idx].second);
+                                  });
+        hs_idx_map.resize(it2 - hs_idx_map.begin());
+
+        // Assign sparsity structure to HM
+        if (wsp.HM.NeedStructure) {
+            /*
+             * In WORHP the HM sparsity requires lower triangular entries first,
+             * then all the diagonal elements (also the zeros) (cani maledetti^2)
+             */
+            // We remove the diagonal entries from the hessian sparsity as merged from pagmo (if present)
+            auto it3 = std::remove_if(merged_hs.begin(), merged_hs.end(),
+                                      [](std::pair<vector_double::size_type, vector_double::size_type> &x) -> bool {
+                                          return (x.first == x.second);
+                                      });
+            merged_hs.resize(it3 - merged_hs.begin());
+
+            // Sort the resulting hessian of the lagrangian sparsity according to worhp twisted choice.
             // Lexicographic from right to left, i.e. ((1,0),(2,0),(0,1),(1,1), )
-            std::sort(merged_hs.begin(), merged_hs.end(), [](std::pair<vector_double::size_type, vector_double::size_type> &x, std::pair<vector_double::size_type, vector_double::size_type> &y) -> bool
-                { 
-                    return (x.second < y.second || (!(y.second < x.second) && x.first < y.first));
-                }
-            );
+            std::sort(merged_hs.begin(), merged_hs.end(),
+                      [](std::pair<vector_double::size_type, vector_double::size_type> &x,
+                         std::pair<vector_double::size_type, vector_double::size_type> &y) -> bool {
+                          return (x.second < y.second || (!(y.second < x.second) && x.first < y.first));
+                      });
 
             // Strict lower triangle
             for (decltype(merged_hs.size()) i = 0u; i < merged_hs.size(); ++i) {
-                wsp.HM.row[i] = merged_hs[i].first + 1;    // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
-                wsp.HM.col[i] = merged_hs[i].second + 1;   // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
+                wsp.HM.row[i] = merged_hs[i].first
+                                + 1; // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
+                wsp.HM.col[i] = merged_hs[i].second
+                                + 1; // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
             }
 
             // Diagonal
-            for (decltype(dim) i = 0; i < dim; ++i)
-            {
+            for (decltype(dim) i = 0; i < dim; ++i) {
                 wsp.HM.row[merged_hs.size() + i] = i + 1;
                 wsp.HM.col[merged_hs.size() + i] = i + 1;
             }
         }
 
+        // -------------------------------------------------------------------------------------------------------------------------
 
         // USI-7: Run the solver
         /*
-        * WORHP Reverse Communication loop.
-        * In every iteration poll GetUserAction for the requested action, i.e. one
-        * of {callWorhp, iterOutput, evalF, evalG, evalDF, evalDG, evalHM, fidif}.
-        *
-        * Make sure to reset the requested user action afterwards by calling
-        * DoneUserAction, except for 'callWorhp' and 'fidif'.
-        */
-        while (cnt.status < TerminateSuccess && cnt.status > TerminateError)
-        {
+         * WORHP Reverse Communication loop.
+         * In every iteration poll GetUserAction for the requested action, i.e. one
+         * of {callWorhp, iterOutput, evalF, evalG, evalDF, evalDG, evalHM, fidif}.
+         *
+         * Make sure to reset the requested user action afterwards by calling
+         * DoneUserAction, except for 'callWorhp' and 'fidif'.
+         */
+        while (cnt.status < TerminateSuccess && cnt.status > TerminateError) {
             /*
-            * WORHP's main routine.
-            * Do not manually reset callWorhp, this is only done by the FD routines.
-            */
-            if (GetUserAction(&cnt, callWorhp))
-            {
+             * WORHP's main routine.
+             * Do not manually reset callWorhp, this is only done by the FD routines.
+             */
+            if (GetUserAction(&cnt, callWorhp)) {
                 Worhp(&opt, &wsp, &par, &cnt);
                 // No DoneUserAction!
             }
 
             /*
-            * Show iteration output.
-            * The call to IterationOutput() may be replaced by user-defined code.
-            */
-            if (GetUserAction(&cnt, iterOutput))
-            {
+             * Show iteration output.
+             * The call to IterationOutput() may be replaced by user-defined code.
+             */
+            if (GetUserAction(&cnt, iterOutput)) {
                 IterationOutput(&opt, &wsp, &par, &cnt);
                 DoneUserAction(&cnt, iterOutput);
             }
 
             /*
-            * Evaluate the objective function.
-            * The call to UserF may be replaced by user-defined code.
-            */
-            if (GetUserAction(&cnt, evalF))
-            {
+             * Evaluate the objective function.
+             * The call to UserF may be replaced by user-defined code.
+             */
+            if (GetUserAction(&cnt, evalF)) {
                 UserF(&opt, &wsp, &par, &cnt, pop);
                 DoneUserAction(&cnt, evalF);
             }
 
             /*
-            * Evaluate the constraints.
-            * The call to UserG may be replaced by user-defined code.
-            */
-            if (GetUserAction(&cnt, evalG))
-            {
+             * Evaluate the constraints.
+             * The call to UserG may be replaced by user-defined code.
+             */
+            if (GetUserAction(&cnt, evalG)) {
                 UserG(&opt, &wsp, &par, &cnt, pop);
                 DoneUserAction(&cnt, evalG);
             }
 
             /*
-            * Use finite differences with RC to determine derivatives
-            * Do not reset fidif, this is done by the FD routine.
-            */
-            if (GetUserAction(&cnt, fidif))
-            {
+             * Evaluate the gradient of the objective function.
+             * The call to UserDF may be replaced by user-defined code.
+             */
+            if (GetUserAction(&cnt, evalDF)) {
+                UserDF(&opt, &wsp, &par, &cnt, pop);
+                DoneUserAction(&cnt, evalDF);
+            }
+
+            /*
+             * Evaluate the Jacobian of the constraints.
+             * The call to UserDG may be replaced by user-defined code.
+             */
+            if (GetUserAction(&cnt, evalDG)) {
+                UserDG(&opt, &wsp, &par, &cnt, pop, gs_idx_map);
+                DoneUserAction(&cnt, evalDG);
+            }
+
+            /*
+             * Use finite differences with RC to determine derivatives
+             * Do not reset fidif, this is done by the FD routine.
+             */
+            if (GetUserAction(&cnt, fidif)) {
                 WorhpFidif(&opt, &wsp, &par, &cnt);
                 // No DoneUserAction!
             }
@@ -552,7 +603,7 @@ print("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
 
         return pop;
     }
-    
+
     /// Set verbosity.
     /**
      * This method will set the algorithm's verbosity. If \p n is zero, no output is produced during the
@@ -615,7 +666,7 @@ print("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
      *
      * @return a const reference to the log.
      */
-    //const log_type &get_log() const
+    // const log_type &get_log() const
     //{
     //    return m_log;
     //}
@@ -680,36 +731,59 @@ print("DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD
         ar(cereal::base_class<not_population_based>(this), m_worhp_library);
     }
 
-   
 private:
     // Used to suppress screen output from worhp
-    static void no_screen_output (int, const char []) {};
+    static void no_screen_output(int, const char[]){};
     // Objective function
-    void UserF(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop) const 
+    void UserF(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop) const
     {
-        double *X = opt->X;  // Abbreviate notation
+        double *X = opt->X; // Abbreviate notation
         const auto &prob = pop.get_problem();
         auto dim = prob.get_nx();
         vector_double x(X, X + dim);
         auto f = prob.fitness(x);
         opt->F = wsp->ScaleObj * f[0];
     }
-    // Function of constraints
-    void UserG(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop) const 
+    // Constraints
+    void UserG(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop) const
     {
-        double *X = opt->X;  // Abbreviate notation
+        double *X = opt->X; // Abbreviate notation
         const auto &prob = pop.get_problem();
         auto dim = prob.get_nx();
         vector_double x(X, X + dim);
         auto f = prob.fitness(x);
         for (decltype(prob.get_nc()) i = 0; i < prob.get_nc(); ++i) {
-            opt->G[i] = f[i+1];
+            opt->G[i] = f[i + 1];
+        }
+    }
+    // Gradient for the objective function
+    void UserDF(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop) const
+    {
+        const auto &prob = pop.get_problem();
+        auto dim = prob.get_nx();
+        vector_double x(opt->X, opt->X + dim);
+        auto g = prob.gradient(x);
+        for (decltype(wsp->DF.nnz) i = 0; i < wsp->DF.nnz; ++i) {
+            wsp->DF.val[i] = g[i];
+        }
+    }
+
+    // Gradient for the constraints
+    void UserDG(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop,
+                const std::vector<vector_double::size_type> &gs_idx_map) const
+    {
+        const auto &prob = pop.get_problem();
+        auto dim = prob.get_nx();
+        vector_double x(opt->X, opt->X + dim);
+        auto g = prob.gradient(x);
+        for (decltype(wsp->DG.nnz) i = 0; i < wsp->DG.nnz; ++i) {
+            wsp->DG.val[i] = g[wsp->DF.nnz + gs_idx_map[i]];
         }
     }
 
     // The absolute path to the worhp library
     std::string m_worhp_library;
- 
+
     // Activates the original worhp screen output
     bool m_screen_output;
     unsigned int m_verbosity;

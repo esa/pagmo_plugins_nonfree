@@ -64,7 +64,7 @@ struct worhp_test_problem{
         return retval;
     }
     std::pair<vector_double, vector_double> get_bounds() const {
-        return {{-0.5, -2, 0, -2},{100, 100, 2, 2}};
+        return {{-0.5, -2, 0, -2},{5, 5, 2, 2}};
     }
     vector_double::size_type get_nec() const {
         return 1;
@@ -79,7 +79,7 @@ struct worhp_test_problem{
         return {
             2 * x[0], 4 * x[1], -1,
             2 * x[0] + x[2], 2 * x[2] + x[0],
-            1, -3,
+            1, -1,
             1, 1,
             -1, -1
         };
@@ -95,7 +95,7 @@ struct worhp_test_problem{
     }
     std::vector<vector_double> hessians(const vector_double &dv) const {
         return {
-            {2, 2},
+            {2, 4},
             {2, 2, 1},
             {},
             {},
