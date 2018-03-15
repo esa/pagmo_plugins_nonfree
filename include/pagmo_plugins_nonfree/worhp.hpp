@@ -420,8 +420,8 @@ We report the exact text of the original exception thrown:
         // Assign sparsity structure to DF
         if (wsp.DF.NeedStructure) {
             for (decltype(fs.size()) i = 0; i < fs.size(); ++i) {
-                wsp.DF.row[i]
-                    = fs[i].second + 1; // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
+                // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
+                wsp.DF.row[i] = fs[i].second + 1;
             }
         }
 
@@ -437,27 +437,11 @@ We report the exact text of the original exception thrown:
                   });
         // Assign sparsity structure to DG if not dense.
         if (wsp.DG.NeedStructure) {
-            // Sort the gradient sparsity as returned by pagmo method gradient_sparsity according to worhp twisted
-            // choice. Lexicographic from right to left, i.e. ((1,0),(2,0),(0,1),(1,1), ). We also need to remember the
-            // map between sorted and unsorted indeces for reuse when actually computing the gradient in pagmo and
-            // assigning the val in worhp. We sort the first time to store the index map.
-            std::sort(gs_idx_map.begin(), gs_idx_map.end(),
-                      [&gs](std::vector<vector_double::size_type>::size_type &idx1,
-                            std::vector<vector_double::size_type>::size_type &idx2) -> bool {
-                          return (gs[idx1].second < gs[idx2].second
-                                  || (!(gs[idx2].second < gs[idx1].second) && gs[idx1].first < gs[idx2].first));
-                      });
-            // we sort the second time to sort the gradient.
-            std::sort(gs.begin(), gs.end(),
-                      [](std::pair<vector_double::size_type, vector_double::size_type> &x,
-                         std::pair<vector_double::size_type, vector_double::size_type> &y) -> bool {
-                          return (x.second < y.second || (!(y.second < x.second) && x.first < y.first));
-                      });
-            for (decltype(gs.size()) i = 0u; i < gs.size(); ++i) {
-                wsp.DG.row[i]
-                    = gs[i].first; // NOTE: no need for +1 here as in pagmo 0 is the objfun already stripped from here.
-                wsp.DG.col[i]
-                    = gs[i].second + 1; // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
+            for (decltype(gs_idx_map.size()) i = 0u; i < gs_idx_map.size(); ++i) {
+                // NOTE: no need for +1 here as in pagmo 0 is the objfun already stripped from here.
+                wsp.DG.row[i] = gs[gs_idx_map[i]].first;
+                // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
+                wsp.DG.col[i] = gs[gs_idx_map[i]].second + 1;
             }
         }
 
