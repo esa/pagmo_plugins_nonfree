@@ -327,15 +327,24 @@ We report the exact text of the original exception thrown:
         // Split the sparsity into f and g parts
         sparsity_pattern fs(pagmo_gs.begin(), it);
         sparsity_pattern gs(it, pagmo_gs.end());
+        // Create the corresponding index map between pagmo and worhp sparse representation of the gradient
+        std::vector<vector_double::size_type> gs_idx_map(gs.size());
+        std::iota(gs_idx_map.begin(), gs_idx_map.end(), 0);
+        std::sort(gs_idx_map.begin(), gs_idx_map.end(),
+                  [&gs](std::vector<vector_double::size_type>::size_type &idx1,
+                        std::vector<vector_double::size_type>::size_type &idx2) -> bool {
+                      return (gs[idx1].second < gs[idx2].second
+                              || (!(gs[idx2].second < gs[idx1].second) && gs[idx1].first < gs[idx2].first));
+                  });
 
         // NOTE: Worhp requires a single sparsity pattern for the hessian of the lagrangian (that is,
         // the pattern must be valid for objfun and all constraints), but we provide a separate sparsity pattern for
         // objfun and every constraint. We will thus need to merge our sparsity patterns in a single sparsity
         // pattern.
         sparsity_pattern merged_hs;
+        // Store the original hessians sparsity only if it is user-provided.
+        auto hs = prob.hessians_sparsity();
         if (prob.has_hessians_sparsity()) {
-            // Store the original hessians sparsity only if it is user-provided.
-            auto hs = prob.hessians_sparsity();
             for (const auto &sp : hs) {
                 // NOTE: we need to create a separate copy each time as std::set_union() requires distinct ranges.
                 const auto old_merged_hs(merged_hs);
@@ -347,9 +356,45 @@ We report the exact text of the original exception thrown:
             // If the hessians sparsity is not user-provided, dense patterns are assumed.
             merged_hs = detail::dense_hessian(prob.get_nx());
         }
+        // -------------------------------------------------------------------------------------------------------------------------
+        /*
+         * In WORHP the HM sparsity requires lower triangular entries first,
+         * then all the diagonal elements (also the zeros) (cani maledetti^2)
+         */
+        // Create the corresponding index map between pagmo and worhp sparse representation of the lower triangular part
+        // of the hessian of the lagrangian
+        std::vector<vector_double::size_type> hs_idx_map(merged_hs.size());
+        std::iota(hs_idx_map.begin(), hs_idx_map.end(), 0);
+        // Sort the resulting hessian of the lagrangian sparsity according to worhp twisted choice.
+        // Lexicographic from right to left, i.e. ((1,0),(2,0),(0,1), )
+        std::sort(hs_idx_map.begin(), hs_idx_map.end(),
+                  [&merged_hs](vector_double::size_type &idx1, vector_double::size_type &idx2) -> bool {
+                      return (merged_hs[idx1].second < merged_hs[idx2].second
+                              || (!(merged_hs[idx2].second < merged_hs[idx1].second)
+                                  && merged_hs[idx1].first < merged_hs[idx2].first));
+                  });
+
+        // We remove the diagonal entries from the hessian sparsity as merged from pagmo (if present)
+        auto it2 = std::remove_if(hs_idx_map.begin(), hs_idx_map.end(),
+                                  [&merged_hs](std::vector<vector_double::size_type>::size_type &idx) -> bool {
+                                      return (merged_hs[idx].first == merged_hs[idx].second);
+                                  });
+        hs_idx_map.resize(it2 - hs_idx_map.begin());
+
+        // A separate container will contain the diagonal indexes when present
+        std::vector<vector_double::size_type> diag_map;
+        auto iter = merged_hs.begin();
+        while ((iter = std::find_if(iter, merged_hs.end(),
+                                    [](std::pair<vector_double::size_type, vector_double::size_type> &pair) {
+                                        return pair.first == pair.second;
+                                    }))
+               != merged_hs.end()) {
+            diag_map.push_back(iter - merged_hs.begin());
+            iter++;
+        }
         wsp.DF.nnz = fs.size();
         wsp.DG.nnz = gs.size();
-        wsp.HM.nnz = merged_hs.size();
+        wsp.HM.nnz = merged_hs.size() + dim; // lower triangular sparse + full diagonal
 
         // This flag informs Worhp that f and g cannot be evaluated seperately (TODO: remove if pagmo will implement a
         // caching system)
@@ -414,8 +459,8 @@ We report the exact text of the original exception thrown:
         /*
          * Specify matrix structures in CS format, using Fortran indexing,
          * i.e. 1...N instead of 0...N-1, to describe the matrix structure.
+         * Only if the declared size is not dense.
          */
-
         // -------------------------------------------------------------------------------------------------------------------------
         // Assign sparsity structure to DF
         if (wsp.DF.NeedStructure) {
@@ -424,17 +469,7 @@ We report the exact text of the original exception thrown:
                 wsp.DF.row[i] = fs[i].second + 1;
             }
         }
-
         // -------------------------------------------------------------------------------------------------------------------------
-        // Create the corresponding index map between pagmo and worhp sparse representation of the gradient
-        std::vector<vector_double::size_type> gs_idx_map(gs.size());
-        std::iota(gs_idx_map.begin(), gs_idx_map.end(), 0);
-        std::sort(gs_idx_map.begin(), gs_idx_map.end(),
-                  [&gs](std::vector<vector_double::size_type>::size_type &idx1,
-                        std::vector<vector_double::size_type>::size_type &idx2) -> bool {
-                      return (gs[idx1].second < gs[idx2].second
-                              || (!(gs[idx2].second < gs[idx1].second) && gs[idx1].first < gs[idx2].first));
-                  });
         // Assign sparsity structure to DG if not dense.
         if (wsp.DG.NeedStructure) {
             for (decltype(gs_idx_map.size()) i = 0u; i < gs_idx_map.size(); ++i) {
@@ -444,46 +479,16 @@ We report the exact text of the original exception thrown:
                 wsp.DG.col[i] = gs[gs_idx_map[i]].second + 1;
             }
         }
-
         // -------------------------------------------------------------------------------------------------------------------------
-        // Create the corresponding index map between pagmo and worhp sparse representation of the lower triangular part
-        // of the hessian of the lagrangian
-        std::vector<vector_double::size_type> hs_idx_map(merged_hs.size());
-        std::iota(hs_idx_map.begin(), hs_idx_map.end(), 0);
-        // We remove the diagonal entries from the hessian sparsity as merged from pagmo (if present)
-        auto it2 = std::remove_if(hs_idx_map.begin(), hs_idx_map.end(),
-                                  [merged_hs](std::vector<vector_double::size_type>::size_type &idx) -> bool {
-                                      return (merged_hs[idx].first == merged_hs[idx].second);
-                                  });
-        hs_idx_map.resize(it2 - hs_idx_map.begin());
-
-        // Assign sparsity structure to HM
+        // Assign sparsity structure to HM if not dense. (this requires to perform the same operations as above,
+        // but directly on the merged_hs not on the iota)
         if (wsp.HM.NeedStructure) {
-            /*
-             * In WORHP the HM sparsity requires lower triangular entries first,
-             * then all the diagonal elements (also the zeros) (cani maledetti^2)
-             */
-            // We remove the diagonal entries from the hessian sparsity as merged from pagmo (if present)
-            auto it3 = std::remove_if(merged_hs.begin(), merged_hs.end(),
-                                      [](std::pair<vector_double::size_type, vector_double::size_type> &x) -> bool {
-                                          return (x.first == x.second);
-                                      });
-            merged_hs.resize(it3 - merged_hs.begin());
-
-            // Sort the resulting hessian of the lagrangian sparsity according to worhp twisted choice.
-            // Lexicographic from right to left, i.e. ((1,0),(2,0),(0,1),(1,1), )
-            std::sort(merged_hs.begin(), merged_hs.end(),
-                      [](std::pair<vector_double::size_type, vector_double::size_type> &x,
-                         std::pair<vector_double::size_type, vector_double::size_type> &y) -> bool {
-                          return (x.second < y.second || (!(y.second < x.second) && x.first < y.first));
-                      });
-
             // Strict lower triangle
-            for (decltype(merged_hs.size()) i = 0u; i < merged_hs.size(); ++i) {
-                wsp.HM.row[i] = merged_hs[i].first
-                                + 1; // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
-                wsp.HM.col[i] = merged_hs[i].second
-                                + 1; // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
+            for (decltype(hs_idx_map.size()) i = 0u; i < hs_idx_map.size(); ++i) {
+                // NOTE: the +1 is because fortran notation is required by WORHP (maledetti).
+                wsp.HM.row[i] = merged_hs[hs_idx_map[i]].first + 1;
+                // NOTE: the +1 is because fortran notation is required by WORHP (maledetti).
+                wsp.HM.col[i] = merged_hs[hs_idx_map[i]].second + 1;
             }
 
             // Diagonal
@@ -492,7 +497,6 @@ We report the exact text of the original exception thrown:
                 wsp.HM.col[merged_hs.size() + i] = i + 1;
             }
         }
-
         // -------------------------------------------------------------------------------------------------------------------------
 
         // USI-7: Run the solver
@@ -548,6 +552,15 @@ We report the exact text of the original exception thrown:
             if (GetUserAction(&cnt, evalDF)) {
                 UserDF(&opt, &wsp, &par, &cnt, pop);
                 DoneUserAction(&cnt, evalDF);
+            }
+
+            /*
+             * Evaluate the Hessian matrix of the Lagrange function (L = f + mu*g)
+             * The call to UserHM may be replaced by user-defined code.
+             */
+            if (GetUserAction(&cnt, evalHM)) {
+                UserHM(&opt, &wsp, &par, &cnt, pop, hs, merged_hs, hs_idx_map);
+                DoneUserAction(&cnt, evalHM);
             }
 
             /*
@@ -716,6 +729,13 @@ We report the exact text of the original exception thrown:
     }
 
 private:
+    struct pair_hash {
+        template <class T1, class T2>
+        std::size_t operator()(const std::pair<T1, T2> &p) const
+        {
+            return std::hash<T1>()(p.first) ^ std::hash<T2>()(p.second);
+        }
+    };
     // Used to suppress screen output from worhp
     static void no_screen_output(int, const char[]){};
     // Objective function
@@ -762,6 +782,49 @@ private:
         auto g = prob.gradient(x);
         for (decltype(wsp->DG.nnz) i = 0; i < wsp->DG.nnz; ++i) {
             wsp->DG.val[i] = g[wsp->DF.nnz + gs_idx_map[i]];
+        }
+    }
+
+    // The Hessian of the Lagrangian L = f + mu * g
+    void UserHM(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop,
+                const std::vector<sparsity_pattern> &pagmo_hsp, const sparsity_pattern &pagmo_merged_hsp,
+                const std::vector<vector_double::size_type> &hs_idx_map) const
+    {
+        const auto &prob = pop.get_problem();
+        auto dim = prob.get_nx();
+        vector_double x(opt->X, opt->X + dim);
+        auto pagmo_h = prob.hessians(x);
+        // Compute the hessian of the lagrangian. Logic: first we assemble the Hessian of the Lagrangian
+        // as represented by an unordered map (i,j) - > valij. We do so looping on the pagmo hessians
+        // and inserting the various contributions where they belong. Later we transform this representation
+        // into the worhp representation.
+        std::unordered_map<std::pair<vector_double::size_type, vector_double::size_type>, double, pair_hash>
+            pagmo_merged_h;
+        // First we deal with the objective
+        for (decltype(pagmo_hsp[0].size()) j = 0; j < pagmo_hsp[0].size(); ++j) {
+            // These will all be insertions in the map as all keys will not be there.
+            pagmo_merged_h[pagmo_hsp[0][j]] = pagmo_h[0][j] * wsp->ScaleObj;
+        }
+        // Then with the constraints
+        for (decltype(pagmo_hsp.size()) i = 1; i < pagmo_hsp.size(); ++i) {
+            for (decltype(pagmo_hsp[i].size()) j = 0; j < pagmo_hsp[i].size(); ++j) {
+                // If the key is there good, otherwise a 0 will be inserted
+                pagmo_merged_h[pagmo_hsp[i][j]] = pagmo_merged_h[pagmo_hsp[i][j]] + pagmo_h[i][j] * opt->Mu[j];
+            }
+        }
+        // At this point the hessian of the lagrangian is assembled in pagmo_merged_h
+        // but we still need to translate it into the WORHP format.
+        // lower triangular
+        for (decltype(hs_idx_map.size()) i = 0u; i < hs_idx_map.size(); ++i) {
+            wsp->HM.val[i] = pagmo_merged_h[pagmo_merged_hsp[hs_idx_map[i]]];
+        }
+        // diagonal, first set to zero
+        for (decltype(dim) i = 0u; i < dim; ++i) {
+            wsp->HM.val[i + hs_idx_map.size()] = 0;
+        }
+        // then fill in the values
+        for (decltype(dim) i = 0u; i < dim; ++i) {
+            wsp->HM.val[hs_idx_map.size() + i] = pagmo_merged_h[{i + 1, i + 1}];
         }
     }
 
