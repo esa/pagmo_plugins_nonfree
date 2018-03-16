@@ -381,20 +381,9 @@ We report the exact text of the original exception thrown:
                                   });
         hs_idx_map.resize(it2 - hs_idx_map.begin());
 
-        // A separate container will contain the diagonal indexes when present
-        std::vector<vector_double::size_type> diag_map;
-        auto iter = merged_hs.begin();
-        while ((iter = std::find_if(iter, merged_hs.end(),
-                                    [](std::pair<vector_double::size_type, vector_double::size_type> &pair) {
-                                        return pair.first == pair.second;
-                                    }))
-               != merged_hs.end()) {
-            diag_map.push_back(iter - merged_hs.begin());
-            iter++;
-        }
         wsp.DF.nnz = fs.size();
         wsp.DG.nnz = gs.size();
-        wsp.HM.nnz = merged_hs.size() + dim; // lower triangular sparse + full diagonal
+        wsp.HM.nnz = hs_idx_map.size() + dim; // lower triangular sparse + full diagonal
 
         // This flag informs Worhp that f and g cannot be evaluated seperately (TODO: remove if pagmo will implement a
         // caching system)
@@ -402,20 +391,14 @@ We report the exact text of the original exception thrown:
 
         // We deal with the gradient
         if (prob.has_gradient()) {
-            par.UserDF
-                = true; // TODO: MAKE
-                        // true!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!erty54e654634b67
-                        // 67bn567 756b7n7567g77f674vb76bv
+            par.UserDF = true;
             par.UserDG = true;
         } else {
             par.UserDF = false;
             par.UserDG = false;
         }
         if (prob.has_hessians()) {
-            par.UserHM
-                = false; // TODO: MAKE
-                         // true!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!erty54e654634b67
-                         // 67bn567 756b7n7567g77f674vb76bv
+            par.UserHM = true;
         } else {
             par.UserHM = false;
         }
@@ -427,7 +410,7 @@ We report the exact text of the original exception thrown:
         // We define the initial value for the chromosome
         // We init the starting point using the inherited methods from not_population_based
         auto sel_xf = select_individual(pop);
-        vector_double x0(std::move(sel_xf.first)), f0(std::move(sel_xf.second)); // TODO: is f0 useful?
+        vector_double x0(std::move(sel_xf.first)), f0(std::move(sel_xf.second)); // TODO: is f0 useful to worhp?
         for (decltype(opt.n) i = 0u; i < opt.n; ++i) {
             opt.X[i] = x0[i];
         }
@@ -493,8 +476,8 @@ We report the exact text of the original exception thrown:
 
             // Diagonal
             for (decltype(dim) i = 0; i < dim; ++i) {
-                wsp.HM.row[merged_hs.size() + i] = i + 1;
-                wsp.HM.col[merged_hs.size() + i] = i + 1;
+                wsp.HM.row[hs_idx_map.size() + i] = i + 1;
+                wsp.HM.col[hs_idx_map.size() + i] = i + 1;
             }
         }
         // -------------------------------------------------------------------------------------------------------------------------
@@ -801,15 +784,15 @@ private:
         std::unordered_map<std::pair<vector_double::size_type, vector_double::size_type>, double, pair_hash>
             pagmo_merged_h;
         // First we deal with the objective
-        for (decltype(pagmo_hsp[0].size()) j = 0; j < pagmo_hsp[0].size(); ++j) {
+        for (decltype(pagmo_hsp[0].size()) j = 0u; j < pagmo_hsp[0].size(); ++j) {
             // These will all be insertions in the map as all keys will not be there.
             pagmo_merged_h[pagmo_hsp[0][j]] = pagmo_h[0][j] * wsp->ScaleObj;
         }
         // Then with the constraints
-        for (decltype(pagmo_hsp.size()) i = 1; i < pagmo_hsp.size(); ++i) {
-            for (decltype(pagmo_hsp[i].size()) j = 0; j < pagmo_hsp[i].size(); ++j) {
-                // If the key is there good, otherwise a 0 will be inserted
-                pagmo_merged_h[pagmo_hsp[i][j]] = pagmo_merged_h[pagmo_hsp[i][j]] + pagmo_h[i][j] * opt->Mu[j];
+        for (decltype(pagmo_hsp.size()) i = 1u; i < pagmo_hsp.size(); ++i) {
+            for (decltype(pagmo_hsp[i].size()) j = 0u; j < pagmo_hsp[i].size(); ++j) {
+                // If the key is there, great! Otherwise a 0 will be created and pagmo_h[i][j] * opt->Mu[i-1] summed over.
+                pagmo_merged_h[pagmo_hsp[i][j]] = pagmo_merged_h[pagmo_hsp[i][j]] +  pagmo_h[i][j] * opt->Mu[i-1];
             }
         }
         // At this point the hessian of the lagrangian is assembled in pagmo_merged_h
@@ -818,13 +801,9 @@ private:
         for (decltype(hs_idx_map.size()) i = 0u; i < hs_idx_map.size(); ++i) {
             wsp->HM.val[i] = pagmo_merged_h[pagmo_merged_hsp[hs_idx_map[i]]];
         }
-        // diagonal, first set to zero
+        // diagonal
         for (decltype(dim) i = 0u; i < dim; ++i) {
-            wsp->HM.val[i + hs_idx_map.size()] = 0;
-        }
-        // then fill in the values
-        for (decltype(dim) i = 0u; i < dim; ++i) {
-            wsp->HM.val[hs_idx_map.size() + i] = pagmo_merged_h[{i + 1, i + 1}];
+            wsp->HM.val[hs_idx_map.size() + i] = pagmo_merged_h[{i, i}];
         }
     }
 

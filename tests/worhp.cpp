@@ -88,15 +88,15 @@ struct worhp_test_problem{
         return {
             {{0,0}, {1,1}},
             {{0,0}, {2,0}, {2,2}},
-            {{}},
-            {{}},
-            {{}},
+            {},
+            {},
+            {},
         };
     }
     std::vector<vector_double> hessians(const vector_double &dv) const {
         return {
             {2, 4},
-            {2, 2, 1},
+            {2, 1, 2},
             {},
             {},
             {}
