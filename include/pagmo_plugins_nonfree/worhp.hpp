@@ -146,7 +146,7 @@ public:
      *
      */
     worhp(bool screen_output = false, std::string worhp_library = "/usr/local/lib/libworhp.so")
-        : m_worhp_library(worhp_library), m_screen_output(screen_output){};
+        : m_worhp_library(worhp_library), m_integer_opts(), m_numeric_opts(), m_bool_opts(), m_screen_output(screen_output), m_verbosity(){};
 
     /// Evolve population.
     /**
@@ -215,8 +215,12 @@ public:
         std::function<void(OptVar *, Workspace *, Params *, Control *)> IterationOutput;
         std::function<void(OptVar *, Workspace *, Params *, Control *)> Worhp;
         std::function<void(OptVar *, Workspace *, Params *, Control *)> StatusMsg;
+        std::function<void(OptVar *, Workspace *, Params *, Control *, char message[])> StatusMsgString;
         std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpFree;
         std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpFidif;
+        std::function<bool(Params *, const char*, bool)> WorhpSetBoolParam;
+        std::function<bool(Params *, const char*, int)> WorhpSetIntParam;
+        std::function<bool(Params *, const char*, double)> WorhpSetDoubleParam;
         std::function<void(worhp_print_t)> SetWorhpPrint;
 
         // We then try to load the library at run time and locate the symbols used.
@@ -271,6 +275,23 @@ public:
                 libworhp,                                    // the library
                 "StatusMsg"                                  // name of the function to import
             );
+            StatusMsgString = boost::dll::import<void(OptVar *, Workspace *, Params *,
+                                                Control *, char message[])>( // type of the function to import
+                libworhp,                                                    // the library
+                "StatusMsgString"                                            // name of the function to import
+            );
+            WorhpSetBoolParam = boost::dll::import<bool(Params *, const char*, bool)>( // type of the function to import
+                libworhp,                                                            // the library
+                "WorhpSetBoolParam"                                                  // name of the function to import
+            );
+            WorhpSetIntParam = boost::dll::import<bool(Params *, const char*, bool)>( // type of the function to import
+                libworhp,                                                            // the library
+                "WorhpSetIntParam"                                                   // name of the function to import
+            );
+            WorhpSetDoubleParam = boost::dll::import<bool(Params *, const char*, bool)>( // type of the function to import
+                libworhp,                                                            // the library
+                "WorhpSetDoubleParam"                                                // name of the function to import
+            );
             WorhpFree = boost::dll::import<void(OptVar *, Workspace *, Params *,
                                                 Control *)>( // type of the function to import
                 libworhp,                                    // the library
@@ -322,7 +343,7 @@ We report the exact text of the original exception thrown:
         auto n_eq = prob.get_nec();
         // Get the sparsity pattern of the gradient
         auto pagmo_gs = prob.gradient_sparsity();
-        // Determine where the gradients of the constraints start.
+        // Determine where the gradients of the constraints start in the fitness gradient.
         const auto it = std::lower_bound(pagmo_gs.begin(), pagmo_gs.end(), sparsity_pattern::value_type(1u, 0u));
         // Split the sparsity into f and g parts
         sparsity_pattern fs(pagmo_gs.begin(), it);
@@ -385,9 +406,12 @@ We report the exact text of the original exception thrown:
         wsp.DG.nnz = gs.size();
         wsp.HM.nnz = hs_idx_map.size() + dim; // lower triangular sparse + full diagonal
 
-        // This flag informs Worhp that f and g cannot be evaluated seperately (TODO: remove if pagmo will implement a
-        // caching system)
-        par.FGtogether = true;
+        // This flag informs Worhp that f and g should not be evaluated seperately. pagmo fitness always computes both
+        // so that if only the objfun is needed also the constraints are computed. This flag signals to worhp that this is the case.
+        // Since the flag makes sense only for constrained problems, we set it only if necessary (worhp would otherwise print a warning)
+        if (prob.get_nc() > 0) {
+            par.FGtogether = true;
+        }
 
         // We deal with the gradient
         if (prob.has_gradient()) {
@@ -402,6 +426,39 @@ We report the exact text of the original exception thrown:
         } else {
             par.UserHM = false;
         }
+
+        // We now set the user defined options
+        // floats
+        for (const auto &p : m_numeric_opts) {
+            auto success = WorhpSetDoubleParam(&par, p.first.c_str(), p.second);
+            if (!success) {
+                    pagmo_throw(std::invalid_argument,
+                        "The option '" + p.first + "' was requested by the user to be set to the integer value "
+                    + std::to_string(p.second)
+                    + ", but WORHP interface returned an error. Did you mispell the option name?");
+            }
+        }
+        // int
+        for (const auto &p : m_integer_opts) {
+            auto success = WorhpSetIntParam(&par, p.first.c_str(), p.second);
+            if (!success) {
+                    pagmo_throw(std::invalid_argument,
+                        "The option '" + p.first + "' was requested by the user to be set to the float value "
+                    + std::to_string(p.second)
+                    + ", but WORHP interface returned an error. Did you mispell the option name?");
+            }
+        }
+        // bool
+        for (const auto &p : m_bool_opts) {
+            auto success = WorhpSetBoolParam(&par, p.first.c_str(), p.second);
+            if (!success) {
+                    pagmo_throw(std::invalid_argument,
+                        "The option '" + p.first + "' was requested by the user to be set to the bool value "
+                    + std::to_string(p.second)
+                    + ", but WORHP interface returned an error. Did you mispell the option name?");
+            }
+        }
+
 
         // USI-3: Allocate solver memory
         WorhpInit(&opt, &wsp, &par, &cnt);
@@ -578,7 +635,15 @@ We report the exact text of the original exception thrown:
             replace_individual(pop, x_final, f_final);
         }
 
+        // We retrieve the text of the optimization result
+        char cstr[1024];
+        StatusMsgString(&opt, &wsp, &par, &cnt, cstr);
+        m_last_opt_res = std::string(cstr);
+        print(m_last_opt_res, "\n");
+        
+        // We print the optimization result in the WORHP print output (this will do nothing if the pagmo screen output is used instead)
         StatusMsg(&opt, &wsp, &par, &cnt);
+        // We free the memory.
         WorhpFree(&opt, &wsp, &par, &cnt);
 
         return pop;
@@ -695,8 +760,144 @@ We report the exact text of the original exception thrown:
             stream(ss, "policy: ", boost::any_cast<std::string>(m_replace));
         }
         stream(ss, "\n");
+        stream(ss, "\n\tLast optimisation result: \n", m_last_opt_res);
+        stream(ss, "\n");
         return ss.str();
     }
+
+    /// Set integer option.
+    /**
+     * This method will set the optimisation integer option \p name to \p value.
+     * The optimisation options are passed to the WORHP API when calling evolve().
+     *
+     * @param name of the option.
+     * @param value of the option.
+     */
+    void set_integer_option(const std::string &name, int value)
+    {
+        m_integer_opts[name] = value;
+    }
+    /// Set integer options.
+    /**
+     * This method will set the optimisation integer options contained in \p m.
+     * It is equivalent to calling set_integer_option() passing all the name-value pairs in \p m
+     * as arguments.
+     *
+     * @param m the name-value map that will be used to set the options.
+     */
+    void set_integer_options(const std::map<std::string, int> &m)
+    {
+        for (const auto &p : m) {
+            set_integer_option(p.first, p.second);
+        }
+    }
+    /// Get integer options.
+    /**
+     * @return the name-value map of optimisation integer options.
+     */
+    std::map<std::string, int> get_integer_options() const
+    {
+        return m_integer_opts;
+    }
+    /// Set numeric option.
+    /**
+     * This method will set the optimisation numeric option \p name to \p value.
+     * The optimisation options are passed to the WORHP API when calling evolve().
+     *
+     * @param name of the option.
+     * @param value of the option.
+     */
+    void set_numeric_option(const std::string &name, double value)
+    {
+        m_numeric_opts[name] = value;
+    }
+    /// Set numeric options.
+    /**
+     * This method will set the optimisation numeric options contained in \p m.
+     * It is equivalent to calling set_numeric_option() passing all the name-value pairs in \p m
+     * as arguments.
+     *
+     * @param m the name-value map that will be used to set the options.
+     */
+    void set_numeric_options(const std::map<std::string, double> &m)
+    {
+        for (const auto &p : m) {
+            set_numeric_option(p.first, p.second);
+        }
+    }
+    /// Get numeric options.
+    /**
+     * @return the name-value map of optimisation numeric options.
+     */
+    std::map<std::string, double> get_numeric_options() const
+    {
+        return m_numeric_opts;
+    }
+    /// Set bool option.
+    /**
+     * This method will set the optimisation integer option \p name to \p value.
+     * The optimisation options are passed to the WORHP API when calling evolve().
+     *
+     * @param name of the option.
+     * @param value of the option.
+     */
+    void set_bool_option(const std::string &name, bool value)
+    {
+        m_bool_opts[name] = value;
+    }
+    /// Set bool options.
+    /**
+     * This method will set the optimisation integer options contained in \p m.
+     * It is equivalent to calling set_bool_option() passing all the name-value pairs in \p m
+     * as arguments.
+     *
+     * @param m the name-value map that will be used to set the options.
+     */
+    void set_bool_options(const std::map<std::string, bool> &m)
+    {
+        for (const auto &p : m) {
+            set_integer_option(p.first, p.second);
+        }
+    }
+    /// Get bool options.
+    /**
+     * @return the name-value map of optimisation integer options.
+     */
+    std::map<std::string, bool> get_bool_options() const
+    {
+        return m_bool_opts;
+    }
+    /// Clear all integer options.
+    void reset_integer_options()
+    {
+        m_integer_opts.clear();
+    }
+    /// Clear all numeric options.
+    void reset_numeric_options()
+    {
+        m_numeric_opts.clear();
+    }
+    /// Clear all numeric options.
+    void reset_bool_options()
+    {
+        m_bool_opts.clear();
+    }
+    /// Get the result of the last optimisation.
+    /**
+     * @return the result of the last call to WORHP. You can check
+     * The WORHP user manual for the meaning of the various entries.
+     *
+     * .. seealso::
+     *
+     *    https://worhp.de/latest/download/user_manual.pdf
+     *
+     * \endverbatim
+     */
+    std::string get_last_opt_result() const
+    {
+        return m_last_opt_res;
+    }
+
     /// Object serialization
     /**
      * This method will save/load \p this into the archive \p ar.
@@ -708,7 +909,7 @@ We report the exact text of the original exception thrown:
     template <typename Archive>
     void serialize(Archive &ar)
     {
-        ar(cereal::base_class<not_population_based>(this), m_worhp_library);
+        ar(cereal::base_class<not_population_based>(this), m_worhp_library, m_last_opt_res, m_integer_opts, m_numeric_opts, m_bool_opts, m_screen_output, m_verbosity);
     }
 
 private:
@@ -809,6 +1010,14 @@ private:
 
     // The absolute path to the worhp library
     std::string m_worhp_library;
+
+    // Solver return status.
+    mutable std::string m_last_opt_res = "There still is no last optimisation result as WORHP evolve was never successfully called yet.";
+
+    // Options maps.
+    std::map<std::string, int> m_integer_opts;
+    std::map<std::string, double> m_numeric_opts;
+    std::map<std::string, bool> m_bool_opts;
 
     // Activates the original worhp screen output
     bool m_screen_output;

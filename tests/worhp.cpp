@@ -8,6 +8,8 @@
 #include <pagmo/problems/ackley.hpp>
 #include <pagmo/problems/cec2006.hpp>
 #include <pagmo/problems/hock_schittkowsky_71.hpp>
+#include <pagmo/problems/rastrigin.hpp>
+#include <pagmo/problems/rosenbrock.hpp>
 #include <pagmo/problems/luksan_vlcek1.hpp>
 #include <pagmo/problems/inventory.hpp>
 #include <pagmo/problems/zdt.hpp>
@@ -116,4 +118,10 @@ BOOST_AUTO_TEST_CASE(evolve)
 {
     worhp uda{true, WORHP_LIB};
     uda.evolve(population{worhp_test_problem{}, 1u});
+    uda.evolve(population{hock_schittkowsky_71{}, 1u});
+    uda.evolve(population{luksan_vlcek1{10u}, 1u});
+    uda.evolve(population{rastrigin{10u}, 1u});
+    uda.evolve(population{rosenbrock{5u}, 1u});
+
+
 }
