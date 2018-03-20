@@ -91,8 +91,23 @@ typename worhp_statics<T>::mutex_t worhp_statics<T>::library_load_mutex;
  *
  * .. note::
  *
- *    We developed this plugin for the WORHP version 1.12, but it will also work woth different versions of the library
- *    as far as the API has not changed and the following symbols are found:
+ *    We developed this plugin for the WORHP version 1.12, but it will also work with different versions of the library
+ *    as far as the API has not changed and the following prototypes are exposed in the library:
+ *    std::function<void(int *, char *, Params *)> ReadParams;
+ *    std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpPreInit;
+ *    std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpInit;
+ *    std::function<bool(const Control *, int)> GetUserAction;
+ *    std::function<bool(Control *, int)> DoneUserAction;
+ *    std::function<void(OptVar *, Workspace *, Params *, Control *)> IterationOutput;
+ *    std::function<void(OptVar *, Workspace *, Params *, Control *)> Worhp;
+ *    std::function<void(OptVar *, Workspace *, Params *, Control *)> StatusMsg;
+ *    std::function<void(OptVar *, Workspace *, Params *, Control *, char message[])> StatusMsgString;
+ *    std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpFree;
+ *    std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpFidif;
+ *    std::function<bool(Params *, const char *, bool)> WorhpSetBoolParam;
+ *    std::function<bool(Params *, const char *, int)> WorhpSetIntParam;
+ *    std::function<bool(Params *, const char *, double)> WorhpSetDoubleParam;
+ *    std::function<void(worhp_print_t)> SetWorhpPrint;
  *
  * .. warning::
  *
@@ -968,7 +983,8 @@ We report the exact text of the original exception thrown:
     /**
      * @return the result of the last call to WORHP. You can check
      * The WORHP user manual for the meaning of the various entries.
-     *
+     * \verbatim embed:rst:leading-asterisk
+     * 
      * .. seealso::
      *
      *    https://worhp.de/latest/download/user_manual.pdf
