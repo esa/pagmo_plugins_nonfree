@@ -63,9 +63,9 @@ typename worhp_statics<T>::mutex_t worhp_statics<T>::library_load_mutex;
  * .. warning::
  *
  *    Unfortunately, the WORHP library is only available acquiring a licence. You can consult the web pages at
- * (https://worhp.de/) for further information. There you will be able to download the correct library for your
- * architecture and obtain a license file. You will be able to specify the location of the downloaded library when
- * constructing this UDA.
+ *    (https://worhp.de/) for further information. There you will be able to download the correct library for your
+ *    architecture and obtain a license file. You will be able to specify the location of the downloaded library when
+ *    constructing this UDA.
  *
  * \endverbatim
  *
@@ -94,11 +94,11 @@ typename worhp_statics<T>::mutex_t worhp_statics<T>::library_load_mutex;
  * .. note::
  *
  *    We developed this plugin for the WORHP version 1.12, but it will also work woth different versions of the library
- * as far as the API has not changed and the following symbols are found:
+ *    as far as the API has not changed and the following symbols are found:
  *
  * .. warning::
  *
- *    A moved-from :cpp:class:`worhp::snopt7` is destructible and assignable. Any other operation will result
+ *    A moved-from :cpp:class:`pagmo::worhp` is destructible and assignable. Any other operation will result
  *    in undefined behaviour.
  *
  * .. warning::
@@ -125,14 +125,14 @@ public:
      * - the constraints violation norm for the current decision vector,
      * - a boolean flag signalling the feasibility of the current decision vector.
      */
-    // using log_line_type = std::tuple<unsigned long, double, vector_double::size_type, double, bool>;
+    using log_line_type = std::tuple<unsigned long, double, vector_double::size_type, double, bool>;
     /// Log type.
     /**
-     * The algorithm log is a collection of snopt7::log_line_type data lines, stored in chronological order
+     * The algorithm log is a collection of worhp::log_line_type data lines, stored in chronological order
      * during the optimisation if the verbosity of the algorithm is set to a nonzero value
-     * (see snopt7::set_verbosity()).
+     * (see worhp::set_verbosity()).
      */
-    // using log_type = std::vector<log_line_type>;
+    using log_type = std::vector<log_line_type>;
 
     ///  Constructor.
     /**
@@ -146,7 +146,8 @@ public:
      *
      */
     worhp(bool screen_output = false, std::string worhp_library = "/usr/local/lib/libworhp.so")
-        : m_worhp_library(worhp_library), m_integer_opts(), m_numeric_opts(), m_bool_opts(), m_screen_output(screen_output), m_verbosity(){};
+        : m_worhp_library(worhp_library), m_integer_opts(), m_numeric_opts(), m_bool_opts(),
+          m_screen_output(screen_output), m_verbosity(0), m_log(){};
 
     /// Evolve population.
     /**
@@ -161,11 +162,11 @@ public:
      *
      * .. warning::
      *
-     *    All options passed to the snOptA interface are those set by the user via the pagmo::snopt7 interface, or
-     *    where no user specifications are available, to the default detailed on the User Manual available online but
-     *    with the following exception: "Major feasibility tolerance" is set to the default value 1E-6 or to the minimum
-     *    among the values returned by pagmo::problem::get_c_tol() if not zero.
-     *
+     *    All options passed to the WORHP interface are determined first by the xml parameter file, or (if not found) by
+     * the default options. Then FGtogether is set to true (for constrained problems) and UserDF, UserDG , UserHM to the
+     * values detected by the pagmo::has_gradient, pagmo::has_hessians methods. TolFeas is then set to be the minimum
+     * of prob.get_c_tol() if not 0. All the other options, contained in the data members m_integer_opts,
+     * m_numeric_opts and m_bool_opts are set after and thus overseed the above rules.
      *
      * \endverbatim
      *
@@ -218,9 +219,9 @@ public:
         std::function<void(OptVar *, Workspace *, Params *, Control *, char message[])> StatusMsgString;
         std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpFree;
         std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpFidif;
-        std::function<bool(Params *, const char*, bool)> WorhpSetBoolParam;
-        std::function<bool(Params *, const char*, int)> WorhpSetIntParam;
-        std::function<bool(Params *, const char*, double)> WorhpSetDoubleParam;
+        std::function<bool(Params *, const char *, bool)> WorhpSetBoolParam;
+        std::function<bool(Params *, const char *, int)> WorhpSetIntParam;
+        std::function<bool(Params *, const char *, double)> WorhpSetDoubleParam;
         std::function<void(worhp_print_t)> SetWorhpPrint;
 
         // We then try to load the library at run time and locate the symbols used.
@@ -275,23 +276,25 @@ public:
                 libworhp,                                    // the library
                 "StatusMsg"                                  // name of the function to import
             );
-            StatusMsgString = boost::dll::import<void(OptVar *, Workspace *, Params *,
-                                                Control *, char message[])>( // type of the function to import
-                libworhp,                                                    // the library
-                "StatusMsgString"                                            // name of the function to import
+            StatusMsgString = boost::dll::import<void(OptVar *, Workspace *, Params *, Control *,
+                                                      char message[])>( // type of the function to import
+                libworhp,                                               // the library
+                "StatusMsgString"                                       // name of the function to import
             );
-            WorhpSetBoolParam = boost::dll::import<bool(Params *, const char*, bool)>( // type of the function to import
-                libworhp,                                                            // the library
-                "WorhpSetBoolParam"                                                  // name of the function to import
+            WorhpSetBoolParam
+                = boost::dll::import<bool(Params *, const char *, bool)>( // type of the function to import
+                    libworhp,                                             // the library
+                    "WorhpSetBoolParam"                                   // name of the function to import
+                );
+            WorhpSetIntParam = boost::dll::import<bool(Params *, const char *, bool)>( // type of the function to import
+                libworhp,                                                              // the library
+                "WorhpSetIntParam"                                                     // name of the function to import
             );
-            WorhpSetIntParam = boost::dll::import<bool(Params *, const char*, bool)>( // type of the function to import
-                libworhp,                                                            // the library
-                "WorhpSetIntParam"                                                   // name of the function to import
-            );
-            WorhpSetDoubleParam = boost::dll::import<bool(Params *, const char*, bool)>( // type of the function to import
-                libworhp,                                                            // the library
-                "WorhpSetDoubleParam"                                                // name of the function to import
-            );
+            WorhpSetDoubleParam
+                = boost::dll::import<bool(Params *, const char *, bool)>( // type of the function to import
+                    libworhp,                                             // the library
+                    "WorhpSetDoubleParam"                                 // name of the function to import
+                );
             WorhpFree = boost::dll::import<void(OptVar *, Workspace *, Params *,
                                                 Control *)>( // type of the function to import
                 libworhp,                                    // the library
@@ -322,6 +325,9 @@ We report the exact text of the original exception thrown:
         }
         // ------------------------- END WORHP PLUGIN -------------------------------------------------------------
 
+        m_log.clear();
+        auto fevals0 = prob.get_fevals();
+
         // With reference to the worhp User Manual (V1.12)
         // USI-0:  Call WorhpPreInit to properly initialise the (empty) data structures.
         OptVar opt;
@@ -332,7 +338,7 @@ We report the exact text of the original exception thrown:
 
         // USI-1: Read parameters from XML
         // Note that a file named "param.xml" will be searched in the current directory only if the environment variable
-        // WORHP_PARAM_FILE is not set. Otherwise the WORHP_PARAM_FILE will be used. The number of parameterts that are
+        // WORHP_PARAM_FILE is not set. Otherwise the WORHP_PARAM_FILE will be used. The number of parameters that are
         // not getting default values will be stored in n_xml_param
         int n_xml_param;
         ReadParams(&n_xml_param, const_cast<char *>("param.xml"), &par);
@@ -407,8 +413,9 @@ We report the exact text of the original exception thrown:
         wsp.HM.nnz = hs_idx_map.size() + dim; // lower triangular sparse + full diagonal
 
         // This flag informs Worhp that f and g should not be evaluated seperately. pagmo fitness always computes both
-        // so that if only the objfun is needed also the constraints are computed. This flag signals to worhp that this is the case.
-        // Since the flag makes sense only for constrained problems, we set it only if necessary (worhp would otherwise print a warning)
+        // so that if only the objfun is needed also the constraints are computed. This flag signals to worhp that this
+        // is the case. Since the flag makes sense only for constrained problems, we set it only if necessary (worhp
+        // would otherwise print a warning)
         if (prob.get_nc() > 0) {
             par.FGtogether = true;
         }
@@ -427,38 +434,58 @@ We report the exact text of the original exception thrown:
             par.UserHM = false;
         }
 
+        // Logic for the handling of constraints tolerances. The logic is as follows:
+        // - if the user provides the "TolFeas" option, use that *unconditionally*. Otherwise,
+        // - compute the minimum tolerance min_tol among those returned by  problem.c_tol(). If zero, ignore
+        //   it and use the WORHP default value for "TolFeas" (1e-6). Otherwise, use min_tol as
+        //   the value for "TolFeas" and min_tol/2 for AcceptTolFeas
+        if (prob.get_nc() && !m_numeric_opts.count("TolFeas")) {
+            const auto c_tol = prob.get_c_tol();
+            assert(!c_tol.empty());
+            const double min_tol = *std::min_element(c_tol.begin(), c_tol.end());
+            if (min_tol > 0.) {
+                auto res = WorhpSetDoubleParam(&par, "TolFeas", min_tol);
+                res = WorhpSetDoubleParam(&par, "AcceptTolFeas", min_tol / 2);
+                assert(res == true);
+            }
+        }
+
         // We now set the user defined options
         // floats
         for (const auto &p : m_numeric_opts) {
             auto success = WorhpSetDoubleParam(&par, p.first.c_str(), p.second);
             if (!success) {
-                    pagmo_throw(std::invalid_argument,
-                        "The option '" + p.first + "' was requested by the user to be set to the integer value "
-                    + std::to_string(p.second)
-                    + ", but WORHP interface returned an error. Did you mispell the option name?");
+                pagmo_throw(std::invalid_argument,
+                            "The option '" + p.first + "' was requested by the user to be set to the integer value "
+                                + std::to_string(p.second)
+                                + ", but WORHP interface returned an error. Did you mispell the option name?");
             }
         }
         // int
         for (const auto &p : m_integer_opts) {
             auto success = WorhpSetIntParam(&par, p.first.c_str(), p.second);
             if (!success) {
-                    pagmo_throw(std::invalid_argument,
-                        "The option '" + p.first + "' was requested by the user to be set to the float value "
-                    + std::to_string(p.second)
-                    + ", but WORHP interface returned an error. Did you mispell the option name?");
+                pagmo_throw(std::invalid_argument,
+                            "The option '" + p.first + "' was requested by the user to be set to the float value "
+                                + std::to_string(p.second)
+                                + ", but WORHP interface returned an error. Did you mispell the option name?");
             }
         }
         // bool
         for (const auto &p : m_bool_opts) {
             auto success = WorhpSetBoolParam(&par, p.first.c_str(), p.second);
             if (!success) {
-                    pagmo_throw(std::invalid_argument,
-                        "The option '" + p.first + "' was requested by the user to be set to the bool value "
-                    + std::to_string(p.second)
-                    + ", but WORHP interface returned an error. Did you mispell the option name?");
+                pagmo_throw(std::invalid_argument,
+                            "The option '" + p.first + "' was requested by the user to be set to the bool value "
+                                + std::to_string(p.second)
+                                + ", but WORHP interface returned an error. Did you mispell the option name?");
             }
         }
 
+        // We deal with screen output
+        if (!m_screen_output) {
+            SetWorhpPrint(no_screen_output);
+        }
 
         // USI-3: Allocate solver memory
         WorhpInit(&opt, &wsp, &par, &cnt);
@@ -548,6 +575,10 @@ We report the exact text of the original exception thrown:
          * Make sure to reset the requested user action afterwards by calling
          * DoneUserAction, except for 'callWorhp' and 'fidif'.
          */
+        if (m_verbosity) {
+            print("\n", std::setw(10), "objevals:", std::setw(15), "objval:", std::setw(15), "violated:", std::setw(15),
+                  "viol. norm:", '\n');
+        }
         while (cnt.status < TerminateSuccess && cnt.status > TerminateError) {
             /*
              * WORHP's main routine.
@@ -572,7 +603,7 @@ We report the exact text of the original exception thrown:
              * The call to UserF may be replaced by user-defined code.
              */
             if (GetUserAction(&cnt, evalF)) {
-                UserF(&opt, &wsp, &par, &cnt, pop);
+                UserF(&opt, &wsp, &par, &cnt, pop, fevals0);
                 DoneUserAction(&cnt, evalF);
             }
 
@@ -581,7 +612,7 @@ We report the exact text of the original exception thrown:
              * The call to UserG may be replaced by user-defined code.
              */
             if (GetUserAction(&cnt, evalG)) {
-                UserG(&opt, &wsp, &par, &cnt, pop);
+                UserG(&opt, &wsp, &par, &cnt, pop, fevals0);
                 DoneUserAction(&cnt, evalG);
             }
 
@@ -639,10 +670,13 @@ We report the exact text of the original exception thrown:
         char cstr[1024];
         StatusMsgString(&opt, &wsp, &par, &cnt, cstr);
         m_last_opt_res = std::string(cstr);
-        print(m_last_opt_res, "\n");
-        
-        // We print the optimization result in the WORHP print output (this will do nothing if the pagmo screen output is used instead)
-        StatusMsg(&opt, &wsp, &par, &cnt);
+        // And print it to screen if requested
+        if (m_verbosity) {
+            print(m_last_opt_res, "\n");
+        } else if (m_screen_output) {
+            StatusMsg(&opt, &wsp, &par, &cnt);
+        }
+
         // We free the memory.
         WorhpFree(&opt, &wsp, &par, &cnt);
 
@@ -653,8 +687,8 @@ We report the exact text of the original exception thrown:
     /**
      * This method will set the algorithm's verbosity. If \p n is zero, no output is produced during the
      * optimisation and no logging is performed. If \p n is nonzero, then every \p n objective function evaluations the
-     * status of the optimisation will be both printed to screen and recorded internally. See snopt7::log_line_type and
-     * snopt7::log_type for information on the logging format. The internal log can be fetched via get_log().
+     * status of the optimisation will be both printed to screen and recorded internally. See worhp::log_line_type and
+     * worhp::log_type for information on the logging format. The internal log can be fetched via get_log().
      *
      * @param n the desired verbosity level.
      *
@@ -684,13 +718,13 @@ We report the exact text of the original exception thrown:
      *
      *    The number of constraints violated, the constraints violation norm and the feasibility flag stored in the
      *    log are all determined via the facilities and the tolerances specified within :cpp:class:`pagmo::problem`.
-     *    That is, they might not necessarily be consistent with Snopt7's notion of feasibility.
+     *    That is, they might not necessarily be consistent with WORHP's notion of feasibility.
      *
      * .. note::
      *
-     *    Snopt7 supports its own logging format and protocol, including the ability to print to screen and write to
-     *    file. Snopt7's screen logging is disabled by default. On-screen logging can be enabled constructing the
-     *    object pagmo::snopt7 passing ``True`` as argument. In this case verbosity will not be allowed to be set.
+     *    WORHP supports its own logging format and protocol, including the ability to print to screen and write to
+     *    file. WORHP's screen logging is disabled by default. On-screen logging can be enabled constructing the
+     *    object pagmo::WORHP passing ``True`` as argument. In this case verbosity will not be allowed to be set.
      *
      * \endverbatim
      *
@@ -706,7 +740,7 @@ We report the exact text of the original exception thrown:
     }
     /// Get the optimisation log.
     /**
-     * See snopt7::log_type for a description of the optimisation log. Logging is turned on/off via
+     * See worhp::log_type for a description of the optimisation log. Logging is turned on/off via
      * set_verbosity().
      *
      * @return a const reference to the log.
@@ -736,7 +770,7 @@ We report the exact text of the original exception thrown:
     /// Get extra information about the algorithm.
     /**
      * @return a human-readable string containing useful information about the algorithm's properties
-     * (e.g., the SNOPT7 user-set options, the selection/replacement policies, etc.), the snopt7_c library path
+     * (e.g., the WORHP user-set options, the selection/replacement policies, etc.), the worhp library path
      */
     std::string get_extra_info() const
     {
@@ -909,7 +943,8 @@ We report the exact text of the original exception thrown:
     template <typename Archive>
     void serialize(Archive &ar)
     {
-        ar(cereal::base_class<not_population_based>(this), m_worhp_library, m_last_opt_res, m_integer_opts, m_numeric_opts, m_bool_opts, m_screen_output, m_verbosity);
+        ar(cereal::base_class<not_population_based>(this), m_worhp_library, m_last_opt_res, m_integer_opts,
+           m_numeric_opts, m_bool_opts, m_screen_output, m_verbosity);
     }
 
 private:
@@ -922,26 +957,60 @@ private:
     };
     // Used to suppress screen output from worhp
     static void no_screen_output(int, const char[]){};
+
+    // Log update and print to screen
+    void update_log(const problem &prob, const vector_double &fit, long long unsigned fevals0) const
+    {
+        auto fevals = prob.get_fevals() - fevals0;
+        if (m_verbosity && !(fevals % m_verbosity)) {
+            // Constraints bits.
+            const auto ctol = prob.get_c_tol();
+            const auto c1eq = detail::test_eq_constraints(fit.data() + 1, fit.data() + 1 + prob.get_nec(), ctol.data());
+            const auto c1ineq = detail::test_ineq_constraints(fit.data() + 1 + prob.get_nec(), fit.data() + fit.size(),
+                                                              ctol.data() + prob.get_nec());
+            // This will be the total number of violated constraints.
+            const auto nv = prob.get_nc() - c1eq.first - c1ineq.first;
+            // This will be the norm of the violation.
+            const auto l = c1eq.second + c1ineq.second;
+            // Test feasibility.
+            const auto feas = prob.feasibility_f(fit);
+
+            if (!(fevals / m_verbosity % 50u)) {
+                // Every 50 lines print the column names.
+                print("\n", std::setw(10), "objevals:", std::setw(15), "objval:", std::setw(15),
+                      "violated:", std::setw(15), "viol. norm:", '\n');
+            }
+            // Print to screen the log line.
+            print(std::setw(10), fevals, std::setw(15), fit[0], std::setw(15), nv, std::setw(15), l, feas ? "" : " i",
+                  '\n');
+            // Record the log.
+            m_log.emplace_back(fevals, fit[0], nv, l, feas);
+        }
+    }
+
     // Objective function
-    void UserF(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop) const
+    void UserF(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop,
+               long long unsigned fevals0) const
     {
         double *X = opt->X; // Abbreviate notation
         const auto &prob = pop.get_problem();
         auto dim = prob.get_nx();
         vector_double x(X, X + dim);
-        auto f = prob.fitness(x);
-        opt->F = wsp->ScaleObj * f[0];
+        auto fit = fitness_with_cache(x, prob);
+        update_log(prob, fit, fevals0);
+        opt->F = wsp->ScaleObj * fit[0];
     }
     // Constraints
-    void UserG(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop) const
+    void UserG(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop,
+               long long unsigned fevals0) const
     {
         double *X = opt->X; // Abbreviate notation
         const auto &prob = pop.get_problem();
         auto dim = prob.get_nx();
         vector_double x(X, X + dim);
-        auto f = prob.fitness(x);
+        auto fit = fitness_with_cache(x, prob);
         for (decltype(prob.get_nc()) i = 0; i < prob.get_nc(); ++i) {
-            opt->G[i] = f[i + 1];
+            opt->G[i] = fit[i + 1];
         }
     }
     // Gradient for the objective function
@@ -950,7 +1019,7 @@ private:
         const auto &prob = pop.get_problem();
         auto dim = prob.get_nx();
         vector_double x(opt->X, opt->X + dim);
-        auto g = prob.gradient(x);
+        auto g = gradient_with_cache(x, prob);
         for (decltype(wsp->DF.nnz) i = 0; i < wsp->DF.nnz; ++i) {
             wsp->DF.val[i] = g[i];
         }
@@ -963,7 +1032,7 @@ private:
         const auto &prob = pop.get_problem();
         auto dim = prob.get_nx();
         vector_double x(opt->X, opt->X + dim);
-        auto g = prob.gradient(x);
+        auto g = gradient_with_cache(x, prob);
         for (decltype(wsp->DG.nnz) i = 0; i < wsp->DG.nnz; ++i) {
             wsp->DG.val[i] = g[wsp->DF.nnz + gs_idx_map[i]];
         }
@@ -992,8 +1061,9 @@ private:
         // Then with the constraints
         for (decltype(pagmo_hsp.size()) i = 1u; i < pagmo_hsp.size(); ++i) {
             for (decltype(pagmo_hsp[i].size()) j = 0u; j < pagmo_hsp[i].size(); ++j) {
-                // If the key is there, great! Otherwise a 0 will be created and pagmo_h[i][j] * opt->Mu[i-1] summed over.
-                pagmo_merged_h[pagmo_hsp[i][j]] = pagmo_merged_h[pagmo_hsp[i][j]] +  pagmo_h[i][j] * opt->Mu[i-1];
+                // If the key is there, great! Otherwise a 0 will be created and pagmo_h[i][j] * opt->Mu[i-1] summed
+                // over.
+                pagmo_merged_h[pagmo_hsp[i][j]] = pagmo_merged_h[pagmo_hsp[i][j]] + pagmo_h[i][j] * opt->Mu[i - 1];
             }
         }
         // At this point the hessian of the lagrangian is assembled in pagmo_merged_h
@@ -1008,11 +1078,36 @@ private:
         }
     }
 
+    // We cache the last call to fitness as it will be repeated by worhp
+    vector_double fitness_with_cache(const vector_double &x, const problem &prob) const
+    {
+        if (x == m_f_cache.first) {
+            return m_f_cache.second;
+        } else {
+            vector_double fit = prob.fitness(x);
+            m_f_cache = std::pair<vector_double, vector_double>{x, fit};
+            return fit;
+        }
+    }
+
+    // We cache the last call to gradient as it will be repeated by worhp
+    vector_double gradient_with_cache(const vector_double &x, const problem &prob) const
+    {
+        if (x == m_g_cache.first) {
+            return m_g_cache.second;
+        } else {
+            vector_double grad = prob.gradient(x);
+            m_g_cache = std::pair<vector_double, vector_double>{x, grad};
+            return grad;
+        }
+    }
+
     // The absolute path to the worhp library
     std::string m_worhp_library;
 
     // Solver return status.
-    mutable std::string m_last_opt_res = "There still is no last optimisation result as WORHP evolve was never successfully called yet.";
+    mutable std::string m_last_opt_res
+        = "There still is no last optimisation result as WORHP evolve was never successfully called yet.";
 
     // Options maps.
     std::map<std::string, int> m_integer_opts;
@@ -1022,6 +1117,11 @@ private:
     // Activates the original worhp screen output
     bool m_screen_output;
     unsigned int m_verbosity;
+    mutable log_type m_log;
+
+    // The caches
+    mutable std::pair<vector_double, vector_double> m_f_cache = {{}, {}};
+    mutable std::pair<vector_double, vector_double> m_g_cache = {{}, {}};
 
     // Deleting the methods load save public in base as to avoid conflict with serialize
     template <typename Archive>
@@ -1034,4 +1134,4 @@ private:
 
 PAGMO_REGISTER_ALGORITHM(pagmo::worhp)
 
-#endif // PAGMO_SNOPT7
+#endif // PAGMO_WORHP

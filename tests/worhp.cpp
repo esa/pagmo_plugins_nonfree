@@ -116,12 +116,13 @@ BOOST_AUTO_TEST_CASE(construction)
 
 BOOST_AUTO_TEST_CASE(evolve)
 {
-    worhp uda{true, WORHP_LIB};
-    uda.evolve(population{worhp_test_problem{}, 1u});
-    uda.evolve(population{hock_schittkowsky_71{}, 1u});
-    uda.evolve(population{luksan_vlcek1{10u}, 1u});
-    uda.evolve(population{rastrigin{10u}, 1u});
-    uda.evolve(population{rosenbrock{5u}, 1u});
-
-
+    worhp uda{false, WORHP_LIB};
+    uda.set_verbosity(1u);
+    problem p{worhp_test_problem{}};
+    p.set_c_tol(1e-6);
+    uda.evolve(population{p, 1u});
+    //uda.evolve(population{hock_schittkowsky_71{}, 1u});
+    //uda.evolve(population{luksan_vlcek1{10u}, 1u});
+    //uda.evolve(population{rastrigin{10u}, 1u});
+    //uda.evolve(population{rosenbrock{5u}, 1u});
 }
