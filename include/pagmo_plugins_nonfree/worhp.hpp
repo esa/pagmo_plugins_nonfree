@@ -225,7 +225,7 @@ public:
         std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpPreInit;
         std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpInit;
         std::function<bool(const Control *, int)> GetUserAction;
-        std::function<bool(Control *, int)> DoneUserAction;
+        std::function<void(Control *, int)> DoneUserAction;
         std::function<void(OptVar *, Workspace *, Params *, Control *)> IterationOutput;
         std::function<void(OptVar *, Workspace *, Params *, Control *)> Worhp;
         std::function<void(OptVar *, Workspace *, Params *, Control *)> StatusMsg;
@@ -270,7 +270,7 @@ public:
                 libworhp,                                                   // the library
                 "GetUserAction"                                             // name of the function to import
             );
-            DoneUserAction = boost::dll::import<bool(Control *, int)>( // type of the function to import
+            DoneUserAction = boost::dll::import<void(Control *, int)>( // type of the function to import
                 libworhp,                                              // the library
                 "DoneUserAction"                                       // name of the function to import
             );
@@ -706,7 +706,6 @@ We report the exact text of the original exception thrown:
                 // No DoneUserAction!
             }
         }
-
         // ------- We reinsert the solution if better -----------------------------------------------------------
         // Store the new individual into the population, but only if it is improved.
         vector_double x_final(dim, 0);
@@ -714,6 +713,7 @@ We report the exact text of the original exception thrown:
         for (int i = 0; i < opt.n; ++i) {
             x_final[i] = opt.X[i];
         }
+
         f_final = prob.fitness(x_final);
 
         if (compare_fc(f_final, f0, prob.get_nec(), prob.get_c_tol())) {
@@ -723,7 +723,9 @@ We report the exact text of the original exception thrown:
         // We retrieve the text of the optimization result
         char cstr[1024];
         StatusMsgString(&opt, &wsp, &par, &cnt, cstr);
+
         m_last_opt_res = std::string(cstr);
+
         // And print it to screen if requested
         if (m_verbosity) {
             print(m_last_opt_res, "\n");

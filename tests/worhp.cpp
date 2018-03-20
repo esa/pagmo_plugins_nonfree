@@ -21,13 +21,13 @@
 #include <pagmo_plugins_nonfree/worhp.hpp>
 
 #ifdef _MSC_VER
-#define WORHP_LIB ".\\worhp.dll"
+#define WORHP_LIB ".\\worhp_c.dll"
 #elif defined __APPLE__
-#define WORHP_LIB "./libworhp.dylib"
+#define WORHP_LIB "./libworhp_c.dylib"
 #elif defined __MINGW32__
-#define WORHP_LIB ".\\libworhp.dll"
+#define WORHP_LIB ".\\libworhp_c.dll"
 #else
-#define WORHP_LIB "./libworhp.so"
+#define WORHP_LIB "./libworhp_c.so"
 #endif
 
 using namespace pagmo;

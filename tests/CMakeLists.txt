@@ -3,7 +3,12 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/pagmo_plugins_nonfree/bogus_libs/snopt7_c_lib)
 add_library(snopt7_c SHARED ../include/pagmo_plugins_nonfree/bogus_libs/snopt7_c_lib/snopt7_c.c)
 
-function(ADD_PAGMO_SNOPT7_TESTCASE arg1)
+# For testing we build a fake library that we will call worhp
+# and that does nothing useful.
+include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/pagmo_plugins_nonfree/bogus_libs/worhp_lib)
+add_library(worhp_c SHARED ../include/pagmo_plugins_nonfree/bogus_libs/worhp_lib/worhp.c)
+
+function(ADD_PAGMO_PLUGINS_TESTCASE arg1)
     add_executable(${arg1} ${arg1}.cpp)
     target_link_libraries(${arg1} pagmo_plugins_nonfree)
     target_compile_options(${arg1} PRIVATE "$<$<CONFIG:DEBUG>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG}>" "$<$<CONFIG:RELEASE>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE}>")
@@ -14,6 +19,6 @@ function(ADD_PAGMO_SNOPT7_TESTCASE arg1)
 endfunction()
 
 # Tests
-ADD_PAGMO_SNOPT7_TESTCASE(snopt7)
-ADD_PAGMO_SNOPT7_TESTCASE(worhp)
+ADD_PAGMO_PLUGINS_TESTCASE(snopt7)
+ADD_PAGMO_PLUGINS_TESTCASE(worhp)
 
