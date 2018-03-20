@@ -5,9 +5,7 @@
 #include <boost/dll/import.hpp>
 #include <boost/dll/shared_library.hpp>
 #include <boost/filesystem.hpp>
-#include <exception>
 #include <iomanip>
-#include <limits> // std::numeric_limits
 #include <mutex>
 #include <pagmo/algorithm.hpp>
 #include <pagmo/algorithms/not_population_based.hpp>
@@ -566,6 +564,51 @@ We report the exact text of the original exception thrown:
         }
         // -------------------------------------------------------------------------------------------------------------------------
 
+        if (m_verbosity) {
+            print("\nWORHP plugin for pagmo/pygmo: \n");
+            if (prob.has_gradient_sparsity()) {
+                print("\tThe gradient sparsity is provided by the user: ", pagmo_gs.size(), " components detected.\n");
+            } else {
+                print("\tThe gradient sparsity is assumed dense: ", pagmo_gs.size(), " components detected.\n");
+            }
+            if (prob.has_gradient()) {
+                print("\tThe gradient is provided by the user.\n");
+            } else {
+                print("\tThe gradient is computed numerically by WORHP.\n");
+            }
+            print("\tThe hessian of the lagrangian sparsity has: ", merged_hs.size(), " components.\n");
+
+            if (prob.has_hessians()) {
+                print("\tThe hessians are provided by the user.\n");
+            } else {
+                print("\tThe hessian of the lagrangian is computed numerically by WORHP.\n");
+            }
+            print("\nThe following parameters have been set by pagmo to values other than their xml provided ones (or "
+                  "their default ones): \n");
+            print("\tpar.FGtogether: ", par.FGtogether, "\n");
+            print("\tpar.UserDF: ", par.UserDF, "\n");
+            print("\tpar.UserDG: ", par.UserDG, "\n");
+            print("\tpar.UserHM: ", par.UserHM, "\n");
+            print("\tpar.TolFeas: ", par.UserHM, "\n");
+            print("\tpar.AcceptTolFeas: ", par.UserHM, "\n");
+            // floats
+            for (const auto &p : m_numeric_opts) {
+                print("\tpar.", p.first, ": ", p.second, "\n");
+            }
+            // int
+            for (const auto &p : m_integer_opts) {
+                print("\tpar.", p.first, ": ", p.second, "\n");
+            }
+            // bool
+            for (const auto &p : m_bool_opts) {
+                print("\tpar.", p.first, ": ", p.second, "\n");
+            }
+
+            print("\n", std::setw(10), "objevals:", std::setw(15), "objval:", std::setw(15), "violated:", std::setw(15),
+                  "viol. norm:", '\n');
+        }
+
+        // -------------------------------------------------------------------------------------------------------------------------
         // USI-7: Run the solver
         /*
          * WORHP Reverse Communication loop.
@@ -575,10 +618,6 @@ We report the exact text of the original exception thrown:
          * Make sure to reset the requested user action afterwards by calling
          * DoneUserAction, except for 'callWorhp' and 'fidif'.
          */
-        if (m_verbosity) {
-            print("\n", std::setw(10), "objevals:", std::setw(15), "objval:", std::setw(15), "violated:", std::setw(15),
-                  "viol. norm:", '\n');
-        }
         while (cnt.status < TerminateSuccess && cnt.status > TerminateError) {
             /*
              * WORHP's main routine.
@@ -686,7 +725,7 @@ We report the exact text of the original exception thrown:
     /// Set verbosity.
     /**
      * This method will set the algorithm's verbosity. If \p n is zero, no output is produced during the
-     * optimisation and no logging is performed. If \p n is nonzero, then every \p n objective function evaluations the
+     * optimisation by pagmo and no logging is performed. If \p n is nonzero, then every \p n objective function evaluations the
      * status of the optimisation will be both printed to screen and recorded internally. See worhp::log_line_type and
      * worhp::log_type for information on the logging format. The internal log can be fetched via get_log().
      *
@@ -724,7 +763,7 @@ We report the exact text of the original exception thrown:
      *
      *    WORHP supports its own logging format and protocol, including the ability to print to screen and write to
      *    file. WORHP's screen logging is disabled by default. On-screen logging can be enabled constructing the
-     *    object pagmo::WORHP passing ``True`` as argument. In this case verbosity will not be allowed to be set.
+     *    object pagmo::WORHP passing ``true`` as argument. In this case verbosity will not be allowed to be set.
      *
      * \endverbatim
      *
@@ -792,6 +831,15 @@ We report the exact text of the original exception thrown:
             stream(ss, "idx: ", std::to_string(boost::any_cast<population::size_type>(m_replace)));
         } else {
             stream(ss, "policy: ", boost::any_cast<std::string>(m_replace));
+        }
+        if (m_integer_opts.size()) {
+            stream(ss, "\n\tInteger options: ", detail::to_string(m_integer_opts));
+        }
+        if (m_numeric_opts.size()) {
+            stream(ss, "\n\tNumeric options: ", detail::to_string(m_numeric_opts));
+        }
+        if (m_bool_opts.size()) {
+            stream(ss, "\n\\tBoolean options: ", detail::to_string(m_bool_opts));
         }
         stream(ss, "\n");
         stream(ss, "\n\tLast optimisation result: \n", m_last_opt_res);
@@ -944,7 +992,7 @@ We report the exact text of the original exception thrown:
     void serialize(Archive &ar)
     {
         ar(cereal::base_class<not_population_based>(this), m_worhp_library, m_last_opt_res, m_integer_opts,
-           m_numeric_opts, m_bool_opts, m_screen_output, m_verbosity);
+           m_numeric_opts, m_bool_opts, m_screen_output, m_verbosity, m_f_cache, m_g_cache);
     }
 
 private:
