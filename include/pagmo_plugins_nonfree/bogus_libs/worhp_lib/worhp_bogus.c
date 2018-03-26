@@ -53,11 +53,11 @@ DLL_PUBLIC void Worhp(OptVar *o, Workspace *w, Params *p, Control *c)
 }
 
 DLL_PUBLIC void StatusMsg(OptVar *o, Workspace *w, Params *p, Control *c){
-    printf("All went great!!!! What a glamorous Success!!");
+    printf("All went great!!!! What a glamorous Success!!\n");
 }
 
 DLL_PUBLIC void StatusMsgString(OptVar *o, Workspace *w, Params *p, Control *c, char message[]){
-    strcpy(message, "All went great!!!! What a glamorous Success!!");
+    strcpy(message, "All went great!!!! What a glamorous Success!!\n");
 }
 
 DLL_PUBLIC void WorhpFree(OptVar *o, Workspace *w, Params *p, Control *c)
@@ -80,17 +80,35 @@ DLL_PUBLIC void WorhpFree(OptVar *o, Workspace *w, Params *p, Control *c)
     free(w->HM.val);
 }
 DLL_PUBLIC void WorhpFidif(OptVar *o, Workspace *w, Params *p, Control *c){}
-DLL_PUBLIC bool WorhpSetBoolParam(Params *p, const char *a, bool b)
+DLL_PUBLIC bool WorhpSetBoolParam(Params *p, const char *stropt, bool b)
 {
-    return true;
+    char *invalid;
+    invalid = "invalid_bool_option";
+    if (strcmp(stropt, invalid) == 0) {
+        return 0;
+    } else {
+        return 1;
+    }
 }
-DLL_PUBLIC bool WorhpSetIntParam(Params *p, const char *a, int b)
+DLL_PUBLIC bool WorhpSetIntParam(Params *p, const char *stropt, int b)
 {
-    return true;
+    char *invalid;
+    invalid = "invalid_int_option";
+    if (strcmp(stropt, invalid) == 0) {
+        return 0;
+    } else {
+        return 1;
+    }
 }
-DLL_PUBLIC bool WorhpSetDoubleParam(Params *p, const char *a, double b)
+DLL_PUBLIC bool WorhpSetDoubleParam(Params *p, const char *stropt, double b)
 {
-    return true;
+    char *invalid;
+    invalid = "invalid_double_option";
+    if (strcmp(stropt, invalid) == 0) {
+        return 0;
+    } else {
+        return 1;
+    }
 }
 DLL_PUBLIC void SetWorhpPrint(worhp_print_t l1){}
 

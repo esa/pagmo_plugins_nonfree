@@ -124,10 +124,39 @@ BOOST_AUTO_TEST_CASE(evolve)
 BOOST_AUTO_TEST_CASE(verbosity)
 {
     // We test the verbosity mechanism when the original worhp screen output is deactivated
-    worhp uda{false, WORHP_LIB};
+    {
+        worhp uda{false, WORHP_LIB};
+        problem p{worhp_test_problem{}};
+        BOOST_CHECK_NO_THROW(uda.set_verbosity(1u));
+        BOOST_CHECK_EQUAL(uda.get_verbosity(), 1u);
+        uda.evolve(population{p, 1u});
+        BOOST_CHECK(uda.get_log().size() > 0);
+    }
+    // We test the verbosity mechanism when the original worhp screen output is active
+    {
+        worhp uda{true, WORHP_LIB};
+        problem p{worhp_test_problem{}};
+        BOOST_CHECK_THROW(uda.set_verbosity(1u), std::invalid_argument);
+        uda.evolve(population{p, 1u});
+        BOOST_CHECK_EQUAL(uda.get_log().size(), 0);
+    }
+}
+
+BOOST_AUTO_TEST_CASE(parameters_setting)
+{
+    worhp uda{true, WORHP_LIB};
     problem p{worhp_test_problem{}};
-    BOOST_CHECK_NO_THROW(uda.set_verbosity(1u));
-    BOOST_CHECK_EQUAL(uda.get_verbosity(), 1u);
-    uda.evolve(population{p, 1u});
-    BOOST_CHECK(uda.get_log().size() > 0);
+    // bool
+    BOOST_CHECK_NO_THROW(uda.set_bool_option("Valid", true));
+    BOOST_CHECK_NO_THROW(uda.evolve(population{p, 1u}));
+    BOOST_CHECK_NO_THROW(uda.set_bool_option("invalid_bool_option", true));
+    BOOST_CHECK_THROW(uda.evolve(population{p, 1u}), std::invalid_argument);
+    BOOST_CHECK(uda.get_bool_options()["Valid"] == true);
+    uda.reset_bool_options();
+    BOOST_CHECK(uda.get_bool_options().size() == 0);
+    BOOST_CHECK_NO_THROW(uda.set_bool_options({{"Valid1", true},{"Valid2", false}}));
+    BOOST_CHECK(uda.get_bool_options().size() == 2);
+    BOOST_CHECK_NO_THROW(uda.set_bool_options({{"invalid_bool_option", true},{"Valid3", false}}));
+    BOOST_CHECK(uda.get_bool_options().size() == 4);
+    BOOST_CHECK_THROW(uda.evolve(population{p, 1u}), std::invalid_argument);
 }

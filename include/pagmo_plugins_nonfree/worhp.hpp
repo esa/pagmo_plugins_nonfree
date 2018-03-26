@@ -986,7 +986,7 @@ We report the exact text of the original exception thrown:
     void set_bool_options(const std::map<std::string, bool> &m)
     {
         for (const auto &p : m) {
-            set_integer_option(p.first, p.second);
+            set_bool_option(p.first, p.second);
         }
     }
     /// Get bool options.
