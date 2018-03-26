@@ -95,7 +95,7 @@ struct worhp_test_problem{
             {},
         };
     }
-    std::vector<vector_double> hessians(const vector_double &dv) const {
+    std::vector<vector_double> hessians(const vector_double &) const {
         return {
             {2, 4},
             {2, 1, 2},
@@ -116,10 +116,10 @@ BOOST_AUTO_TEST_CASE(construction)
 
 BOOST_AUTO_TEST_CASE(evolve)
 {
-    worhp uda{false, WORHP_LIB};
-    uda.set_verbosity(1u);
+    worhp uda{true, WORHP_LIB};
+    //uda.set_verbosity(1u);
     problem p{worhp_test_problem{}};
-    p.set_c_tol(1e-6);
+    p.set_c_tol(1e-7);
     uda.evolve(population{p, 1u});
     //uda.evolve(population{hock_schittkowsky_71{}, 1u});
     //uda.evolve(population{luksan_vlcek1{10u}, 1u});

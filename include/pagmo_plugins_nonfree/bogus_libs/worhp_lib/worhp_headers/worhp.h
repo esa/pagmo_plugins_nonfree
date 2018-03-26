@@ -136,7 +136,7 @@ void WorhpFidif(OptVar*, Workspace*, Params*, Control*);
 void WorhpInit(OptVar*, Workspace*, Params*, Control*);
 void WorhpRestart(OptVar*, Workspace*, Params*, Control*);
 void WorhpCrossover(OptVar*, Workspace*, Params*, Control*);
-void ReadParams(int*, char[], Params*);
+void ReadParams(int*, const char[], Params*);
 
 /*
  *  Worhp Zen

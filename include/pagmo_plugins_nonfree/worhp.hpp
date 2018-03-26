@@ -23,9 +23,8 @@
 #include <unordered_map>
 #include <vector>
 
-extern "C" {
-#include "bogus_libs/worhp_lib/worhp.h"
-}
+#include "bogus_libs/worhp_lib/worhp_bogus.h"
+
 
 namespace pagmo
 {
@@ -354,11 +353,19 @@ We report the exact text of the original exception thrown:
         // WORHP_PARAM_FILE is not set. Otherwise the WORHP_PARAM_FILE will be used. The number of parameters that are
         // not getting default values will be stored in n_xml_param
         int n_xml_param;
-        ReadParams(&n_xml_param, const_cast<char *>("param.xml"), &par);
+        if (m_verbosity) { // pagmo log is active
+            ReadParams(&n_xml_param, const_cast<char *>("param.xml"), &par);
+            SetWorhpPrint(no_screen_output);
+        } else {
+            if (!m_screen_output) { // pagmo log is active
+                SetWorhpPrint(no_screen_output);
+            }
+            ReadParams(&n_xml_param, const_cast<char *>("param.xml"), &par);
+        }
 
         // USI-2: Specify problem dimensions
-        opt.n = dim;
-        opt.m = prob.get_nc(); // number of constraints
+        opt.n = static_cast<int>(dim);
+        opt.m = static_cast<int>(prob.get_nc()); // number of constraints
         auto n_eq = prob.get_nec();
         // Get the sparsity pattern of the gradient
         auto pagmo_gs = prob.gradient_sparsity();
@@ -421,9 +428,9 @@ We report the exact text of the original exception thrown:
                                   });
         hs_idx_map.resize(it2 - hs_idx_map.begin());
 
-        wsp.DF.nnz = fs.size();
-        wsp.DG.nnz = gs.size();
-        wsp.HM.nnz = hs_idx_map.size() + dim; // lower triangular sparse + full diagonal
+        wsp.DF.nnz = static_cast<int>(fs.size());
+        wsp.DG.nnz = static_cast<int>(gs.size());
+        wsp.HM.nnz = static_cast<int>(hs_idx_map.size() + dim); // lower triangular sparse + full diagonal
 
         // This flag informs Worhp that f and g should not be evaluated seperately. pagmo fitness always computes both
         // so that if only the objfun is needed also the constraints are computed. This flag signals to worhp that this
@@ -469,7 +476,7 @@ We report the exact text of the original exception thrown:
             auto success = WorhpSetDoubleParam(&par, p.first.c_str(), p.second);
             if (!success) {
                 pagmo_throw(std::invalid_argument,
-                            "The option '" + p.first + "' was requested by the user to be set to the integer value "
+                            "The option '" + p.first + "' was requested by the user to be set to the float value "
                                 + std::to_string(p.second)
                                 + ", but WORHP interface returned an error. Did you mispell the option name?");
             }
@@ -479,7 +486,7 @@ We report the exact text of the original exception thrown:
             auto success = WorhpSetIntParam(&par, p.first.c_str(), p.second);
             if (!success) {
                 pagmo_throw(std::invalid_argument,
-                            "The option '" + p.first + "' was requested by the user to be set to the float value "
+                            "The option '" + p.first + "' was requested by the user to be set to the integer value "
                                 + std::to_string(p.second)
                                 + ", but WORHP interface returned an error. Did you mispell the option name?");
             }
@@ -493,11 +500,6 @@ We report the exact text of the original exception thrown:
                                 + std::to_string(p.second)
                                 + ", but WORHP interface returned an error. Did you mispell the option name?");
             }
-        }
-
-        // We deal with screen output
-        if (!m_screen_output) {
-            SetWorhpPrint(no_screen_output);
         }
 
         // USI-3: Allocate solver memory
@@ -530,7 +532,7 @@ We report the exact text of the original exception thrown:
             opt.GU[i] = 0;
         }
         // Inequality constraints
-        for (decltype(opt.m) i = n_eq; i < opt.m; ++i) {
+        for (auto i = n_eq; i < static_cast<decltype(n_eq)>(opt.m); ++i) {
             opt.Mu[i] = 0;
             opt.GL[i] = -par.Infty;
             opt.GU[i] = 0;
@@ -546,7 +548,7 @@ We report the exact text of the original exception thrown:
         if (wsp.DF.NeedStructure) {
             for (decltype(fs.size()) i = 0; i < fs.size(); ++i) {
                 // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
-                wsp.DF.row[i] = fs[i].second + 1;
+                wsp.DF.row[i] = static_cast<int>(fs[i].second + 1);
             }
         }
         // -------------------------------------------------------------------------------------------------------------------------
@@ -554,9 +556,9 @@ We report the exact text of the original exception thrown:
         if (wsp.DG.NeedStructure) {
             for (decltype(gs_idx_map.size()) i = 0u; i < gs_idx_map.size(); ++i) {
                 // NOTE: no need for +1 here as in pagmo 0 is the objfun already stripped from here.
-                wsp.DG.row[i] = gs[gs_idx_map[i]].first;
+                wsp.DG.row[i] = static_cast<int>(gs[gs_idx_map[i]].first);
                 // NOTE: the +1 is because of fortran notation is required by WORHP (maledetti).
-                wsp.DG.col[i] = gs[gs_idx_map[i]].second + 1;
+                wsp.DG.col[i] = static_cast<int>(gs[gs_idx_map[i]].second + 1);
             }
         }
         // -------------------------------------------------------------------------------------------------------------------------
@@ -566,15 +568,15 @@ We report the exact text of the original exception thrown:
             // Strict lower triangle
             for (decltype(hs_idx_map.size()) i = 0u; i < hs_idx_map.size(); ++i) {
                 // NOTE: the +1 is because fortran notation is required by WORHP (maledetti).
-                wsp.HM.row[i] = merged_hs[hs_idx_map[i]].first + 1;
+                wsp.HM.row[i] = static_cast<int>(merged_hs[hs_idx_map[i]].first + 1);
                 // NOTE: the +1 is because fortran notation is required by WORHP (maledetti).
-                wsp.HM.col[i] = merged_hs[hs_idx_map[i]].second + 1;
+                wsp.HM.col[i] = static_cast<int>(merged_hs[hs_idx_map[i]].second + 1);
             }
 
             // Diagonal
             for (decltype(dim) i = 0; i < dim; ++i) {
-                wsp.HM.row[hs_idx_map.size() + i] = i + 1;
-                wsp.HM.col[hs_idx_map.size() + i] = i + 1;
+                wsp.HM.row[hs_idx_map.size() + i] = static_cast<int>(i + 1);
+                wsp.HM.col[hs_idx_map.size() + i] = static_cast<int>(i + 1);
             }
         }
         // -------------------------------------------------------------------------------------------------------------------------
@@ -666,7 +668,7 @@ We report the exact text of the original exception thrown:
              * The call to UserG may be replaced by user-defined code.
              */
             if (GetUserAction(&cnt, evalG)) {
-                UserG(&opt, &wsp, &par, &cnt, pop, fevals0);
+                UserG(&opt, &wsp, &par, &cnt, pop);
                 DoneUserAction(&cnt, evalG);
             }
 
@@ -742,9 +744,10 @@ We report the exact text of the original exception thrown:
     /// Set verbosity.
     /**
      * This method will set the algorithm's verbosity. If \p n is zero, no output is produced during the
-     * optimisation by pagmo and no logging is performed. If \p n is nonzero, then every \p n objective function evaluations the
-     * status of the optimisation will be both printed to screen and recorded internally. See worhp::log_line_type and
-     * worhp::log_type for information on the logging format. The internal log can be fetched via get_log().
+     * optimisation by pagmo and no logging is performed. If \p n is nonzero, then every \p n objective function
+     * evaluations the status of the optimisation will be both printed to screen and recorded internally. See
+     * worhp::log_line_type and worhp::log_type for information on the logging format. The internal log can be fetched
+     * via get_log().
      *
      * @param n the desired verbosity level.
      *
@@ -986,7 +989,7 @@ We report the exact text of the original exception thrown:
      * @return the result of the last call to WORHP. You can check
      * The WORHP user manual for the meaning of the various entries.
      * \verbatim embed:rst:leading-asterisk
-     * 
+     *
      * .. seealso::
      *
      *    https://worhp.de/latest/download/user_manual.pdf
@@ -1055,7 +1058,7 @@ private:
     }
 
     // Objective function
-    void UserF(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop,
+    void UserF(OptVar *opt, Workspace *wsp, Params *, Control *, const population &pop,
                long long unsigned fevals0) const
     {
         double *X = opt->X; // Abbreviate notation
@@ -1067,8 +1070,7 @@ private:
         opt->F = wsp->ScaleObj * fit[0];
     }
     // Constraints
-    void UserG(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop,
-               long long unsigned fevals0) const
+    void UserG(OptVar *opt, Workspace *, Params *, Control *, const population &pop) const
     {
         double *X = opt->X; // Abbreviate notation
         const auto &prob = pop.get_problem();
@@ -1080,7 +1082,7 @@ private:
         }
     }
     // Gradient for the objective function
-    void UserDF(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop) const
+    void UserDF(OptVar *opt, Workspace *wsp, Params *, Control *, const population &pop) const
     {
         const auto &prob = pop.get_problem();
         auto dim = prob.get_nx();
@@ -1092,7 +1094,7 @@ private:
     }
 
     // Gradient for the constraints
-    void UserDG(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop,
+    void UserDG(OptVar *opt, Workspace *wsp, Params *, Control *, const population &pop,
                 const std::vector<vector_double::size_type> &gs_idx_map) const
     {
         const auto &prob = pop.get_problem();
@@ -1105,7 +1107,7 @@ private:
     }
 
     // The Hessian of the Lagrangian L = f + mu * g
-    void UserHM(OptVar *opt, Workspace *wsp, Params *par, Control *cnt, const population &pop,
+    void UserHM(OptVar *opt, Workspace *wsp, Params *, Control *, const population &pop,
                 const std::vector<sparsity_pattern> &pagmo_hsp, const sparsity_pattern &pagmo_merged_hsp,
                 const std::vector<vector_double::size_type> &hs_idx_map) const
     {
