@@ -5,6 +5,7 @@
 #include <boost/dll/import.hpp>
 #include <boost/dll/shared_library.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/functional/hash.hpp>
 #include <iomanip>
 #include <mutex>
 #include <pagmo/algorithm.hpp>
@@ -25,23 +26,41 @@
 
 #include "bogus_libs/worhp_lib/worhp_bogus.h"
 
-
 namespace pagmo
 {
 
 namespace detail
 {
 
+// We use this to ensure WorhpFree is called also if exceptions occur.
+struct worhp_raii {
+    worhp_raii(OptVar *o, Workspace *w, Params *p, Control *c,
+               std::function<void(OptVar *, Workspace *, Params *, Control *)> &WorhpInit,
+               std::function<void(OptVar *, Workspace *, Params *, Control *)> &WorhpFree)
+        : m_o(o), m_w(w), m_p(p), m_c(c), m_WorhpFree(WorhpFree)
+    {
+        WorhpInit(o, w, p, c);
+    }
+    ~worhp_raii()
+    {
+        m_WorhpFree(m_o, m_w, m_p, m_c);
+    }
+    OptVar *m_o;
+    Workspace *m_w;
+    Params *m_p;
+    Control *m_c;
+    std::function<void(OptVar *, Workspace *, Params *, Control *)> m_WorhpFree;
+};
+
 // Usual trick with global read-only data useful to the WORHP wrapper.
 template <typename = void>
 struct worhp_statics {
-    using mutex_t = std::mutex;
-    static mutex_t library_load_mutex;
+    static std::mutex library_load_mutex;
 };
 
 // Init of the statics data
 template <typename T>
-typename worhp_statics<T>::mutex_t worhp_statics<T>::library_load_mutex;
+typename std::mutex worhp_statics<T>::library_load_mutex;
 
 } // end of namespace detail
 
@@ -178,7 +197,7 @@ public:
      * the default options. Then FGtogether is set to true (for constrained problems) and UserDF, UserDG , UserHM to the
      * values detected by the pagmo::has_gradient, pagmo::has_hessians methods. TolFeas is then set to be the minimum
      * of prob.get_c_tol() if not 0. All the other options, contained in the data members m_integer_opts,
-     * m_numeric_opts and m_bool_opts are set after and thus overseed the above rules.
+     * m_numeric_opts and m_bool_opts are set after and thus overwrite the above rules.
      *
      * \endverbatim
      *
@@ -378,8 +397,8 @@ We report the exact text of the original exception thrown:
         std::vector<vector_double::size_type> gs_idx_map(gs.size());
         std::iota(gs_idx_map.begin(), gs_idx_map.end(), 0);
         std::sort(gs_idx_map.begin(), gs_idx_map.end(),
-                  [&gs](std::vector<vector_double::size_type>::size_type &idx1,
-                        std::vector<vector_double::size_type>::size_type &idx2) -> bool {
+                  [&gs](const std::vector<vector_double::size_type>::size_type &idx1,
+                        const std::vector<vector_double::size_type>::size_type &idx2) -> bool {
                       return (gs[idx1].second < gs[idx2].second
                               || (!(gs[idx2].second < gs[idx1].second) && gs[idx1].first < gs[idx2].first));
                   });
@@ -426,7 +445,7 @@ We report the exact text of the original exception thrown:
                                   [&merged_hs](std::vector<vector_double::size_type>::size_type &idx) -> bool {
                                       return (merged_hs[idx].first == merged_hs[idx].second);
                                   });
-        hs_idx_map.resize(it2 - hs_idx_map.begin());
+        hs_idx_map.erase(it2, hs_idx_map.end());
 
         wsp.DF.nnz = static_cast<int>(fs.size());
         wsp.DG.nnz = static_cast<int>(gs.size());
@@ -502,7 +521,8 @@ We report the exact text of the original exception thrown:
             }
         }
 
-        // USI-3: Allocate solver memory
+        // USI-3 (and 8): Allocate solver memory (and deallocate upon destruction)
+        //detail::worhp_raii(&opt, &wsp, &par, &cnt, WorhpInit, WorhpFree);
         WorhpInit(&opt, &wsp, &par, &cnt);
 
         // USI-5: Set initial values and deal with gradients / hessians
@@ -734,9 +754,6 @@ We report the exact text of the original exception thrown:
         } else if (m_screen_output) {
             StatusMsg(&opt, &wsp, &par, &cnt);
         }
-
-        // We free the memory.
-        WorhpFree(&opt, &wsp, &par, &cnt);
 
         return pop;
     }
@@ -1021,7 +1038,10 @@ private:
         template <class T1, class T2>
         std::size_t operator()(const std::pair<T1, T2> &p) const
         {
-            return std::hash<T1>()(p.first) ^ std::hash<T2>()(p.second);
+            std::size_t seed = 0;
+            boost::hash_combine(seed, p.first);
+            boost::hash_combine(seed, p.second);
+            return seed;
         }
     };
     // Used to suppress screen output from worhp
