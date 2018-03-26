@@ -521,9 +521,8 @@ We report the exact text of the original exception thrown:
             }
         }
 
-        // USI-3 (and 8): Allocate solver memory (and deallocate upon destruction)
-        //detail::worhp_raii(&opt, &wsp, &par, &cnt, WorhpInit, WorhpFree);
-        WorhpInit(&opt, &wsp, &par, &cnt);
+        // USI-3 (and 8): Allocate solver memory (and deallocate upon destruction of wr)
+        detail::worhp_raii wr(&opt, &wsp, &par, &cnt, WorhpInit, WorhpFree);
 
         // USI-5: Set initial values and deal with gradients / hessians
         // We define the initial value for the chromosome
