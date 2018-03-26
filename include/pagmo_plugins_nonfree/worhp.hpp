@@ -253,6 +253,7 @@ public:
         std::function<bool(Params *, const char *, bool)> WorhpSetBoolParam;
         std::function<bool(Params *, const char *, int)> WorhpSetIntParam;
         std::function<bool(Params *, const char *, double)> WorhpSetDoubleParam;
+        std::function<void(int *major, int *minor, char patch[PATCH_STRING_LENGTH])> WorhpVersion;
         std::function<void(worhp_print_t)> SetWorhpPrint;
 
         // We then try to load the library at run time and locate the symbols used.
@@ -335,6 +336,11 @@ public:
                                                  Control *)>( // type of the function to import
                 libworhp,                                     // the library
                 "WorhpFidif"                                  // name of the function to import
+            );
+            WorhpVersion = boost::dll::import<void(int *major, int *minor,
+                                                   char patch[PATCH_STRING_LENGTH])>( // type of the function to import
+                libworhp,                                                             // the library
+                "WorhpVersion"                                                        // name of the function to import
             );
         } catch (const std::exception &e) {
             std::string message(
@@ -601,6 +607,12 @@ We report the exact text of the original exception thrown:
         // -------------------------------------------------------------------------------------------------------------------------
 
         if (m_verbosity) {
+            int major, minor;
+            char patch[PATCH_STRING_LENGTH];
+            WorhpVersion(&major, &minor, patch);
+            std::string patchstr(patch);
+            print("WORHP version is (library): ", major, ".", minor, ".", patchstr, "\n");
+            print("WORHP version is (plugin headers): ", WORHP_VERSION, "\n");
             print("\nWORHP plugin for pagmo/pygmo: \n");
             if (prob.has_gradient_sparsity()) {
                 print("\tThe gradient sparsity is provided by the user: ", pagmo_gs.size(), " components detected.\n");
@@ -820,10 +832,10 @@ We report the exact text of the original exception thrown:
      *
      * @return a const reference to the log.
      */
-    // const log_type &get_log() const
-    //{
-    //    return m_log;
-    //}
+    const log_type &get_log() const
+    {
+        return m_log;
+    }
     /// Gets the verbosity level
     /**
      * @return the verbosity level

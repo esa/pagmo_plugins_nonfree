@@ -31,6 +31,7 @@ DLL_PUBLIC void WorhpInit(OptVar *o, Workspace *w, Params *p, Control *c)
     w->HM.col = calloc(w->HM.nnz, sizeof(int));
     w->HM.val = calloc(w->HM.nnz, sizeof(double));
     w->ScaleObj = 1;
+    c->status = 0; // to ensure it will enter the main loop in worhp.hpp
     srand((unsigned int)(time(NULL)));
 }
 DLL_PUBLIC bool GetUserAction(const Control *c, int b)
@@ -92,3 +93,10 @@ DLL_PUBLIC bool WorhpSetDoubleParam(Params *p, const char *a, double b)
     return true;
 }
 DLL_PUBLIC void SetWorhpPrint(worhp_print_t l1){}
+
+DLL_PUBLIC void WorhpVersion(int *major, int *minor, char patch[PATCH_STRING_LENGTH])
+{
+    strcpy(patch, "1");
+    *major = 1;
+    *minor = 12;
+};
