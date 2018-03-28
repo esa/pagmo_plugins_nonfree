@@ -39,7 +39,7 @@ struct worhp_raii {
                std::function<void(OptVar *, Workspace *, Params *, Control *)> &WorhpFree)
         : m_o(o), m_w(w), m_p(p), m_c(c), m_WorhpFree(WorhpFree)
     {
-        WorhpInit(o, w, p, c);
+        WorhpInit(m_o, m_w, m_p, m_c);
     }
     ~worhp_raii()
     {
@@ -71,7 +71,7 @@ typename std::mutex worhp_statics<T>::library_load_mutex;
  * This class is a user-defined algorithm (UDA) that contains a plugin to the WORHP (We Optimize Really Huge Problems)
  * solver, a software package for large-scale nonlinear optimization. WORHP is a powerful solver that is able to handle
  * robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. The wrapper
- * was developed around the version 1.12 of WORHP and the Full Feature Interface (FFI) useing the Unified Solver
+ * was developed around the version 1.12 of WORHP and the Full Feature Interface (FFI) using the Unified Solver
  * Interface and the Reverse Communication paradigm (see worhp user manual).
  *
  * \verbatim embed:rst:leading-asterisk
@@ -261,12 +261,12 @@ public:
         try {
             // Here we import at runtime the worhp library and protect the whole try block with a mutex
             std::lock_guard<std::mutex> lock(detail::worhp_statics<>::library_load_mutex);
-            boost::filesystem::path path_to_lib(m_worhp_library);
-            if (!boost::filesystem::is_regular_file(path_to_lib)) {
-                pagmo_throw(std::invalid_argument, "The worhp library path was constructed to be: "
-                                                       + path_to_lib.string() + " and it does not appear to be a file");
+            boost::filesystem::path library_filename(m_worhp_library);
+            if (!boost::filesystem::is_regular_file(library_filename)) {
+                pagmo_throw(std::invalid_argument, "The worhp library file name was constructed to be: "
+                                                       + library_filename.string() + " and it does not appear to be a file");
             }
-            boost::dll::shared_library libworhp(path_to_lib);
+            boost::dll::shared_library libworhp(library_filename);
             // We then load the symbols we need for the WORHP plugin
             WorhpPreInit = boost::dll::import<void(OptVar *, Workspace *, Params *,
                                                    Control *)>( // type of the function to import
@@ -352,7 +352,7 @@ reasons:
 - The file declared to be the worhp library, i.e. )"
                 + m_worhp_library
                 + R"(, is not found or is found but it is not a shared library containing the necessary symbols 
-(is the file path really pointing to a valid shared library?)
+(is the file really a valid shared library?)
  - The library is found and it does contain the symbols, but it needs linking to some additional libraries that are not found
 at run-time.
 
@@ -458,6 +458,10 @@ We report the exact text of the original exception thrown:
         wsp.DG.nnz = static_cast<int>(gs.size());
         wsp.HM.nnz = static_cast<int>(hs_idx_map.size() + dim); // lower triangular sparse + full diagonal
 
+
+        // USI-3 (and 8): Allocate solver memory (and deallocate upon destruction of wr)
+        detail::worhp_raii wr(&opt, &wsp, &par, &cnt, WorhpInit, WorhpFree);
+
         // This flag informs Worhp that f and g should not be evaluated seperately. pagmo fitness always computes both
         // so that if only the objfun is needed also the constraints are computed. This flag signals to worhp that this
         // is the case. Since the flag makes sense only for constrained problems, we set it only if necessary (worhp
@@ -468,17 +472,18 @@ We report the exact text of the original exception thrown:
 
         // We deal with the gradient
         if (prob.has_gradient()) {
-            par.UserDF = true;
-            par.UserDG = true;
+            WorhpSetBoolParam(&par, "UserDF", true);
+            WorhpSetBoolParam(&par, "UserDG", true);
         } else {
-            par.UserDF = false;
-            par.UserDG = false;
+            WorhpSetBoolParam(&par, "UserDF", false);
+            WorhpSetBoolParam(&par, "UserDG", false);
         }
         if (prob.has_hessians()) {
-            par.UserHM = true;
+            WorhpSetBoolParam(&par, "UserHM", true);
         } else {
-            par.UserHM = false;
+            WorhpSetBoolParam(&par, "UserHM", false);
         }
+
 
         // Logic for the handling of constraints tolerances. The logic is as follows:
         // - if the user provides the "TolFeas" option, use that *unconditionally*. Otherwise,
@@ -527,9 +532,6 @@ We report the exact text of the original exception thrown:
                                 + ", but WORHP interface returned an error. Did you mispell the option name?");
             }
         }
-
-        // USI-3 (and 8): Allocate solver memory (and deallocate upon destruction of wr)
-        detail::worhp_raii wr(&opt, &wsp, &par, &cnt, WorhpInit, WorhpFree);
 
         // USI-5: Set initial values and deal with gradients / hessians
         // We define the initial value for the chromosome
@@ -891,7 +893,7 @@ We report the exact text of the original exception thrown:
             stream(ss, "\n\\tBoolean options: ", detail::to_string(m_bool_opts));
         }
         stream(ss, "\n");
-        stream(ss, "\n\tLast optimisation result: \n", m_last_opt_res);
+        stream(ss, "\nLast optimisation result: \n", m_last_opt_res);
         stream(ss, "\n");
         return ss.str();
     }
@@ -1207,7 +1209,7 @@ private:
 
     // Solver return status.
     mutable std::string m_last_opt_res
-        = "There still is no last optimisation result as WORHP evolve was never successfully called yet.";
+        = "\tThere still is no last optimisation result as WORHP evolve was never successfully called yet.";
 
     // Options maps.
     std::map<std::string, int> m_integer_opts;
