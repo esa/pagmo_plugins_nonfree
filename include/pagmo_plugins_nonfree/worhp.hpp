@@ -125,6 +125,7 @@ typename std::mutex worhp_statics<T>::library_load_mutex;
  *    std::function<bool(Params *, const char *, bool)> WorhpSetBoolParam;
  *    std::function<bool(Params *, const char *, int)> WorhpSetIntParam;
  *    std::function<bool(Params *, const char *, double)> WorhpSetDoubleParam;
+ *    std::function<void(int *major, int *minor, char patch[8])> WorhpVersion;
  *    std::function<void(worhp_print_t)> SetWorhpPrint;
  *
  * .. warning::

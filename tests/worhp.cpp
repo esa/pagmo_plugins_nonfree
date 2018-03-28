@@ -154,9 +154,41 @@ BOOST_AUTO_TEST_CASE(parameters_setting)
     BOOST_CHECK(uda.get_bool_options()["Valid"] == true);
     uda.reset_bool_options();
     BOOST_CHECK(uda.get_bool_options().size() == 0);
-    BOOST_CHECK_NO_THROW(uda.set_bool_options({{"Valid1", true},{"Valid2", false}}));
+    BOOST_CHECK_NO_THROW(uda.set_bool_options({{"Valid1", true}, {"Valid2", false}}));
     BOOST_CHECK(uda.get_bool_options().size() == 2);
-    BOOST_CHECK_NO_THROW(uda.set_bool_options({{"invalid_bool_option", true},{"Valid3", false}}));
+    BOOST_CHECK_NO_THROW(uda.set_bool_options({{"invalid_bool_option", true}, {"Valid3", false}}));
     BOOST_CHECK(uda.get_bool_options().size() == 4);
     BOOST_CHECK_THROW(uda.evolve(population{p, 1u}), std::invalid_argument);
+    BOOST_CHECK_NO_THROW(uda.reset_bool_options());
+    BOOST_CHECK(uda.get_bool_options().size() == 0);
+    // numeric
+    BOOST_CHECK_NO_THROW(uda.set_numeric_option("Valid", 13.2));
+    BOOST_CHECK_NO_THROW(uda.evolve(population{p, 1u}));
+    BOOST_CHECK_NO_THROW(uda.set_numeric_option("invalid_numeric_option", 1));
+    BOOST_CHECK_THROW(uda.evolve(population{p, 1u}), std::invalid_argument);
+    BOOST_CHECK(uda.get_numeric_options()["Valid"] == 13.2);
+    uda.reset_numeric_options();
+    BOOST_CHECK(uda.get_numeric_options().size() == 0);
+    BOOST_CHECK_NO_THROW(uda.set_numeric_options({{"Valid1", 1}, {"Valid2", 2}}));
+    BOOST_CHECK(uda.get_numeric_options().size() == 2);
+    BOOST_CHECK_NO_THROW(uda.set_numeric_options({{"invalid_numeric_option", 1}, {"Valid3", 2}}));
+    BOOST_CHECK(uda.get_numeric_options().size() == 4);
+    BOOST_CHECK_THROW(uda.evolve(population{p, 1u}), std::invalid_argument);
+    BOOST_CHECK_NO_THROW(uda.reset_numeric_options());
+    BOOST_CHECK(uda.get_numeric_options().size() == 0);
+    // integer
+    BOOST_CHECK_NO_THROW(uda.set_integer_option("Valid", 13));
+    BOOST_CHECK_NO_THROW(uda.evolve(population{p, 1u}));
+    BOOST_CHECK_NO_THROW(uda.set_integer_option("invalid_integer_option", 132));
+    BOOST_CHECK_THROW(uda.evolve(population{p, 1u}), std::invalid_argument);
+    BOOST_CHECK(uda.get_integer_options()["Valid"] == 13);
+    uda.reset_integer_options();
+    BOOST_CHECK(uda.get_integer_options().size() == 0);
+    BOOST_CHECK_NO_THROW(uda.set_integer_options({{"Valid1", 1}, {"Valid2", 2}}));
+    BOOST_CHECK(uda.get_integer_options().size() == 2);
+    BOOST_CHECK_NO_THROW(uda.set_integer_options({{"invalid_integer_option", 1}, {"Valid3", 2}}));
+    BOOST_CHECK(uda.get_integer_options().size() == 4);
+    BOOST_CHECK_THROW(uda.evolve(population{p, 1u}), std::invalid_argument);
+    BOOST_CHECK_NO_THROW(uda.reset_integer_options());
+    BOOST_CHECK(uda.get_integer_options().size() == 0);
 }

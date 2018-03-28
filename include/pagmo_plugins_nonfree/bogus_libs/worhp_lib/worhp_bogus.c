@@ -93,7 +93,7 @@ DLL_PUBLIC bool WorhpSetBoolParam(Params *p, const char *stropt, bool b)
 DLL_PUBLIC bool WorhpSetIntParam(Params *p, const char *stropt, int b)
 {
     char *invalid;
-    invalid = "invalid_int_option";
+    invalid = "invalid_integer_option";
     if (strcmp(stropt, invalid) == 0) {
         return 0;
     } else {
@@ -103,7 +103,7 @@ DLL_PUBLIC bool WorhpSetIntParam(Params *p, const char *stropt, int b)
 DLL_PUBLIC bool WorhpSetDoubleParam(Params *p, const char *stropt, double b)
 {
     char *invalid;
-    invalid = "invalid_double_option";
+    invalid = "invalid_numeric_option";
     if (strcmp(stropt, invalid) == 0) {
         return 0;
     } else {
