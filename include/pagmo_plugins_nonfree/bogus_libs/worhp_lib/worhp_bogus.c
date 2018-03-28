@@ -16,7 +16,7 @@ DLL_PUBLIC void WorhpInit(OptVar *o, Workspace *w, Params *p, Control *c)
 {
     o->X = calloc(o->n, sizeof(double));
     o->G = calloc(o->m, sizeof(double));
-    o->Lambda = calloc(o->m, sizeof(double));
+    o->Lambda = calloc(o->n, sizeof(double));
     o->XL = calloc(o->n, sizeof(double));
     o->XU = calloc(o->n, sizeof(double));
     o->Mu = calloc(o->m, sizeof(double));
@@ -30,6 +30,9 @@ DLL_PUBLIC void WorhpInit(OptVar *o, Workspace *w, Params *p, Control *c)
     w->HM.row = calloc(w->HM.nnz, sizeof(int));
     w->HM.col = calloc(w->HM.nnz, sizeof(int));
     w->HM.val = calloc(w->HM.nnz, sizeof(double));
+    w->DF.NeedStructure = false;
+    w->DG.NeedStructure = false;
+    w->HM.NeedStructure = false;
     w->ScaleObj = 1;
     c->status = 0; // to ensure it will enter the main loop in worhp.hpp
     srand((unsigned int)(time(NULL)));
@@ -42,16 +45,14 @@ DLL_PUBLIC void DoneUserAction(Control *a, int b){}
 DLL_PUBLIC void IterationOutput(OptVar *o, Workspace *w, Params *p, Control *c){}
 DLL_PUBLIC void Worhp(OptVar *o, Workspace *w, Params *p, Control *c)
 {
-    if (o->F < 1) {
-     c->status = 10000;
-    }
+     c->status = c->status + 100; // this will make it so after ten calls it concludes.
     // Random vector
     int j;
     for (j = 0; j < o->n; ++j) {
         o->X[j] = closed_interval_rand(o->XL[j], o->XU[j]);
     }
 }
-
+ 
 DLL_PUBLIC void StatusMsg(OptVar *o, Workspace *w, Params *p, Control *c){
     printf("All went great!!!! What a glamorous Success!!\n");
 }

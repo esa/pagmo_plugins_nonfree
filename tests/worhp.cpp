@@ -105,20 +105,29 @@ BOOST_AUTO_TEST_CASE(construction)
     worhp uda{false, "ANY_NAME_WILL_WORK"};
     // We check the default values
     BOOST_CHECK_EQUAL(uda.get_log().size(), 0u);
-    BOOST_CHECK(uda.get_extra_info().find("WORHP evolve was never successfully called") != std::string::npos);
+    BOOST_CHECK(uda.get_last_opt_result().find("WORHP evolve was never successfully called") != std::string::npos);
 }
 
 BOOST_AUTO_TEST_CASE(evolve)
 {
+    // We start testing the throws if the problem in the population is not suitable for snopt7
+    // Multi-objective
+    BOOST_CHECK_THROW((worhp{true, WORHP_LIB}.evolve(population{zdt{1}, 20u})), std::invalid_argument);
+    // Stochastic
+    BOOST_CHECK_THROW((worhp{true, WORHP_LIB}.evolve(population{inventory{}, 20u})), std::invalid_argument);
+    // mpty population
+    BOOST_CHECK_THROW((worhp{true, WORHP_LIB}.evolve(population{inventory{}})), std::invalid_argument);
+    // We test the throw if the library is not well formed
+    BOOST_CHECK_THROW(worhp(true, "IDONOTEXIST").evolve(population{rosenbrock{10}, 1u}), std::invalid_argument);
+    BOOST_CHECK_THROW(worhp(false, "IDONOTEXIST").evolve(population{rosenbrock{10}, 1u}), std::invalid_argument);
+    // We call evolve and test that it does not throw in allowed cases.
     worhp uda{true, WORHP_LIB};
-    // uda.set_verbosity(1u);
     problem p{worhp_test_problem{}};
     p.set_c_tol(1e-7);
-    uda.evolve(population{p, 1u});
-    // uda.evolve(population{hock_schittkowsky_71{}, 1u});
-    // uda.evolve(population{luksan_vlcek1{10u}, 1u});
-    // uda.evolve(population{rastrigin{10u}, 1u});
-    // uda.evolve(population{rosenbrock{5u}, 1u});
+    BOOST_CHECK_NO_THROW(uda.evolve(population{p, 1u}));
+    BOOST_CHECK_NO_THROW(uda.evolve(population{hock_schittkowsky_71{}, 1u}));
+    BOOST_CHECK_NO_THROW(uda.evolve(population{rastrigin{10u}, 1u}));
+    BOOST_CHECK_NO_THROW(uda.evolve(population{worhp_test_problem{}, 1u}));
 }
 
 BOOST_AUTO_TEST_CASE(verbosity)
@@ -191,4 +200,46 @@ BOOST_AUTO_TEST_CASE(parameters_setting)
     BOOST_CHECK_THROW(uda.evolve(population{p, 1u}), std::invalid_argument);
     BOOST_CHECK_NO_THROW(uda.reset_integer_options());
     BOOST_CHECK(uda.get_integer_options().size() == 0);
+}
+
+BOOST_AUTO_TEST_CASE(extrainfo_and_others)
+{
+    worhp uda{true, WORHP_LIB};
+    problem p{worhp_test_problem{}};
+    BOOST_CHECK(uda.get_last_opt_result().find("WORHP evolve was never successfully called") != std::string::npos);
+    uda.evolve(population{p, 1u});
+    BOOST_CHECK(uda.get_last_opt_result().find("All went great!!!! What a glamorous Success!!") != std::string::npos);
+    BOOST_CHECK(uda.get_extra_info().find("Worhp library filename:") != std::string::npos);
+    BOOST_CHECK(uda.get_name().find("WORHP") != std::string::npos);
+}
+
+BOOST_AUTO_TEST_CASE(serialization_test)
+{
+    // Make one evolution
+    problem p{worhp_test_problem{}};
+    population pop{p, 10u, 23u};
+    algorithm algo{worhp{false, WORHP_LIB}};
+    algo.set_verbosity(1u);
+    algo.extract<worhp>()->set_integer_option("some_int", 4);
+    algo.extract<worhp>()->set_numeric_option("some_float", 2.2);
+    algo.extract<worhp>()->set_bool_option("some_bool", false);
+    pop = algo.evolve(pop);
+
+    // Store the string representation of p.
+    std::stringstream ss;
+    auto before_text = boost::lexical_cast<std::string>(algo);
+    auto before_log = algo.extract<worhp>()->get_log();
+    // Now serialize, deserialize and compare the result.
+    {
+        cereal::JSONOutputArchive oarchive(ss);
+        oarchive(algo);
+    }
+    // Change the content of p before deserializing.
+    algo = algorithm{null_algorithm{}};
+    {
+        cereal::JSONInputArchive iarchive(ss);
+        iarchive(algo);
+    }
+    auto after_text = boost::lexical_cast<std::string>(algo);
+    BOOST_CHECK_EQUAL(before_text, after_text);
 }
