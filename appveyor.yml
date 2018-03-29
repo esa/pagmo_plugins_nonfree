@@ -48,6 +48,8 @@ build_script:
 - if [%BUILD_TYPE%]==[MSVC_64_Release] cmake --build . --config Release --target install
 # NOTE: need to copy the dll into the directory considered as current by ctest
 - if [%BUILD_TYPE%]==[MSVC_64_Release] cp tests\Release\snopt7_c.dll tests\
+- if [%BUILD_TYPE%]==[MSVC_64_Release] cp tests\Release\worhp_c.dll tests\
+
 
 - if [%BUILD_TYPE%]==[MSVC_64_Python35] mkdir build
 - if [%BUILD_TYPE%]==[MSVC_64_Python35] cd build
