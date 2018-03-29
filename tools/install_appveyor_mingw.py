@@ -78,10 +78,10 @@ run_command(r'7z x -aoa -oC:\\ nlopt.7z', verbose=False)
 run_command(r'7z x -aoa -oC:\\ eigen3.7z', verbose=False)
 
 # Get pagmo from git, install the headers
-wget(r'https://github.com/esa/pagmo2/archive/v2.4.tar.gz', 'pagmo.tar.gz')
+wget(r'https://github.com/esa/pagmo2/archive/v2.6.tar.gz', 'pagmo.tar.gz')
 run_command(r'7z x -aoa -oC:\\projects pagmo.tar.gz', verbose=False)
 run_command(r'7z x -aoa -oC:\\projects C:\\projects\\pagmo.tar', verbose=False)
-os.chdir('c:\\projects\\pagmo2-2.4')
+os.chdir('c:\\projects\\pagmo2-2.6')
 os.makedirs('build_pagmo')
 os.chdir('build_pagmo')
 run_command(
