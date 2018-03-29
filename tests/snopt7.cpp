@@ -129,7 +129,7 @@ BOOST_AUTO_TEST_CASE(evolve)
         // We call the evolve having set the constraint tolerance as to test the setting of "Major feasibility
         // tolerance"
         problem prob{cec2006{1}};
-        prob.set_c_tol(1e-6);
+        prob.set_c_tol({1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6});
         BOOST_CHECK_NO_THROW((uda.evolve(population{prob, 1u})));
         // We now call the evolve. Not much to test in terms of outputs, so we just check that it does not throw.
         BOOST_CHECK_NO_THROW((uda.evolve(population{hock_schittkowsky_71{}, 1u})));
