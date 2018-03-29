@@ -319,12 +319,12 @@ public:
                     libworhp,                                             // the library
                     "WorhpSetBoolParam"                                   // name of the function to import
                 );
-            WorhpSetIntParam = boost::dll::import<bool(Params *, const char *, bool)>( // type of the function to import
+            WorhpSetIntParam = boost::dll::import<bool(Params *, const char *, int)>( // type of the function to import
                 libworhp,                                                              // the library
                 "WorhpSetIntParam"                                                     // name of the function to import
             );
             WorhpSetDoubleParam
-                = boost::dll::import<bool(Params *, const char *, bool)>( // type of the function to import
+                = boost::dll::import<bool(Params *, const char *, double)>( // type of the function to import
                     libworhp,                                             // the library
                     "WorhpSetDoubleParam"                                 // name of the function to import
                 );
