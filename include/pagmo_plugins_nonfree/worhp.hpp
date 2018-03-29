@@ -441,7 +441,7 @@ We report the exact text of the original exception thrown:
         // Sort the resulting hessian of the lagrangian sparsity according to worhp twisted choice.
         // Lexicographic from right to left, i.e. ((1,0),(2,0),(0,1), )
         std::sort(hs_idx_map.begin(), hs_idx_map.end(),
-                  [&merged_hs](vector_double::size_type &idx1, vector_double::size_type &idx2) -> bool {
+                  [&merged_hs](const vector_double::size_type &idx1, const vector_double::size_type &idx2) -> bool {
                       return (merged_hs[idx1].second < merged_hs[idx2].second
                               || (!(merged_hs[idx2].second < merged_hs[idx1].second)
                                   && merged_hs[idx1].first < merged_hs[idx2].first));
