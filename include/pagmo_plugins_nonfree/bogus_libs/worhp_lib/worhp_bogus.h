@@ -5,13 +5,6 @@
 extern "C" {
 #endif
 
-// When in windows symbols must be explictly marked for export
-#ifdef _WIN32
-#define __PAGMO_VISIBLE __declspec(dllexport)
-#else
-#define __PAGMO_VISIBLE __attribute__((visibility("default")))
-#endif
-
 double closed_interval_rand(double x0, double x1);
 
 #ifdef __cplusplus
