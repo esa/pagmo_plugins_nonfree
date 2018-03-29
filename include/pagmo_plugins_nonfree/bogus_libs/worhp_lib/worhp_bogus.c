@@ -10,9 +10,9 @@ inline double closed_interval_rand(double x0, double x1)
     return x0 + (x1 - x0) * rand() / ((double)RAND_MAX);
 }
 
-DLL_PUBLIC void ReadParams(int *a, const char b[], Params *c){}
-DLL_PUBLIC void WorhpPreInit(OptVar *o, Workspace *w, Params *p, Control *c){}
-DLL_PUBLIC void WorhpInit(OptVar *o, Workspace *w, Params *p, Control *c)
+void ReadParams(int *a, const char b[], Params *c){}
+void WorhpPreInit(OptVar *o, Workspace *w, Params *p, Control *c){}
+void WorhpInit(OptVar *o, Workspace *w, Params *p, Control *c)
 {
     o->X = calloc(o->n, sizeof(double));
     o->G = calloc(o->m, sizeof(double));
@@ -37,13 +37,13 @@ DLL_PUBLIC void WorhpInit(OptVar *o, Workspace *w, Params *p, Control *c)
     c->status = 0; // to ensure it will enter the main loop in worhp.hpp
     srand((unsigned int)(time(NULL)));
 }
-DLL_PUBLIC bool GetUserAction(const Control *c, int b)
+bool GetUserAction(const Control *c, int b)
 {
     return true;
 }
-DLL_PUBLIC void DoneUserAction(Control *a, int b){}
-DLL_PUBLIC void IterationOutput(OptVar *o, Workspace *w, Params *p, Control *c){}
-DLL_PUBLIC void Worhp(OptVar *o, Workspace *w, Params *p, Control *c)
+void DoneUserAction(Control *a, int b){}
+void IterationOutput(OptVar *o, Workspace *w, Params *p, Control *c){}
+void Worhp(OptVar *o, Workspace *w, Params *p, Control *c)
 {
      c->status = c->status + 100; // this will make it so after ten calls it concludes.
     // Random vector
@@ -53,15 +53,15 @@ DLL_PUBLIC void Worhp(OptVar *o, Workspace *w, Params *p, Control *c)
     }
 }
  
-DLL_PUBLIC void StatusMsg(OptVar *o, Workspace *w, Params *p, Control *c){
+void StatusMsg(OptVar *o, Workspace *w, Params *p, Control *c){
     printf("All went great!!!! What a glamorous Success!!\n");
 }
 
-DLL_PUBLIC void StatusMsgString(OptVar *o, Workspace *w, Params *p, Control *c, char message[]){
+void StatusMsgString(OptVar *o, Workspace *w, Params *p, Control *c, char message[]){
     strcpy(message, "All went great!!!! What a glamorous Success!!\n");
 }
 
-DLL_PUBLIC void WorhpFree(OptVar *o, Workspace *w, Params *p, Control *c)
+void WorhpFree(OptVar *o, Workspace *w, Params *p, Control *c)
 {
     free(o->X);
     free(o->G);
@@ -80,8 +80,8 @@ DLL_PUBLIC void WorhpFree(OptVar *o, Workspace *w, Params *p, Control *c)
     free(w->HM.col);
     free(w->HM.val);
 }
-DLL_PUBLIC void WorhpFidif(OptVar *o, Workspace *w, Params *p, Control *c){}
-DLL_PUBLIC bool WorhpSetBoolParam(Params *p, const char *stropt, bool b)
+void WorhpFidif(OptVar *o, Workspace *w, Params *p, Control *c){}
+bool WorhpSetBoolParam(Params *p, const char *stropt, bool b)
 {
     char *invalid;
     invalid = "invalid_bool_option";
@@ -91,7 +91,7 @@ DLL_PUBLIC bool WorhpSetBoolParam(Params *p, const char *stropt, bool b)
         return 1;
     }
 }
-DLL_PUBLIC bool WorhpSetIntParam(Params *p, const char *stropt, int b)
+bool WorhpSetIntParam(Params *p, const char *stropt, int b)
 {
     char *invalid;
     invalid = "invalid_integer_option";
@@ -101,7 +101,7 @@ DLL_PUBLIC bool WorhpSetIntParam(Params *p, const char *stropt, int b)
         return 1;
     }
 }
-DLL_PUBLIC bool WorhpSetDoubleParam(Params *p, const char *stropt, double b)
+bool WorhpSetDoubleParam(Params *p, const char *stropt, double b)
 {
     char *invalid;
     invalid = "invalid_numeric_option";
@@ -111,9 +111,9 @@ DLL_PUBLIC bool WorhpSetDoubleParam(Params *p, const char *stropt, double b)
         return 1;
     }
 }
-DLL_PUBLIC void SetWorhpPrint(worhp_print_t l1){}
+void SetWorhpPrint(worhp_print_t l1){}
 
-DLL_PUBLIC void WorhpVersion(int *major, int *minor, char patch[PATCH_STRING_LENGTH])
+void WorhpVersion(int *major, int *minor, char patch[PATCH_STRING_LENGTH])
 {
     strcpy(patch, "1");
     *major = 1;
