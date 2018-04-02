@@ -10,7 +10,7 @@ CMAKE_VERSION="3.8.0"
 EIGEN3_VERSION="3.3.3"
 BOOST_VERSION="1.63.0"
 NLOPT_VERSION="2.4.2"
-PAGMO_VERSION="2.4"
+PAGMO_VERSION="2.6"
 
 if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *36 ]]; then
 	PYTHON_DIR="cp36-cp36m"
@@ -41,18 +41,18 @@ cd
 mkdir install
 cd install
 
-# CMake
-wget https://github.com/Kitware/CMake/archive/v${CMAKE_VERSION}.tar.gz --no-verbose
-tar xzf v${CMAKE_VERSION}
+# Install CMake
+curl -L https://github.com/Kitware/CMake/archive/v${CMAKE_VERSION}.tar.gz > v${CMAKE_VERSION}
+tar xzf v${CMAKE_VERSION} > /dev/null 2>&1
 cd CMake-${CMAKE_VERSION}/
 ./configure > /dev/null
 gmake -j2 > /dev/null
 gmake install > /dev/null
 cd ..
 
-# Eigen
-wget https://github.com/RLovelett/eigen/archive/${EIGEN3_VERSION}.tar.gz --no-verbose
-tar xzf ${EIGEN3_VERSION}
+# Install Eigen
+curl -L https://github.com/RLovelett/eigen/archive/${EIGEN3_VERSION}.tar.gz > ${EIGEN3_VERSION}
+tar xzf ${EIGEN3_VERSION} > /dev/null 2>&1
 cd eigen-${EIGEN3_VERSION}
 mkdir build
 cd build
@@ -62,7 +62,7 @@ cd ..
 cd ..
 
 # Boost (python, system, filesystem libs needed)
-wget https://downloads.sourceforge.net/project/boost/boost/${BOOST_VERSION}/boost_`echo ${BOOST_VERSION}|tr "." "_"`.tar.bz2 --no-verbose
+curl -L http://dl.bintray.com/boostorg/release/${BOOST_VERSION}/source/boost_`echo ${BOOST_VERSION}|tr "." "_"`.tar.bz2 > boost_`echo ${BOOST_VERSION}|tr "." "_"`.tar.bz2
 tar xjf boost_`echo ${BOOST_VERSION}|tr "." "_"`.tar.bz2
 cd boost_`echo ${BOOST_VERSION}|tr "." "_"`
 sh bootstrap.sh --with-python=/opt/python/${PYTHON_DIR}/bin/python > /dev/null
@@ -71,7 +71,7 @@ cd ..
 
 # NLopt
 # NOTE: use alternative mirror as the one from the original webpage is faulty.
-wget http://pkgs.fedoraproject.org/repo/pkgs/NLopt/NLopt-${NLOPT_VERSION}.tar.gz/d0b8f139a4acf29b76dbae69ade8ac54/NLopt-${NLOPT_VERSION}.tar.gz --no-verbose
+curl -L  http://pkgs.fedoraproject.org/repo/pkgs/NLopt/NLopt-${NLOPT_VERSION}.tar.gz/d0b8f139a4acf29b76dbae69ade8ac54/NLopt-${NLOPT_VERSION}.tar.gz > NLopt-${NLOPT_VERSION}.tar.gz
 tar xzf NLopt-${NLOPT_VERSION}.tar.gz
 cd nlopt-${NLOPT_VERSION}
 ./configure --enable-shared --disable-static > /dev/null
@@ -82,7 +82,7 @@ cd ..
 /opt/python/${PYTHON_DIR}/bin/pip install cloudpickle numpy
 
 # pagmo & pygmo wget https://github.com/esa/pagmo2/archive/v2.4.tar.gz
-wget https://github.com/esa/pagmo2/archive/v${PAGMO_VERSION}.tar.gz -O pagmo2.tar.gz --no-verbose
+curl -L  https://github.com/esa/pagmo2/archive/v${PAGMO_VERSION}.tar.gz > pagmo2.tar.gz
 tar xzf pagmo2.tar.gz
 cd pagmo2-${PAGMO_VERSION}
 mkdir build_pagmo

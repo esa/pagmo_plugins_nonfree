@@ -1135,7 +1135,7 @@ private:
         vector_double x(opt->X, opt->X + dim);
         auto g = gradient_with_cache(x, prob);
         for (vector_double::size_type i = 0u; i < static_cast<vector_double::size_type>(wsp->DG.nnz); ++i) {
-            wsp->DG.val[i] = g[wsp->DF.nnz + gs_idx_map[i]];
+            wsp->DG.val[i] = g[static_cast<vector_double::size_type>(wsp->DF.nnz) + gs_idx_map[i]];
         }
     }
 
