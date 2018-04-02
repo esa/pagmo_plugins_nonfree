@@ -263,8 +263,9 @@ public:
             std::lock_guard<std::mutex> lock(detail::worhp_statics<>::library_load_mutex);
             boost::filesystem::path library_filename(m_worhp_library);
             if (!boost::filesystem::is_regular_file(library_filename)) {
-                pagmo_throw(std::invalid_argument, "The worhp library file name was constructed to be: "
-                                                       + library_filename.string() + " and it does not appear to be a file");
+                pagmo_throw(std::invalid_argument,
+                            "The worhp library file name was constructed to be: " + library_filename.string()
+                                + " and it does not appear to be a file");
             }
             boost::dll::shared_library libworhp(library_filename);
             // We then load the symbols we need for the WORHP plugin
@@ -320,13 +321,13 @@ public:
                     "WorhpSetBoolParam"                                   // name of the function to import
                 );
             WorhpSetIntParam = boost::dll::import<bool(Params *, const char *, int)>( // type of the function to import
-                libworhp,                                                              // the library
-                "WorhpSetIntParam"                                                     // name of the function to import
+                libworhp,                                                             // the library
+                "WorhpSetIntParam"                                                    // name of the function to import
             );
             WorhpSetDoubleParam
                 = boost::dll::import<bool(Params *, const char *, double)>( // type of the function to import
-                    libworhp,                                             // the library
-                    "WorhpSetDoubleParam"                                 // name of the function to import
+                    libworhp,                                               // the library
+                    "WorhpSetDoubleParam"                                   // name of the function to import
                 );
             WorhpFree = boost::dll::import<void(OptVar *, Workspace *, Params *,
                                                 Control *)>( // type of the function to import
@@ -458,7 +459,6 @@ We report the exact text of the original exception thrown:
         wsp.DG.nnz = static_cast<int>(gs.size());
         wsp.HM.nnz = static_cast<int>(hs_idx_map.size() + dim); // lower triangular sparse + full diagonal
 
-
         // USI-3 (and 8): Allocate solver memory (and deallocate upon destruction of wr)
         detail::worhp_raii wr(&opt, &wsp, &par, &cnt, WorhpInit, WorhpFree);
 
@@ -483,7 +483,6 @@ We report the exact text of the original exception thrown:
         } else {
             WorhpSetBoolParam(&par, "UserHM", false);
         }
-
 
         // Logic for the handling of constraints tolerances. The logic is as follows:
         // - if the user provides the "TolFeas" option, use that *unconditionally*. Otherwise,
@@ -538,17 +537,17 @@ We report the exact text of the original exception thrown:
         // We init the starting point using the inherited methods from not_population_based
         auto sel_xf = select_individual(pop);
         vector_double x0(std::move(sel_xf.first)), f0(std::move(sel_xf.second)); // TODO: is f0 useful to worhp?
-        for (decltype(opt.n) i = 0u; i < opt.n; ++i) {
+        for (vector_double::size_type i = 0u; i < static_cast<vector_double::size_type>(opt.n); ++i) {
             opt.X[i] = x0[i];
         }
         opt.F = wsp.ScaleObj * f0[0];
-        for (decltype(opt.m) i = 0; i < opt.m; ++i) {
+        for (vector_double::size_type i = 0u; i < static_cast<vector_double::size_type>(opt.m); ++i) {
             opt.G[i] = f0[i + 1];
         }
 
         // USI-6: Set the constraint bounds
         // Box bounds
-        for (decltype(opt.n) i = 0; i < opt.n; ++i) {
+        for (vector_double::size_type i = 0; i < static_cast<vector_double::size_type>(opt.n); ++i) {
             opt.Lambda[i] = 0;
             opt.XL[i] = lb[i];
             opt.XU[i] = ub[i];
@@ -746,7 +745,7 @@ We report the exact text of the original exception thrown:
         // Store the new individual into the population, but only if it is improved.
         vector_double x_final(dim, 0);
         vector_double f_final(prob.get_nf(), 0);
-        for (int i = 0; i < opt.n; ++i) {
+        for (vector_double::size_type i = 0u; i < static_cast<vector_double::size_type>(opt.n); ++i) {
             x_final[i] = opt.X[i];
         }
 
@@ -1122,7 +1121,7 @@ private:
         auto dim = prob.get_nx();
         vector_double x(opt->X, opt->X + dim);
         auto g = gradient_with_cache(x, prob);
-        for (decltype(wsp->DF.nnz) i = 0; i < wsp->DF.nnz; ++i) {
+        for (vector_double::size_type i = 0u; i < static_cast<vector_double::size_type>(wsp->DF.nnz); ++i) {
             wsp->DF.val[i] = g[i];
         }
     }
@@ -1135,7 +1134,7 @@ private:
         auto dim = prob.get_nx();
         vector_double x(opt->X, opt->X + dim);
         auto g = gradient_with_cache(x, prob);
-        for (decltype(wsp->DG.nnz) i = 0; i < wsp->DG.nnz; ++i) {
+        for (vector_double::size_type i = 0u; i < static_cast<vector_double::size_type>(wsp->DG.nnz); ++i) {
             wsp->DG.val[i] = g[wsp->DF.nnz + gs_idx_map[i]];
         }
     }
