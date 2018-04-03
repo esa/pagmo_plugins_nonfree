@@ -111,8 +111,8 @@ BOOST_AUTO_TEST_CASE(evolve)
         BOOST_CHECK_THROW(uda.evolve(population{ackley{10}, 0u}), std::invalid_argument);
 
         // We test the throw if the library is not well formed
-        BOOST_CHECK_THROW(snopt7(true, "IDONOTEXIST").evolve(population{ackley{10}, 0u}), std::invalid_argument);
-        BOOST_CHECK_THROW(snopt7(false, "IDONOTEXIST").evolve(population{ackley{10}, 0u}), std::invalid_argument);
+        BOOST_CHECK_THROW(snopt7(true, "IDONOTEXIST").evolve(population{ackley{10}, 1u}), std::invalid_argument);
+        BOOST_CHECK_THROW(snopt7(false, "IDONOTEXIST").evolve(population{ackley{10}, 1u}), std::invalid_argument);
 
         // We test the throw if the user has tried to set the derivative option
         uda.set_integer_option("Derivative option", 2);
@@ -129,7 +129,7 @@ BOOST_AUTO_TEST_CASE(evolve)
         // We call the evolve having set the constraint tolerance as to test the setting of "Major feasibility
         // tolerance"
         problem prob{cec2006{1}};
-        prob.set_c_tol({1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6});
+        prob.set_c_tol({1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6,1e-6,1e-6});
         BOOST_CHECK_NO_THROW((uda.evolve(population{prob, 1u})));
         // We now call the evolve. Not much to test in terms of outputs, so we just check that it does not throw.
         BOOST_CHECK_NO_THROW((uda.evolve(population{hock_schittkowsky_71{}, 1u})));

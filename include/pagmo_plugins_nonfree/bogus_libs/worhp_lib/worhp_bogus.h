@@ -44,11 +44,20 @@ You should have received copies of the GNU General Public License and the
 GNU Lesser General Public License along with the "pagmo plugins nonfree" library.  If not,
 see https://www.gnu.org/licenses/. */
 
-#ifndef PAGMO_PAGMO_PLUGINS_NONFREE_HPP
-#define PAGMO_PAGMO_PLUGINS_NONFREE_HPP
+#ifndef WORHP_BOGUS_H
+#define WORHP_BOGUS_H
 
-#include <pagmo_plugins_nonfree/config.hpp>
-#include <pagmo_plugins_nonfree/snopt7.hpp>
-#include <pagmo_plugins_nonfree/worhp.hpp>
-
+#ifdef __cplusplus
+extern "C" {
 #endif
+
+double closed_interval_rand(double x0, double x1);
+
+#ifdef __cplusplus
+}
+#endif
+
+// The original headers from worhp
+#include "worhp_headers/worhp.h"
+
+#endif // WORHP_BOGUS_H

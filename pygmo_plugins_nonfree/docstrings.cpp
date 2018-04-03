@@ -7,7 +7,7 @@ namespace pygmo
 
 std::string snopt7_docstring()
 {
-    return R"(__init__(screen_output = false, absolute_lib_path = "\usr\local\lib\")
+    return R"(__init__(screen_output = False, library = "/usr/local/lib/libsnopt7.so")
 
 SNOPT 7 - (Sparse Nonlinear OPTimizer, Version 7)
 
@@ -15,30 +15,33 @@ This class is a user-defined algorithm (UDA) that contains a plugin to the Spars
 solver, a software package for large-scale nonlinear optimization. SNOPT7 is a powerful solver that is able to handle
 robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities.
 
+Intended use::
+   >>> import pygmo as pg
+   >>> import pygmo_plugins_nonfree as ppnf
+   >>> uda = ppnf.snopt7(screen_output = False, library = "/usr/local/lib/libsnopt7.so")
+   >>> algo = pg.algorithm(uda)
+
 SNOPT7 supports only single-objective minimisation, using a sequential quadratic programming (SQP) algorithm.
 Search directions are obtained from QP subproblems that minimize a quadratic model of the Lagrangian function
 subject to linearized constraints. An augmented Lagrangian merit function is reduced along each search
 direction to ensure convergence from any starting point.
 
-In order to support pagmo's population-based optimisation model, :cpp:class:`pagmo::snopt7` will select
-a single individual from the input pagmo::population to be optimised.
-If the optimisation produces an improved individual (as established by pagmo::compare_fc()),
+In order to support pagmo's population-based optimisation model, *snopt7* selects
+a single individual from the input *population* to be optimised.
+If the optimisation produces an improved individual (as established by pagmo comparison criteria),
 the optimised individual will be inserted back into the population.
-The selection and replacement strategies can be configured via set_selection(const std::string &),
-set_selection(population::size_type), set_replacement(const std::string &) and
-set_replacement(population::size_type).
 
 Args:
    screen_output (``bool``): when True will activate the original screen output from SNOPT7 and deactivate the logging system based on
      :class:`~pygmo_snopt7.set_verbosity()`.
-   absolute_lib_path (``str``): the absolute path to the snopt7_c library in your system
+   library (``str``): the snopt7 library filename in your system (absolute path included)
 
 Raises:
    ArgumentError: for any conversion problems between the python types and the c++ signature
 
-.. warning::
+.. note::
 
-   Unfortunately, SNOPT7 fortran code is only available acquiring a licence.
+   SNOPT7 fortran code is only available acquiring a licence.
    If you do have such a licence, then you will also have the fortran files and can build them into the library
    snopt7 (one single library). In what follows, we assume the snopt7 fortran library is available in your
    system. Since pagmo wraps around the C interface you will have to compile also the library snopt7_c, which is open
@@ -105,8 +108,8 @@ Raises:
 
 Examples:
     >>> from pygmo import *
-    >>> from pygmo_snopt7 import snopt7
-    >>> algo = algorithm(snopt7(screen_output = False, absolute_lib_path = "/usr/local/lib/"))
+    >>> from pygmo_plugins_nonfree import snopt7
+    >>> algo = algorithm(snopt7(screen_output = False, library = "/usr/local/lib/libsnopt7.so"))
     >>> algo.set_verbosity(1)
     >>> prob = problem(cec2006(prob_id = 1))
     >>> prob.c_tol = [1e-6]*9
@@ -205,7 +208,7 @@ Examples:
     >>> import pygmo as pg
     >>> import pygmo_plugins_nonfree as pg7
     >>> udp = pg.problem(pg.cec2006(prob_id = 1))
-    >>> uda = pg7.snopt7(False, "/usr/local/lib/")
+    >>> uda = pg7.snopt7(False, "/usr/local/lib/libsnopt7.so")
     >>> uda.set_integer_option("Iterations limit", 10)
     >>> algo = pg.algorithm(uda)
     >>> algo.set_verbosity(10)
@@ -237,7 +240,7 @@ The optimisation options are passed to the snOptA API when calling evolve().
 
 Args:
    name (``string``): name of the option
-   value (``int``): value of the option
+   value (``float``): value of the option
 
 The available numeric options are listed in the following table:
 
@@ -273,7 +276,7 @@ Examples:
     >>> import pygmo as pg
     >>> import pygmo_plugins_nonfree as pg7
     >>> udp = pg.problem(pg.cec2006(prob_id = 1))
-    >>> uda = pg7.snopt7(False, "/usr/local/lib/")
+    >>> uda = pg7.snopt7(False, "/usr/local/lib/libsnopt7.so")
     >>> uda.set_numeric_option("Major feasibility tolerance", 1e-2)
     >>> algo = pg.algorithm(uda)
     >>> algo.set_verbosity(20)
@@ -293,6 +296,224 @@ Examples:
            121       -11.4841              5    0.000267805 i
            <BLANKLINE>
     Finished successfully - optimality conditions satisfied
+
+)";
+}
+
+std::string worhp_docstring()
+{
+    return R"(__init__(screen_output = false, library = '\usr\local\lib\libworhp.so')
+
+WORHP - (We Optimize Really Huge Problems)
+
+This class is a user-defined algorithm (UDA) that contains a plugin to the WORHP (We Optimize Really Huge Problems)
+solver, a software package for large-scale nonlinear optimization. WORHP is a powerful solver that is able to handle
+robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. The wrapper
+was developed around the version 1.12 of WORHP and the Full Feature Interface (FFI) using the Unified Solver
+Interface and the Reverse Communication paradigm (see worhp user manual).
+
+Intended use::
+   >>> import pygmo as pg
+   >>> import pygmo_plugins_nonfree as ppnf
+   >>> uda = ppnf.worhp(screen_output = False, library = "/usr/local/lib/libworhp.so")
+   >>> algo = pg.algorithm(uda)
+
+.. warning::
+
+   Unfortunately, the WORHP library is only available acquiring a licence. You can consult the web pages at
+   (https://worhp.de/) for further information. There you will be able to download the correct library for your
+   architecture and obtain a license file. You will be able to specify the location of the downloaded library when
+   constructing this UDA.
+
+Worhp is designed to efficiently solve small- to large-scale constrained optimisation problems, where
+the objective function and the constraints are sufficiently smooth, and may be linear, quadratic or nonlinear. It is
+designed to find locally optimal points of optimisation problems, which may be globally optimal, depending on the
+problem structure, the initial guess and other factors. Worhp combines  a  Sequential  Quadratic  Programming  (SQP)
+method  on  the general nonlinear level with a primal-dual Interior Point (IP) method on the quadratic subproblem
+level, to generate a sequence of search directions, which are subject to line search using the Augmented Lagrangian
+or L1 merit function.
+
+Worhp needs first and second order derivatives, which can be supplied by the user, or approximated by finite
+differences or quasi-Newton methods.
+
+In order to support pagmo's population-based optimisation model, *snopt7* selects
+a single individual from the input *population* to be optimised.
+If the optimisation produces an improved individual (as established by pagmo comparison criteria),
+the optimised individual will be inserted back into the population.
+
+Args:
+   screen_output (``bool``): when True will activate the original screen output from SNOPT7 and deactivate the logging system based on
+     :class:`~pygmo_snopt7.set_verbosity()`.
+   library (``str``): the worhp library filename in your system (absolute path included)
+
+Raises:
+   ArgumentError: for any conversion problems between the python types and the c++ signature
+
+.. note::
+
+   This plugin for the WORHP was developed around version 1.12.1 of the worhp library. The plugin will
+   also work with future verions of the worhp library as long as their developers will not change the API
+   of the following functions: ReadParams; WorhpPreInit; WorhpInit; GetUserAction; DoneUserAction; IterationOutput;
+   Worhp; StatusMsg; StatusMsgString; WorhpFree; WorhpFidif; WorhpSetBoolParam; WorhpSetIntParam;
+   WorhpSetDoubleParam; WorhpVersion; SetWorhpPrint;
+
+.. warning::
+
+   A moved-from :cpp:class:`pagmo::worhp` is destructible and assignable. Any other operation will result
+   in undefined behaviour.
+
+.. seealso::
+
+   https://worhp.de/
+
+See also the docs of the C++ class :cpp:class:`worhp::worhp`.
+
+)";
+}
+
+std::string worhp_get_log_docstring()
+{
+    return R"(get_log()
+
+Returns:
+    ``list``: the optimisation log containing the values ``objevals``, ``objval``, ``violated``, ``viol. norm``, ``feas.``, where:
+
+    * ``objevals`` (``int``), the number of objective function evaluations made so far
+    * ``objval`` (``float``), the objective function value for the current decision vector
+    * ``violated`` (``int``), the number of constraints violated by the current decision vector
+    * ``viol. norm`` (``float``), the constraints violation norm for the current decision vector
+    * ``feas.`` (``bool``), a boolean flag signalling the feasibility of the current decision vector (as determined by pagmo)
+
+Raises:
+    unspecified: any exception thrown by failures at the intersection between C++ and Python (e.g.,
+    type conversion errors, mismatched function signatures, etc.)
+
+.. warning::
+
+   The number of constraints violated, the constraints violation norm and the feasibility flag stored in the log
+   are all determined via the facilities and the tolerances specified within :class:`pygmo.problem`. That
+   is, they might not necessarily be consistent with worhp's notion of feasibility. 
+
+.. note::
+
+   WORHP supports its own screen output. It can be activated upon construction by setting the relative kwarg to ``True``
+
+Examples:
+    >>> from pygmo import *
+    >>> from pygmo_plugins_nonfree import worhp
+    >>> algo = algorithm(worhp(screen_output = False, library = "/usr/local/lib/libworhp.so"))
+    >>> algo.set_verbosity(1)
+    >>> prob = problem(cec2006(prob_id = 1))
+    >>> prob.c_tol = [1e-6]*9
+    >>> pop = population(prob, 1)
+    >>> pop = algo.evolve(pop) # doctest: +SKIP
+     Error (Read_XML_File): Could not open file param.xml.
+     WorhpFromXML: Could not open parameter file, using default values.
+    WORHP version is (library): 1.12.1
+    WORHP version is (plugin headers): 1.12.1
+    <BLANKLINE>
+    WORHP plugin for pagmo/pygmo: 
+        The gradient sparsity is assumed dense: 130 components detected.
+        The gradient is computed numerically by WORHP.
+        The hessian of the lagrangian sparsity has: 91 components.
+        The hessian of the lagrangian is computed numerically by WORHP.
+    <BLANKLINE>
+    The following parameters have been set by pagmo to values other than their xml provided ones (or their default ones): 
+        par.FGtogether: true
+        par.UserDF: false
+        par.UserDG: false
+        par.UserHM: false
+        par.TolFeas: false
+        par.AcceptTolFeas: false
+    <BLANKLINE>
+    objevals:        objval:      violated:    viol. norm:
+           13       -57.4531              9        69.6602 i
+           26       -57.4525              9        69.6591 i
+           39       -57.4531              9        69.6602 i
+           52       -57.4525              9        69.6591 i
+           65       -43.2785              9        45.1295 i
+           78       -43.2783              9        45.1293 i
+           91       -22.0316              6        10.7489 i
+          104       -22.0315              6        10.7488 i
+          117        -15.149              6       0.208663 i
+          130       -15.1489              6       0.208673 i
+          143       -15.0001              6     5.0492e-05 i
+          156            -15              6    6.80956e-05 i
+          169            -15              0              0
+          182            -15              1    8.99984e-06 i
+    <BLANKLINE>
+    Warning (ParameterReset): WORHP has reset 2 invalid parameters to default values.
+    <BLANKLINE>
+     Final values after iteration 5:
+     Final objective value ............. -1.4999999999E+01
+     Final constraint violation ........  0.0000000000E+00
+     Final complementarity .............  0.0000000000E+00 (0.0000000000E+00)
+     Final KKT conditions ..............  1.2589097553E-11 (4.3087122652E-06)
+     Successful termination: Optimal Solution Found.
+    <BLANKLINE>
+    <BLANKLINE>
+    >>> uda = algo.extract(worhp)
+    >>> uda.get_log() # doctest: +SKIP
+    [(1, -214.45104382308432, 9, 294.79616317933454, False), (11, -214.45108700799688, ...      
+)";
+}
+
+std::string worhp_set_numeric_option_docstring()
+{
+    return R"(set_numeric_option(name, value)
+
+Set numeric option.
+
+This method will set the optimisation numeric option \p name to \p value.
+The optimisation options are passed to the worhp API when calling evolve().
+
+Args:
+   name (``string``): name of the option
+   value (``float``): value of the option
+
+.. note::
+
+   In case of invalid option name this function will not throw, but a subsequent call to evolve() will raise a ValueError.
+
+)";
+}
+
+std::string worhp_set_integer_option_docstring()
+{
+    return R"(set_integer_option(name, value)
+
+Set integer option.
+
+This method will set the optimisation integer option \p name to \p value.
+The optimisation options are passed to the worhp API when calling evolve().
+
+Args:
+   name (``string``): name of the option
+   value (``int``): value of the option
+
+.. note::
+
+   In case of invalid option name this function will not throw, but a subsequent call to evolve() will raise a ValueError.
+
+)";
+}
+
+std::string worhp_set_bool_option_docstring()
+{
+    return R"(set_bool_option(name, value)
+
+Set bool option.
+
+This method will set the optimisation boolean option \p name to \p value.
+The optimisation options are passed to the worhp API when calling evolve().
+
+Args:
+   name (``string``): name of the option
+   value (``bool``): value of the option
+
+.. note::
+
+   In case of invalid option name this function will not throw, but a subsequent call to evolve() will raise a ValueError.
 
 )";
 }

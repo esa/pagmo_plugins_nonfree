@@ -78,10 +78,10 @@ run_command(r'7z x -aoa -oC:\\ nlopt.7z', verbose=False)
 run_command(r'7z x -aoa -oC:\\ eigen3.7z', verbose=False)
 
 # Get pagmo from git, install the headers
-wget(r'https://github.com/esa/pagmo2/archive/v2.4.tar.gz', 'pagmo.tar.gz')
+wget(r'https://github.com/esa/pagmo2/archive/v2.6.tar.gz', 'pagmo.tar.gz')
 run_command(r'7z x -aoa -oC:\\projects pagmo.tar.gz', verbose=False)
 run_command(r'7z x -aoa -oC:\\projects C:\\projects\\pagmo.tar', verbose=False)
-os.chdir('c:\\projects\\pagmo2-2.4')
+os.chdir('c:\\projects\\pagmo2-2.6')
 os.makedirs('build_pagmo')
 os.chdir('build_pagmo')
 run_command(
@@ -123,10 +123,12 @@ if is_python_build:
     # Just skip it.
     run_command(pip + ' install cloudpickle')
     if is_release_build:
-        run_command(pip + ' install twine')
+        # call pip via python, workaround to avoid path issues when calling pip from win
+        # (https://github.com/pypa/pip/issues/1997)
+        run_command(pinterp + r' -m pip install twine')
 
     # Install pygmo
-    os.chdir('c:\\projects\\pagmo2-2.4')
+    os.chdir('c:\\projects\\pagmo2-2.6')
     os.makedirs('build_pygmo')
     os.chdir('build_pygmo')
     run_command(r'cmake -G "MinGW Makefiles" ..  -DCMAKE_PREFIX_PATH=c:\\local -DCMAKE_INSTALL_PREFIX=c:\\local -DPAGMO_BUILD_PYGMO=yes -DPAGMO_BUILD_PAGMO=no -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_FLAGS=-s  -DPYTHON_EXECUTABLE=C:\\Python' + python_version + r'\\python.exe -DPYTHON_LIBRARY=C:\\Python' + python_version +

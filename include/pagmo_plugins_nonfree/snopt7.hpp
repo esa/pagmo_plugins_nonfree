@@ -1,3 +1,49 @@
+/* Copyright 2018 PaGMO development team
+This file is part of "pagmo plugins nonfree", a PaGMO affiliated library.
+The "pagmo plugins nonfree" library, is free software;
+you can redistribute it and/or modify it under the terms of either:
+  * the GNU Lesser General Public License as published by the Free
+    Software Foundation; either version 3 of the License, or (at your
+    option) any later version.
+or
+  * the GNU General Public License as published by the Free Software
+    Foundation; either version 3 of the License, or (at your option) any
+    later version.
+or both in parallel, as here.
+
+Linking "pagmo plugins nonfree" statically or dynamically with other modules is
+making a combined work based on "pagmo plugins nonfree". Thus, the terms and conditions
+of the GNU General Public License cover the whole combination.
+
+As a special exception, the copyright holders of "pagmo plugins nonfree" give you
+permission to combine ABC program with free software programs or libraries that are
+released under the GNU LGPL and with independent modules that communicate with
+"pagmo plugins nonfree" solely through the interface defined by the headers included in
+"pagmo plugins nonfree" bogus_libs folder.
+You may copy and distribute such a system following the terms of the licence
+for "pagmo plugins nonfree" and the licenses of the other code concerned, provided that
+you include the source code of that other code when and as the "pagmo plugins nonfree" licence
+requires distribution of source code and provided that you do not modify the interface defined in the bogus_libs folder
+
+Note that people who make modified versions of "pagmo plugins nonfree" are not obligated to grant this special
+exception for their modified versions; it is their choice whether to do so.
+The GNU General Public License gives permission to release a modified version without this exception;
+this exception also makes it possible to release a modified version which carries forward this exception.
+If you modify the interface defined in the bogus_libs folder, this exception does not apply to your
+modified version of "pagmo plugins nonfree", and you must remove this exception when you distribute your modified
+version.
+
+This exception is an additional permission under section 7 of the GNU General Public License, version 3 (“GPLv3”)
+
+The "pagmo plugins nonfree" library, and its affiliated librares are distributed in the hope
+that they will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+You should have received copies of the GNU General Public License and the
+GNU Lesser General Public License along with the "pagmo plugins nonfree" library.  If not,
+see https://www.gnu.org/licenses/. */
+
 #ifndef PAGMO_SNOPT7_HPP
 #define PAGMO_SNOPT7_HPP
 
@@ -231,13 +277,13 @@ void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF,
  *
  * \verbatim embed:rst:leading-asterisk
  *
- * .. warning::
+ * .. note::
  *
- *    Unfortunately, SNOPT7 fortran code is only available acquiring a licence.
+ *    SNOPT7 fortran code is only available acquiring a licence.
  *    If you do have such a licence, then you will also have the fortran files and can build them into the library
  *    snopt7 (one single library). In what follows, we assume the library snopt7_c is available, which is open
  *    source and can be obtained from https://github.com/snopt/snopt-interface. This library will link to your fortran
- *    snopt7 library.
+ *    snopt7 library (licensed).
  *
  * \endverbatim
  *
@@ -362,7 +408,6 @@ public:
      *
      * @throws std::invalid_argument in the following cases:
      * - the population's problem is multi-objective or stochastic
-     * - the population's problem does not provide gradient information,
      * - the population is empty.
      * @throws unspecified any exception thrown by the public interface of pagmo::problem or
      * pagmo::not_population_based.
@@ -380,9 +425,8 @@ public:
         // PREAMBLE-------------------------------------------------------------------------------------------------
         // We start by checking that the problem is suitable for this particular algorithm.
         if (prob.get_nobj() != 1u) {
-            pagmo_throw(std::invalid_argument,
-                        "Multiple objectives detected in " + prob.get_name() + " instance. " + get_name()
-                            + " cannot deal with them");
+            pagmo_throw(std::invalid_argument, "Multiple objectives detected in " + prob.get_name() + " instance. "
+                                                   + get_name() + " cannot deal with them");
         }
         if (prob.is_stochastic()) {
             pagmo_throw(std::invalid_argument,
@@ -410,9 +454,8 @@ public:
             std::lock_guard<std::mutex> lock(detail::snopt_statics<>::library_load_mutex);
             boost::filesystem::path path_to_lib(m_snopt7_c_library);
             if (!boost::filesystem::is_regular_file(path_to_lib)) {
-                pagmo_throw(std::invalid_argument,
-                            "The snopt7_c library path was constructed to be: " + path_to_lib.string()
-                                + " and it does not appear to be a file");
+                pagmo_throw(std::invalid_argument, "The snopt7_c library path was constructed to be: "
+                                                       + path_to_lib.string() + " and it does not appear to be a file");
             }
             boost::dll::shared_library libsnopt7_c(path_to_lib);
             // We then load the symbols we need for the SNOPT7 plugin
@@ -420,22 +463,22 @@ public:
                                              int)>( // type of the function to import
                 libsnopt7_c,                        // the library
                 "snInit"                            // name of the function to import
-                );
+            );
 
             setIntParameter = boost::dll::import<int(snProblem *, char[], int)>( // type of the function to import
                 libsnopt7_c,                                                     // the library
                 "setIntParameter"                                                // name of the function to import
-                );
+            );
 
             setRealParameter = boost::dll::import<int(snProblem *, char[], double)>( // type of the function to import
                 libsnopt7_c,                                                         // the library
                 "setRealParameter"                                                   // name of the function to import
-                );
+            );
 
             deleteSNOPT = boost::dll::import<void(snProblem *)>( // type of the function to import
                 libsnopt7_c,                                     // the library
                 "deleteSNOPT"                                    // name of the function to import
-                );
+            );
 
             solveA = boost::dll::import<int(snProblem *, int, int, int, double, int, snFunA, int, int *, int *,
                                             double *, int, int *, int *, double *, double *, double *, double *,
@@ -443,7 +486,7 @@ public:
                                             double *)>( // type of the function to import
                 libsnopt7_c,                            // the library
                 "solveA"                                // name of the function to import
-                );
+            );
         } catch (const std::exception &e) {
             std::string message(
                 R"(

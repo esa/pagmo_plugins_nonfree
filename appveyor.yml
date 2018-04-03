@@ -8,27 +8,19 @@ environment:
     - BUILD_TYPE: "MSVC_64_Python36"
       COMPILER: MSVC15
       PLATFORM: "x64"
-    - BUILD_TYPE: "MSVC_64_Python35"
-      COMPILER: MSVC15
-      PLATFORM: "x64"
     - BUILD_TYPE: "MinGW_64_Debug"
     - BUILD_TYPE: "MinGW_64_Python27"
     - BUILD_TYPE: "MinGW_64_Python35"
     - BUILD_TYPE: "MinGW_64_Python36"
   global:
     PLATFORMTOOLSET: "v140"
-
+ 
 install:
 - if [%BUILD_TYPE%]==[MSVC_64_Release] set PATH=C:\Miniconda36-x64\Scripts;%PATH%
 - if [%BUILD_TYPE%]==[MSVC_64_Release] conda config --add channels conda-forge --force
 - if [%BUILD_TYPE%]==[MSVC_64_Release] conda create -y --name pagmo_plugins_nonfree python=3.6 cmake boost eigen nlopt pagmo
 # NOTE: need to use "call" because otherwise it won't work within an if block.
 - if [%BUILD_TYPE%]==[MSVC_64_Release] call activate pagmo_plugins_nonfree
-
-- if [%BUILD_TYPE%]==[MSVC_64_Python35] set PATH=C:\Miniconda35-x64\Scripts;%PATH%
-- if [%BUILD_TYPE%]==[MSVC_64_Python35] conda config --add channels conda-forge --force
-- if [%BUILD_TYPE%]==[MSVC_64_Python35] conda create -y --name pagmo_plugins_nonfree python=3.5 cmake boost eigen nlopt pagmo pygmo
-- if [%BUILD_TYPE%]==[MSVC_64_Python35] call activate pagmo_plugins_nonfree
 
 - if [%BUILD_TYPE%]==[MSVC_64_Python36] set PATH=C:\Miniconda36-x64\Scripts;%PATH%
 - if [%BUILD_TYPE%]==[MSVC_64_Python36] conda config --add channels conda-forge --force
@@ -48,11 +40,7 @@ build_script:
 - if [%BUILD_TYPE%]==[MSVC_64_Release] cmake --build . --config Release --target install
 # NOTE: need to copy the dll into the directory considered as current by ctest
 - if [%BUILD_TYPE%]==[MSVC_64_Release] cp tests\Release\snopt7_c.dll tests\
-
-- if [%BUILD_TYPE%]==[MSVC_64_Python35] mkdir build
-- if [%BUILD_TYPE%]==[MSVC_64_Python35] cd build
-- if [%BUILD_TYPE%]==[MSVC_64_Python35] cmake -G "Visual Studio 14 2015 Win64" -DCMAKE_INSTALL_PREFIX=%CONDA_PREFIX%/Library -DCMAKE_BUILD_TYPE=Release -DPAGMO_PLUGINS_NONFREE_HEADERS=no -DPAGMO_PLUGINS_NONFREE_BUILD_PYTHON=yes -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=No ..
-- if [%BUILD_TYPE%]==[MSVC_64_Python35] cmake --build . --config Release --target install
+- if [%BUILD_TYPE%]==[MSVC_64_Release] cp tests\Release\worhp_c.dll tests\
 
 - if [%BUILD_TYPE%]==[MSVC_64_Python36] mkdir build
 - if [%BUILD_TYPE%]==[MSVC_64_Python36] cd build
@@ -67,12 +55,6 @@ build_script:
 
 test_script:
 - if [%BUILD_TYPE%]==[MSVC_64_Release] ctest --output-on-failure
-
-- if [%BUILD_TYPE%]==[MSVC_64_Python35] start /b ipcluster start
-- if [%BUILD_TYPE%]==[MSVC_64_Python35] timeout 20
-- if [%BUILD_TYPE%]==[MSVC_64_Python35] cd ..
-- if [%BUILD_TYPE%]==[MSVC_64_Python35] cd tools
-- if [%BUILD_TYPE%]==[MSVC_64_Python35] python -c "import pygmo_plugins_nonfree as pg7; pg7.test.run_test_suite(1)"
 
 - if [%BUILD_TYPE%]==[MSVC_64_Python36] start /b ipcluster start
 - if [%BUILD_TYPE%]==[MSVC_64_Python36] timeout 20

@@ -4,7 +4,7 @@
 #include "snopt7_c.h"
 
 
-inline double  closed_interval_rand(double x0, double x1)
+inline double closed_interval_rand(double x0, double x1)
 {
     return x0 + (x1 - x0) * rand() / ((double)RAND_MAX);
 }

@@ -14,11 +14,28 @@ class snopt7_test_case(_ut.TestCase):
         import pygmo as pg
         from .core import snopt7
         uda = snopt7(screen_output=False,
-                     absolute_lib_path="/usr/local/lib/")
+                     library="/usr/local/lib/libsnopt7.so")
         algo = pg.algorithm(uda)
         algo.extract(snopt7).set_integer_option("Major Iteration Limit", 1000)
         algo.extract(snopt7).set_numeric_option(
             "Major feasibility tolerance", 1E-10)
+
+class worhp_test_case(_ut.TestCase):
+    """Test case for the worhp uda class.
+    """
+
+    def runTest(self):
+        self.run_test_interface()
+
+    def run_test_interface(self):
+        import pygmo as pg
+        from .core import worhp
+        uda = worhp(screen_output=False,
+                     library="/usr/local/lib/libworhp.so")
+        algo = pg.algorithm(uda)
+        algo.extract(worhp).set_integer_option("MaxIter", 1000)
+        algo.extract(worhp).set_numeric_option("TolFeas", 1E-10)
+        algo.extract(worhp).set_bool_option("CheckStructureDF", True)
 
 
 def run_test_suite(level=0):
@@ -36,7 +53,7 @@ def run_test_suite(level=0):
 
     retval = 0
     suite = _ut.TestLoader().loadTestsFromTestCase(snopt7_test_case)
-    # suite.addTest(snopt7_test_case())
+    suite.addTest(worhp_test_case())
 
     test_result = _ut.TextTestRunner(verbosity=2).run(suite)
 
