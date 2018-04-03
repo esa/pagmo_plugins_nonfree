@@ -1,0 +1,390 @@
+ <!DOCTYPE html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Py: We Optimize Really Huge Problems (WORHP) &#8212; pagmo_plugins_nonfree 0.4 documentation</title>
+    
+    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pagmo_plugins_nonfree.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootswatch-3.3.6/yeti/bootstrap.min.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pagmo_plugins_nonfree.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.4',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
+    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-3.3.6/js/bootstrap.min.js"></script>
+    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <link rel="shortcut icon" href="_static/logo_favico.ico"/>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Py: Sparse Nonlinear OPTimizer (SNOPT)" href="py_snopt7.html" />
+<link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto|Comfortaa|Space+Mono"> 
+  </head>
+  <body role="document">
+
+  <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
+    <div class="container">
+      <div class="navbar-header">
+        <!-- .btn-navbar is used as the toggle for collapsed navbar content -->
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".nav-collapse">
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+        <a class="navbar-brand" href="index.html"><span><img src="_static/logo_small_html.png"></span>
+           </a>
+        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+      </div>
+
+        <div class="collapse navbar-collapse nav-collapse">
+          <ul class="nav navbar-nav">
+            
+                <li><a href="index.html">Home</a></li>
+                <li><a href="install.html">Install</a></li>
+                <li><a href="quickstart.html">Quickstart</a></li>
+            
+            
+              <li class="dropdown globaltoc-container">
+  <a role="button"
+     id="dLabelGlobalToc"
+     data-toggle="dropdown"
+     data-target="#"
+     href="index.html">All <b class="caret"></b></a>
+  <ul class="dropdown-menu globaltoc"
+      role="menu"
+      aria-labelledby="dLabelGlobalToc"><ul>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="install.html#c">C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="install.html#python">Python</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="quickstart.html">Quick start</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#c">C++</a></li>
+<li class="toctree-l2"><a class="reference internal" href="quickstart.html#python">Python</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="cpp_snopt7.html">C++: Sparse Nonlinear OPTimizer (SNOPT)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cpp_worhp.html">C++: We Optimize Really Huge Problems (WORHP)</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="py_snopt7.html">Py: Sparse Nonlinear OPTimizer (SNOPT)</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Py: We Optimize Really Huge Problems (WORHP)</a></li>
+</ul>
+</ul>
+</li>
+              
+            
+            
+            
+            
+            
+          </ul>
+
+          
+            
+<form class="navbar-form navbar-right" action="search.html" method="get">
+ <div class="form-group">
+  <input type="text" name="q" class="form-control" placeholder="Search" />
+ </div>
+  <input type="hidden" name="check_keywords" value="yes" />
+  <input type="hidden" name="area" value="default" />
+</form>
+          
+        </div>
+    </div>
+  </div>
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12 content">
+      
+  <div class="section" id="py-we-optimize-really-huge-problems-worhp">
+<h1>Py: We Optimize Really Huge Problems (WORHP)<a class="headerlink" href="#py-we-optimize-really-huge-problems-worhp" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="pygmo_plugins_nonfree.worhp">
+<em class="property">class </em><code class="descclassname">pygmo_plugins_nonfree.</code><code class="descname">worhp</code><span class="sig-paren">(</span><em>screen_output = false</em>, <em>library = 'usrlocalliblibworhp.so'</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.worhp" title="Permalink to this definition">¶</a></dt>
+<dd><p>WORHP - (We Optimize Really Huge Problems)</p>
+<p>This class is a user-defined algorithm (UDA) that contains a plugin to the WORHP (We Optimize Really Huge Problems)
+solver, a software package for large-scale nonlinear optimization. WORHP is a powerful solver that is able to handle
+robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. The wrapper
+was developed around the version 1.12 of WORHP and the Full Feature Interface (FFI) using the Unified Solver
+Interface and the Reverse Communication paradigm (see worhp user manual).</p>
+<dl class="docutils">
+<dt>Intended use::</dt>
+<dd><div class="first last highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pygmo</span> <span class="k">as</span> <span class="nn">pg</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pygmo_plugins_nonfree</span> <span class="k">as</span> <span class="nn">ppnf</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">uda</span> <span class="o">=</span> <span class="n">ppnf</span><span class="o">.</span><span class="n">worhp</span><span class="p">(</span><span class="n">screen_output</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">library</span> <span class="o">=</span> <span class="s2">&quot;/usr/local/lib/libworhp.so&quot;</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">algo</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">uda</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd>
+</dl>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Unfortunately, the WORHP library is only available acquiring a licence. You can consult the web pages at
+(<a class="reference external" href="https://worhp.de/">https://worhp.de/</a>) for further information. There you will be able to download the correct library for your
+architecture and obtain a license file. You will be able to specify the location of the downloaded library when
+constructing this UDA.</p>
+</div>
+<p>Worhp is designed to efficiently solve small- to large-scale constrained optimisation problems, where
+the objective function and the constraints are sufficiently smooth, and may be linear, quadratic or nonlinear. It is
+designed to find locally optimal points of optimisation problems, which may be globally optimal, depending on the
+problem structure, the initial guess and other factors. Worhp combines  a  Sequential  Quadratic  Programming  (SQP)
+method  on  the general nonlinear level with a primal-dual Interior Point (IP) method on the quadratic subproblem
+level, to generate a sequence of search directions, which are subject to line search using the Augmented Lagrangian
+or L1 merit function.</p>
+<p>Worhp needs first and second order derivatives, which can be supplied by the user, or approximated by finite
+differences or quasi-Newton methods.</p>
+<p>In order to support pagmo&#8217;s population-based optimisation model, <em>snopt7</em> selects
+a single individual from the input <em>population</em> to be optimised.
+If the optimisation produces an improved individual (as established by pagmo comparison criteria),
+the optimised individual will be inserted back into the population.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>screen_output</strong> (<code class="docutils literal"><span class="pre">bool</span></code>) &#8211; when True will activate the original screen output from SNOPT7 and deactivate the logging system based on
+<code class="xref py py-class docutils literal"><span class="pre">set_verbosity()</span></code>.</li>
+<li><strong>library</strong> (<code class="docutils literal"><span class="pre">str</span></code>) &#8211; the worhp library filename in your system (absolute path included)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Raises:</th><td class="field-body"><p class="first last"><code class="xref py py-exc docutils literal"><span class="pre">ArgumentError</span></code> &#8211; for any conversion problems between the python types and the c++ signature</p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">This plugin for the WORHP was developed around version 1.12.1 of the worhp library. The plugin will
+also work with future verions of the worhp library as long as their developers will not change the API
+of the following functions: ReadParams; WorhpPreInit; WorhpInit; GetUserAction; DoneUserAction; IterationOutput;
+Worhp; StatusMsg; StatusMsgString; WorhpFree; WorhpFidif; WorhpSetBoolParam; WorhpSetIntParam;
+WorhpSetDoubleParam; WorhpVersion; SetWorhpPrint;</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">A moved-from <a class="reference internal" href="cpp_worhp.html#_CPPv2N5pagmo5worhpE" title="pagmo::worhp"><code class="xref cpp cpp-class docutils literal"><span class="pre">pagmo::worhp</span></code></a> is destructible and assignable. Any other operation will result
+in undefined behaviour.</p>
+</div>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference external" href="https://worhp.de/">https://worhp.de/</a></p>
+</div>
+<p>See also the docs of the C++ class <code class="xref cpp cpp-class docutils literal"><span class="pre">worhp::worhp</span></code>.</p>
+<dl class="method">
+<dt id="pygmo_plugins_nonfree.worhp.get_log">
+<code class="descname">get_log</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.worhp.get_log" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><p>the optimisation log containing the values <code class="docutils literal"><span class="pre">objevals</span></code>, <code class="docutils literal"><span class="pre">objval</span></code>, <code class="docutils literal"><span class="pre">violated</span></code>, <code class="docutils literal"><span class="pre">viol.</span> <span class="pre">norm</span></code>, <code class="docutils literal"><span class="pre">feas.</span></code>, where:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">objevals</span></code> (<code class="docutils literal"><span class="pre">int</span></code>), the number of objective function evaluations made so far</li>
+<li><code class="docutils literal"><span class="pre">objval</span></code> (<code class="docutils literal"><span class="pre">float</span></code>), the objective function value for the current decision vector</li>
+<li><code class="docutils literal"><span class="pre">violated</span></code> (<code class="docutils literal"><span class="pre">int</span></code>), the number of constraints violated by the current decision vector</li>
+<li><code class="docutils literal"><span class="pre">viol.</span> <span class="pre">norm</span></code> (<code class="docutils literal"><span class="pre">float</span></code>), the constraints violation norm for the current decision vector</li>
+<li><code class="docutils literal"><span class="pre">feas.</span></code> (<code class="docutils literal"><span class="pre">bool</span></code>), a boolean flag signalling the feasibility of the current decision vector (as determined by pagmo)</li>
+</ul>
+</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="docutils literal"><span class="pre">list</span></code></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Raises:</th><td class="field-body"><ul class="first last simple">
+<li><code class="xref py py-exc docutils literal"><span class="pre">unspecified</span></code> &#8211; any exception thrown by failures at the intersection between C++ and Python (e.g.,</li>
+<li>type conversion errors, mismatched function signatures, etc.)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The number of constraints violated, the constraints violation norm and the feasibility flag stored in the log
+are all determined via the facilities and the tolerances specified within <code class="xref py py-class docutils literal"><span class="pre">pygmo.problem</span></code>. That
+is, they might not necessarily be consistent with worhp&#8217;s notion of feasibility.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">WORHP supports its own screen output. It can be activated upon construction by setting the relative kwarg to <code class="docutils literal"><span class="pre">True</span></code></p>
+</div>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pygmo</span> <span class="k">import</span> <span class="o">*</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">pygmo_plugins_nonfree</span> <span class="k">import</span> <span class="n">worhp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">algo</span> <span class="o">=</span> <span class="n">algorithm</span><span class="p">(</span><span class="n">worhp</span><span class="p">(</span><span class="n">screen_output</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">library</span> <span class="o">=</span> <span class="s2">&quot;/usr/local/lib/libworhp.so&quot;</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">algo</span><span class="o">.</span><span class="n">set_verbosity</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prob</span> <span class="o">=</span> <span class="n">problem</span><span class="p">(</span><span class="n">cec2006</span><span class="p">(</span><span class="n">prob_id</span> <span class="o">=</span> <span class="mi">1</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">prob</span><span class="o">.</span><span class="n">c_tol</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1e-6</span><span class="p">]</span><span class="o">*</span><span class="mi">9</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pop</span> <span class="o">=</span> <span class="n">population</span><span class="p">(</span><span class="n">prob</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">pop</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span> 
+<span class="go"> Error (Read_XML_File): Could not open file param.xml.</span>
+<span class="go"> WorhpFromXML: Could not open parameter file, using default values.</span>
+<span class="go">WORHP version is (library): 1.12.1</span>
+<span class="go">WORHP version is (plugin headers): 1.12.1</span>
+
+<span class="go">WORHP plugin for pagmo/pygmo:</span>
+<span class="go">    The gradient sparsity is assumed dense: 130 components detected.</span>
+<span class="go">    The gradient is computed numerically by WORHP.</span>
+<span class="go">    The hessian of the lagrangian sparsity has: 91 components.</span>
+<span class="go">    The hessian of the lagrangian is computed numerically by WORHP.</span>
+
+<span class="go">The following parameters have been set by pagmo to values other than their xml provided ones (or their default ones):</span>
+<span class="go">    par.FGtogether: true</span>
+<span class="go">    par.UserDF: false</span>
+<span class="go">    par.UserDG: false</span>
+<span class="go">    par.UserHM: false</span>
+<span class="go">    par.TolFeas: false</span>
+<span class="go">    par.AcceptTolFeas: false</span>
+
+<span class="go">objevals:        objval:      violated:    viol. norm:</span>
+<span class="go">       13       -57.4531              9        69.6602 i</span>
+<span class="go">       26       -57.4525              9        69.6591 i</span>
+<span class="go">       39       -57.4531              9        69.6602 i</span>
+<span class="go">       52       -57.4525              9        69.6591 i</span>
+<span class="go">       65       -43.2785              9        45.1295 i</span>
+<span class="go">       78       -43.2783              9        45.1293 i</span>
+<span class="go">       91       -22.0316              6        10.7489 i</span>
+<span class="go">      104       -22.0315              6        10.7488 i</span>
+<span class="go">      117        -15.149              6       0.208663 i</span>
+<span class="go">      130       -15.1489              6       0.208673 i</span>
+<span class="go">      143       -15.0001              6     5.0492e-05 i</span>
+<span class="go">      156            -15              6    6.80956e-05 i</span>
+<span class="go">      169            -15              0              0</span>
+<span class="go">      182            -15              1    8.99984e-06 i</span>
+
+<span class="go">Warning (ParameterReset): WORHP has reset 2 invalid parameters to default values.</span>
+
+<span class="go"> Final values after iteration 5:</span>
+<span class="go"> Final objective value ............. -1.4999999999E+01</span>
+<span class="go"> Final constraint violation ........  0.0000000000E+00</span>
+<span class="go"> Final complementarity .............  0.0000000000E+00 (0.0000000000E+00)</span>
+<span class="go"> Final KKT conditions ..............  1.2589097553E-11 (4.3087122652E-06)</span>
+<span class="go"> Successful termination: Optimal Solution Found.</span>
+
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">uda</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">extract</span><span class="p">(</span><span class="n">worhp</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">uda</span><span class="o">.</span><span class="n">get_log</span><span class="p">()</span> 
+<span class="go">[(1, -214.45104382308432, 9, 294.79616317933454, False), (11, -214.45108700799688, ...</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmo_plugins_nonfree.worhp.set_bool_option">
+<code class="descname">set_bool_option</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.worhp.set_bool_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set bool option.</p>
+<p>This method will set the optimisation boolean option p name to p value.
+The optimisation options are passed to the worhp API when calling evolve().</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<code class="docutils literal"><span class="pre">string</span></code>) &#8211; name of the option</li>
+<li><strong>value</strong> (<code class="docutils literal"><span class="pre">bool</span></code>) &#8211; value of the option</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In case of invalid option name this function will not throw, but a subsequent call to evolve() will raise a ValueError.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmo_plugins_nonfree.worhp.set_integer_option">
+<code class="descname">set_integer_option</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.worhp.set_integer_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set integer option.</p>
+<p>This method will set the optimisation integer option p name to p value.
+The optimisation options are passed to the worhp API when calling evolve().</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<code class="docutils literal"><span class="pre">string</span></code>) &#8211; name of the option</li>
+<li><strong>value</strong> (<code class="docutils literal"><span class="pre">int</span></code>) &#8211; value of the option</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In case of invalid option name this function will not throw, but a subsequent call to evolve() will raise a ValueError.</p>
+</div>
+</dd></dl>
+
+<dl class="method">
+<dt id="pygmo_plugins_nonfree.worhp.set_numeric_option">
+<code class="descname">set_numeric_option</code><span class="sig-paren">(</span><em>name</em>, <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.worhp.set_numeric_option" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set numeric option.</p>
+<p>This method will set the optimisation numeric option p name to p value.
+The optimisation options are passed to the worhp API when calling evolve().</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>name</strong> (<code class="docutils literal"><span class="pre">string</span></code>) &#8211; name of the option</li>
+<li><strong>value</strong> (<code class="docutils literal"><span class="pre">float</span></code>) &#8211; value of the option</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In case of invalid option name this function will not throw, but a subsequent call to evolve() will raise a ValueError.</p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+    </div>
+      
+  </div>
+</div>
+<footer class="footer">
+  <div class="container">
+    <p class="pull-right">
+      <a href="#">Back to top</a>
+      
+    </p>
+    <p>
+        &copy; Copyright 2018, pagmo development team.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.<br/>
+    </p>
+  </div>
+</footer>
+  </body>
+</html>

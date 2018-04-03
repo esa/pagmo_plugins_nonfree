@@ -85,27 +85,11 @@
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="cpp_snopt7.html">C++: Sparse Nonlinear OPTimizer (SNOPT)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cpp_worhp.html">C++: We Optimize Really Huge Problems (WORHP)</a></li>
 </ul>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="py_snopt7.html">Py: Sparse Nonlinear OPTimizer (SNOPT)</a></li>
-</ul>
-</ul>
-</li>
-              
-                <li class="dropdown">
-  <a role="button"
-     id="dLabelLocalToc"
-     data-toggle="dropdown"
-     data-target="#"
-     href="#">This Page <b class="caret"></b></a>
-  <ul class="dropdown-menu localtoc"
-      role="menu"
-      aria-labelledby="dLabelLocalToc"><ul>
-<li><a class="reference internal" href="#">Quick start</a><ul>
-<li><a class="reference internal" href="#c">C++</a></li>
-<li><a class="reference internal" href="#python">Python</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="py_worhp.html">Py: We Optimize Really Huge Problems (WORHP)</a></li>
 </ul>
 </ul>
 </li>
@@ -250,16 +234,18 @@ in a local folder in your user directory.</p>
 20
 21
 22
-23</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pygmo</span> <span class="kn">as</span> <span class="nn">pg</span>
-<span class="kn">import</span> <span class="nn">pygmo_plugins_nonfree</span> <span class="kn">as</span> <span class="nn">pg7</span>
+23
+24</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pygmo</span> <span class="kn">as</span> <span class="nn">pg</span>
+<span class="kn">import</span> <span class="nn">pygmo_plugins_nonfree</span> <span class="kn">as</span> <span class="nn">ppn</span>
 
 <span class="c1"># 1 - Instantiate a pygmo problem constructing it from a UDP</span>
 <span class="c1"># (user defined problem).</span>
 <span class="n">prob</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">problem</span><span class="p">(</span><span class="n">pg</span><span class="o">.</span><span class="n">schwefel</span><span class="p">(</span><span class="mi">30</span><span class="p">))</span>
 
-<span class="c1"># 2 - Instantiate a pagmo_plugins_nonfree algorithm, in this case SNOPT. THis assumes a library snopt_c is found in</span>
-<span class="c1"># the path &quot;/usr/local/lib/&quot;. Otherwise you will get a runtime error.</span>
-<span class="n">algo</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">pg7</span><span class="o">.</span><span class="n">snopt7</span><span class="p">(</span><span class="n">false</span><span class="p">,</span> <span class="s2">&quot;/usr/local/lib&quot;</span><span class="p">))</span>
+<span class="c1"># 2 - Instantiate a pagmo_plugins_nonfree algorithm, in this case SNOPT.</span>
+<span class="c1"># Here we assume the library name is libsnopt7_c.so, in Windows it would probably be</span>
+<span class="c1"># snopt7_c.dll or similar.</span>
+<span class="n">algo</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">algorithm</span><span class="p">(</span><span class="n">ppn</span><span class="o">.</span><span class="n">snopt7</span><span class="p">(</span><span class="n">false</span><span class="p">,</span> <span class="s2">&quot;/usr/local/lib/libsnopt7_c.so&quot;</span><span class="p">))</span>
 
 <span class="c1"># 3 - Instantiate an archipelago with 16 islands having each 20 individuals</span>
 <span class="n">archi</span> <span class="o">=</span> <span class="n">pg</span><span class="o">.</span><span class="n">archipelago</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="n">algo</span><span class="o">=</span><span class="n">algo</span><span class="p">,</span> <span class="n">prob</span><span class="o">=</span><span class="n">prob</span><span class="p">,</span> <span class="n">pop_size</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
@@ -279,7 +265,7 @@ in a local folder in your user directory.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>python getting_started.py
 </pre></div>
 </div>
-<p>We recommend the use of Jupyter or Ipython to enjoy pygmo the most.</p>
+<p>We recommend the use of Jupyter or Ipython to enjoy pygmo and its affiliated packages the most.</p>
 </div>
 </div>
 
@@ -295,7 +281,7 @@ in a local folder in your user directory.</p>
       
     </p>
     <p>
-        &copy; Copyright 2017, pagmo development team.<br/>
+        &copy; Copyright 2018, pagmo development team.<br/>
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.<br/>
     </p>
   </div>
