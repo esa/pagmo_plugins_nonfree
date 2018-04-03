@@ -115,10 +115,10 @@ typename std::mutex worhp_statics<T>::library_load_mutex;
  * \image html worhp.png
  *
  * This class is a user-defined algorithm (UDA) that contains a plugin to the WORHP (We Optimize Really Huge Problems)
- * solver, a software package for large-scale nonlinear optimization. WORHP is a powerful solver that is able to handle
- * robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. The wrapper
- * was developed around the version 1.12 of WORHP and the Full Feature Interface (FFI) using the Unified Solver
- * Interface and the Reverse Communication paradigm (see worhp user manual).
+ * solver (https://worhp.de/), a software package for large-scale nonlinear optimization. WORHP is a powerful solver
+ * that is able to handle robustly and efficiently constrained nonlinear opimization problems also at high
+ * dimensionalities. The wrapper was developed around the version 1.12 of WORHP and the Full Feature Interface (FFI)
+ * using the Unified Solver Interface and the Reverse Communication paradigm (see worhp user manual).
  *
  * \verbatim embed:rst:leading-asterisk
  *
@@ -133,16 +133,16 @@ typename std::mutex worhp_statics<T>::library_load_mutex;
  * \endverbatim
  *
  *
- * Worhp is designed to efficiently solve small- to large-scale constrained optimisation problems, where
- * the objective function and the constraints are sufficiently smooth, and may be linear, quadratic or nonlinear. It is
- * designed to find locally optimal points of optimisation problems, which may be globally optimal, depending on the
- * problem structure, the initial guess and other factors. Worhp combines  a  Sequential  Quadratic  Programming  (SQP)
- * method  on  the general nonlinear level with a primal-dual Interior Point (IP) method on the quadratic subproblem
- * level, to generate a sequence of search directions, which are subject to line search using the Augmented Lagrangian
- * or L1 merit function.
+ * Worhp is designed to efficiently solve small- to large-scale constrained optimisation problems (single objective),
+ * where the objective function and the constraints are sufficiently smooth, and may be linear, quadratic or nonlinear.
+ * It is designed to find locally optimal points of optimisation problems, which may be globally optimal, depending on
+ * the problem structure, the initial guess and other factors. Worhp combines  a  Sequential  Quadratic  Programming
+ * (SQP) method  on  the general nonlinear level with a primal-dual Interior Point (IP) method on the quadratic
+ * subproblem level, to generate a sequence of search directions, which are subject to line search using the Augmented
+ * Lagrangian or L1 merit function.
  *
  * Worhp needs first and second order derivatives, which can be supplied by the user, or approximated by finite
- * differences or quasi-Newton methods.
+ * differences or quasi-Newton methods by WORHP.
  *
  * In order to support pagmo's population-based optimisation model, worhp::evolve() will select
  * a single individual from the input pagmo::population to be optimised.
@@ -156,21 +156,16 @@ typename std::mutex worhp_statics<T>::library_load_mutex;
  *
  * .. note::
  *
- *    This plugin for the WORHP was developed around version 1.12. The plugin will also work with future verions of
- *    the worhp library as long as their developer will but it will not change the API of the following functions:
- *    ReadParams; WorhpPreInit; WorhpInit; GetUserAction; DoneUserAction; IterationOutput; Worhp; StatusMsg;
- *    StatusMsgString; WorhpFree; WorhpFidif; WorhpSetBoolParam; WorhpSetIntParam; WorhpSetDoubleParam; WorhpVersion;
- *    SetWorhpPrint;
+ *    This plugin for the WORHP was developed around version 1.12.1 of the worhp library. The plugin will
+ *    also work with future verions of the worhp library as long as their developers will not change the API
+ *    of the following functions: ReadParams; WorhpPreInit; WorhpInit; GetUserAction; DoneUserAction; IterationOutput;
+ *    Worhp; StatusMsg; StatusMsgString; WorhpFree; WorhpFidif; WorhpSetBoolParam; WorhpSetIntParam;
+ *    WorhpSetDoubleParam; WorhpVersion; SetWorhpPrint;
  *
  * .. warning::
  *
  *    A moved-from :cpp:class:`pagmo::worhp` is destructible and assignable. Any other operation will result
  *    in undefined behaviour.
- *
- * .. warning::
- *
- *    The possibility to exploit the linear part of the problem fitness, part of the original WORHP library,
- *    is deactivated in this plugin for pagmo.
  *
  * .. seealso::
  *

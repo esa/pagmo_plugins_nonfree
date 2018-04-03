@@ -7,7 +7,7 @@ namespace pygmo
 
 std::string snopt7_docstring()
 {
-    return R"(__init__(screen_output = false, library = "\usr\local\lib\libsnopt7.so")
+    return R"(__init__(screen_output = False, library = "/usr/local/lib/libsnopt7.so")
 
 SNOPT 7 - (Sparse Nonlinear OPTimizer, Version 7)
 
@@ -15,30 +15,33 @@ This class is a user-defined algorithm (UDA) that contains a plugin to the Spars
 solver, a software package for large-scale nonlinear optimization. SNOPT7 is a powerful solver that is able to handle
 robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities.
 
+Intended use::
+   >>> import pygmo as pg
+   >>> import pygmo_plugins_nonfree as ppnf
+   >>> uda = ppnf.snopt7(screen_output = False, library = "/usr/local/lib/libsnopt7.so")
+   >>> algo = pg.algorithm(uda)
+
 SNOPT7 supports only single-objective minimisation, using a sequential quadratic programming (SQP) algorithm.
 Search directions are obtained from QP subproblems that minimize a quadratic model of the Lagrangian function
 subject to linearized constraints. An augmented Lagrangian merit function is reduced along each search
 direction to ensure convergence from any starting point.
 
-In order to support pagmo's population-based optimisation model, :cpp:class:`pagmo::snopt7` will select
-a single individual from the input pagmo::population to be optimised.
-If the optimisation produces an improved individual (as established by pagmo::compare_fc()),
+In order to support pagmo's population-based optimisation model, *snopt7* selects
+a single individual from the input *population* to be optimised.
+If the optimisation produces an improved individual (as established by pagmo comparison criteria),
 the optimised individual will be inserted back into the population.
-The selection and replacement strategies can be configured via set_selection(const std::string &),
-set_selection(population::size_type), set_replacement(const std::string &) and
-set_replacement(population::size_type).
 
 Args:
    screen_output (``bool``): when True will activate the original screen output from SNOPT7 and deactivate the logging system based on
      :class:`~pygmo_snopt7.set_verbosity()`.
-   library (``str``): the absolute path to the snopt7_c library in your system
+   library (``str``): the snopt7 library filename in your system (absolute path included)
 
 Raises:
    ArgumentError: for any conversion problems between the python types and the c++ signature
 
-.. warning::
+.. note::
 
-   Unfortunately, SNOPT7 fortran code is only available acquiring a licence.
+   SNOPT7 fortran code is only available acquiring a licence.
    If you do have such a licence, then you will also have the fortran files and can build them into the library
    snopt7 (one single library). In what follows, we assume the snopt7 fortran library is available in your
    system. Since pagmo wraps around the C interface you will have to compile also the library snopt7_c, which is open
@@ -106,7 +109,7 @@ Raises:
 Examples:
     >>> from pygmo import *
     >>> from pygmo_plugins_nonfree import snopt7
-    >>> algo = algorithm(snopt7(screen_output = False, library = "/usr/local/lib/"))
+    >>> algo = algorithm(snopt7(screen_output = False, library = "/usr/local/lib/libsnopt7.so"))
     >>> algo.set_verbosity(1)
     >>> prob = problem(cec2006(prob_id = 1))
     >>> prob.c_tol = [1e-6]*9
@@ -205,7 +208,7 @@ Examples:
     >>> import pygmo as pg
     >>> import pygmo_plugins_nonfree as pg7
     >>> udp = pg.problem(pg.cec2006(prob_id = 1))
-    >>> uda = pg7.snopt7(False, "/usr/local/lib/")
+    >>> uda = pg7.snopt7(False, "/usr/local/lib/libsnopt7.so")
     >>> uda.set_integer_option("Iterations limit", 10)
     >>> algo = pg.algorithm(uda)
     >>> algo.set_verbosity(10)
@@ -273,7 +276,7 @@ Examples:
     >>> import pygmo as pg
     >>> import pygmo_plugins_nonfree as pg7
     >>> udp = pg.problem(pg.cec2006(prob_id = 1))
-    >>> uda = pg7.snopt7(False, "/usr/local/lib/")
+    >>> uda = pg7.snopt7(False, "/usr/local/lib/libsnopt7.so")
     >>> uda.set_numeric_option("Major feasibility tolerance", 1e-2)
     >>> algo = pg.algorithm(uda)
     >>> algo.set_verbosity(20)
@@ -299,7 +302,7 @@ Examples:
 
 std::string worhp_docstring()
 {
-    return R"(__init__(screen_output = false, library = "\usr\local\lib\libworhp.so")
+    return R"(__init__(screen_output = false, library = '\usr\local\lib\libworhp.so')
 
 WORHP - (We Optimize Really Huge Problems)
 
@@ -308,6 +311,12 @@ solver, a software package for large-scale nonlinear optimization. WORHP is a po
 robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. The wrapper
 was developed around the version 1.12 of WORHP and the Full Feature Interface (FFI) using the Unified Solver
 Interface and the Reverse Communication paradigm (see worhp user manual).
+
+Intended use::
+   >>> import pygmo as pg
+   >>> import pygmo_plugins_nonfree as ppnf
+   >>> uda = ppnf.worhp(screen_output = False, library = "/usr/local/lib/libworhp.so")
+   >>> algo = pg.algorithm(uda)
 
 .. warning::
 
@@ -327,44 +336,31 @@ or L1 merit function.
 Worhp needs first and second order derivatives, which can be supplied by the user, or approximated by finite
 differences or quasi-Newton methods.
 
-In order to support pagmo's population-based optimisation model, worhp::evolve() will select
-a single individual from the input pagmo::population to be optimised.
-If the optimisation produces an improved individual (as established by pagmo::compare_fc()),
+In order to support pagmo's population-based optimisation model, *snopt7* selects
+a single individual from the input *population* to be optimised.
+If the optimisation produces an improved individual (as established by pagmo comparison criteria),
 the optimised individual will be inserted back into the population.
-The selection and replacement strategies can be configured via set_selection(const std::string &),
-set_selection(population::size_type), set_replacement(const std::string &) and
-set_replacement(population::size_type).
+
+Args:
+   screen_output (``bool``): when True will activate the original screen output from SNOPT7 and deactivate the logging system based on
+     :class:`~pygmo_snopt7.set_verbosity()`.
+   library (``str``): the worhp library filename in your system (absolute path included)
+
+Raises:
+   ArgumentError: for any conversion problems between the python types and the c++ signature
 
 .. note::
 
-   We developed this plugin for the WORHP version 1.12, but it will also work with different versions of the library
-   as far as the API has not changed and the following prototypes are exposed in the library:
-   std::function<void(int *, char *, Params *)> ReadParams;
-   std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpPreInit;
-   std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpInit;
-   std::function<bool(const Control *, int)> GetUserAction;
-   std::function<bool(Control *, int)> DoneUserAction;
-   std::function<void(OptVar *, Workspace *, Params *, Control *)> IterationOutput;
-   std::function<void(OptVar *, Workspace *, Params *, Control *)> Worhp;
-   std::function<void(OptVar *, Workspace *, Params *, Control *)> StatusMsg;
-   std::function<void(OptVar *, Workspace *, Params *, Control *, char message[])> StatusMsgString;
-   std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpFree;
-   std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpFidif;
-   std::function<bool(Params *, const char *, bool)> WorhpSetBoolParam;
-   std::function<bool(Params *, const char *, int)> WorhpSetIntParam;
-   std::function<bool(Params *, const char *, double)> WorhpSetDoubleParam;
-   std::function<void(int *major, int *minor, char patch[8])> WorhpVersion;
-   std::function<void(worhp_print_t)> SetWorhpPrint;
+   This plugin for the WORHP was developed around version 1.12.1 of the worhp library. The plugin will
+   also work with future verions of the worhp library as long as their developers will not change the API
+   of the following functions: ReadParams; WorhpPreInit; WorhpInit; GetUserAction; DoneUserAction; IterationOutput;
+   Worhp; StatusMsg; StatusMsgString; WorhpFree; WorhpFidif; WorhpSetBoolParam; WorhpSetIntParam;
+   WorhpSetDoubleParam; WorhpVersion; SetWorhpPrint;
 
 .. warning::
 
    A moved-from :cpp:class:`pagmo::worhp` is destructible and assignable. Any other operation will result
    in undefined behaviour.
-
-.. warning::
-
-   The possibility to exploit the linear part of the problem fitness, part of the original WORHP library,
-   is deactivated in this plugin for pagmo.
 
 .. seealso::
 

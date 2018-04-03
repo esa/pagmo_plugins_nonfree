@@ -45,4 +45,4 @@ Place it into a ``getting_started.py`` text file and run it with:
 
    python getting_started.py
 
-We recommend the use of Jupyter or Ipython to enjoy pygmo the most.
+We recommend the use of Jupyter or Ipython to enjoy pygmo and its affiliated packages the most.

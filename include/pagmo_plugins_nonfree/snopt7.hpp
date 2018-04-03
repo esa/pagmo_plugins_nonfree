@@ -277,13 +277,13 @@ void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF,
  *
  * \verbatim embed:rst:leading-asterisk
  *
- * .. warning::
+ * .. note::
  *
- *    Unfortunately, SNOPT7 fortran code is only available acquiring a licence.
+ *    SNOPT7 fortran code is only available acquiring a licence.
  *    If you do have such a licence, then you will also have the fortran files and can build them into the library
  *    snopt7 (one single library). In what follows, we assume the library snopt7_c is available, which is open
  *    source and can be obtained from https://github.com/snopt/snopt-interface. This library will link to your fortran
- *    snopt7 library.
+ *    snopt7 library (licensed).
  *
  * \endverbatim
  *

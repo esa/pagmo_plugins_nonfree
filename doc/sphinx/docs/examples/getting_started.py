@@ -1,13 +1,14 @@
 import pygmo as pg
-import pygmo_plugins_nonfree as pg7
+import pygmo_plugins_nonfree as ppn
 
 # 1 - Instantiate a pygmo problem constructing it from a UDP
 # (user defined problem).
 prob = pg.problem(pg.schwefel(30))
 
-# 2 - Instantiate a pagmo_plugins_nonfree algorithm, in this case SNOPT. THis assumes a library snopt_c is found in
-# the path "/usr/local/lib/". Otherwise you will get a runtime error.
-algo = pg.algorithm(pg7.snopt7(false, "/usr/local/lib"))
+# 2 - Instantiate a pagmo_plugins_nonfree algorithm, in this case SNOPT.
+# Here we assume the library name is libsnopt7_c.so, in Windows it would probably be
+# snopt7_c.dll or similar.
+algo = pg.algorithm(ppn.snopt7(false, "/usr/local/lib/libsnopt7_c.so"))
 
 # 3 - Instantiate an archipelago with 16 islands having each 20 individuals
 archi = pg.archipelago(16, algo=algo, prob=prob, pop_size=20)

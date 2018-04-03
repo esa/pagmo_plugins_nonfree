@@ -33,6 +33,7 @@ Plugins to commercial solvers for pagmo / pygmo
 ``pagmo_plugins_nonfree`` is an affliated package of `pagmo/pygmo <https://esa.github.io/pagmo2/index.html>`_. It adds some 
 commercial solvers to the list of User Defined Algorithms (UDAs). All the added UDAs are developed as plugins, that is, they
 work loading the third party library at run-time. The user needs to make sure to have the library and the right to use it. 
+The library name and path can be specified upon construction of the UDAs.
 
 Contents:
 
