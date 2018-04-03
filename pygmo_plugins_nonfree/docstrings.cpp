@@ -318,9 +318,9 @@ Intended use::
    >>> uda = ppnf.worhp(screen_output = False, library = "/usr/local/lib/libworhp.so")
    >>> algo = pg.algorithm(uda)
 
-.. warning::
+.. note::
 
-   Unfortunately, the WORHP library is only available acquiring a licence. You can consult the web pages at
+   The WORHP library is only available buying a licence. You can consult the web pages at
    (https://worhp.de/) for further information. There you will be able to download the correct library for your
    architecture and obtain a license file. You will be able to specify the location of the downloaded library when
    constructing this UDA.

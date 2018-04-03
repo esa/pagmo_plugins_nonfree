@@ -12,10 +12,9 @@ int main()
     // UDP (user defined problem).
     problem prob{rosenbrock(30)};
 
-    // 2 - Instantiate a pagmo_plugins_nonfree algorithm, in this case SNOPT. THis assumes a library snopt7_c is found
-    // in
-    // the path "/usr/local/lib/". Otherwise you will get a runtime error.
-    algorithm algo(snopt7(false, "/usr/local/lib/"));
+    // 2 - Instantiate a pagmo_plugins_nonfree algorithm, in this case SNOPT. This assumes a library libsnopt7_c.so is
+    // found in the path "/usr/local/lib/". Otherwise you will get a runtime error.
+    algorithm algo(snopt7(false, "/usr/local/lib/libsnopt7_c.so"));
 
     // 3 - Instantiate an archipelago with 16 islands having each 1 individual (the initial guess)
     archipelago archi{16, algo, prob, 1};
