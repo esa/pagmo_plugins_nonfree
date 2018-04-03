@@ -62,7 +62,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = 'pagmo_plugins_nonfree'
-copyright = '2017, pagmo development team'
+copyright = '2018, pagmo development team'
 author = 'pagmo development team'
 
 # The version info for the project you're documenting, acts as replacement for
@@ -159,7 +159,7 @@ html_theme_options = {
     'navbar_sidebarrel': False,
 
     # Render the current pages TOC in the navbar. (Default: true)
-    'navbar_pagenav': True,
+    'navbar_pagenav': False,
 
     # Tab name for the current pages TOC. (Default: "Page")
     'navbar_pagenav_name': "This Page",
@@ -175,7 +175,7 @@ html_theme_options = {
     # will break.
     #
     # Values: "true" (default) or "false"
-    'globaltoc_includehidden': "true",
+    'globaltoc_includehidden': "false",
 
     # HTML navbar class (Default: "navbar") to attach to <div> element.
     # For black navbar, do "navbar navbar-inverse"
@@ -244,8 +244,9 @@ def setup(app):
 # typographically correct entities.
 #html_use_smartypants = True
 
+
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {}
+html_sidebars = {'**': []}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.

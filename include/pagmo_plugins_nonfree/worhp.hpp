@@ -1,3 +1,49 @@
+/* Copyright 2018 PaGMO development team
+This file is part of "pagmo plugins nonfree", a PaGMO affiliated library.
+The "pagmo plugins nonfree" library, is free software;
+you can redistribute it and/or modify it under the terms of either:
+  * the GNU Lesser General Public License as published by the Free
+    Software Foundation; either version 3 of the License, or (at your
+    option) any later version.
+or
+  * the GNU General Public License as published by the Free Software
+    Foundation; either version 3 of the License, or (at your option) any
+    later version.
+or both in parallel, as here.
+
+Linking "pagmo plugins nonfree" statically or dynamically with other modules is
+making a combined work based on "pagmo plugins nonfree". Thus, the terms and conditions
+of the GNU General Public License cover the whole combination.
+
+As a special exception, the copyright holders of "pagmo plugins nonfree" give you
+permission to combine ABC program with free software programs or libraries that are
+released under the GNU LGPL and with independent modules that communicate with
+"pagmo plugins nonfree" solely through the interface defined by the headers included in
+"pagmo plugins nonfree" bogus_libs folder.
+You may copy and distribute such a system following the terms of the licence
+for "pagmo plugins nonfree" and the licenses of the other code concerned, provided that
+you include the source code of that other code when and as the "pagmo plugins nonfree" licence
+requires distribution of source code and provided that you do not modify the interface defined in the bogus_libs folder
+
+Note that people who make modified versions of "pagmo plugins nonfree" are not obligated to grant this special
+exception for their modified versions; it is their choice whether to do so.
+The GNU General Public License gives permission to release a modified version without this exception;
+this exception also makes it possible to release a modified version which carries forward this exception.
+If you modify the interface defined in the bogus_libs folder, this exception does not apply to your
+modified version of "pagmo plugins nonfree", and you must remove this exception when you distribute your modified
+version.
+
+This exception is an additional permission under section 7 of the GNU General Public License, version 3 (“GPLv3”)
+
+The "pagmo plugins nonfree" library, and its affiliated librares are distributed in the hope
+that they will be useful, but WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY
+or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
+for more details.
+You should have received copies of the GNU General Public License and the
+GNU Lesser General Public License along with the "pagmo plugins nonfree" library.  If not,
+see https://www.gnu.org/licenses/. */
+
 #ifndef PAGMO_WORHP_HPP
 #define PAGMO_WORHP_HPP
 
@@ -76,12 +122,13 @@ typename std::mutex worhp_statics<T>::library_load_mutex;
  *
  * \verbatim embed:rst:leading-asterisk
  *
- * .. warning::
+ * .. note::
  *
- *    Unfortunately, the WORHP library is only available acquiring a licence. You can consult the web pages at
- *    (https://worhp.de/) for further information. There you will be able to download the correct library for your
- *    architecture and obtain a license file. You will be able to specify the location of the downloaded library when
- *    constructing this UDA.
+ *    The WORHP library is only available acquiring a licence. You can consult the web pages at
+ *    (https://worhp.de/) for further information. In thse web pages you will be able to download the correct library
+ *    for your architecture and obtain a license file. The WORHP user manual is also available, where the user can
+ *    see what options can be set and their intended use. You will be able to specify the location of the downloaded
+ *    library when constructing this UDA.
  *
  * \endverbatim
  *
@@ -109,24 +156,11 @@ typename std::mutex worhp_statics<T>::library_load_mutex;
  *
  * .. note::
  *
- *    We developed this plugin for the WORHP version 1.12, but it will also work with different versions of the library
- *    as far as the API has not changed and the following prototypes are exposed in the library:
- *    std::function<void(int *, char *, Params *)> ReadParams;
- *    std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpPreInit;
- *    std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpInit;
- *    std::function<bool(const Control *, int)> GetUserAction;
- *    std::function<bool(Control *, int)> DoneUserAction;
- *    std::function<void(OptVar *, Workspace *, Params *, Control *)> IterationOutput;
- *    std::function<void(OptVar *, Workspace *, Params *, Control *)> Worhp;
- *    std::function<void(OptVar *, Workspace *, Params *, Control *)> StatusMsg;
- *    std::function<void(OptVar *, Workspace *, Params *, Control *, char message[])> StatusMsgString;
- *    std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpFree;
- *    std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpFidif;
- *    std::function<bool(Params *, const char *, bool)> WorhpSetBoolParam;
- *    std::function<bool(Params *, const char *, int)> WorhpSetIntParam;
- *    std::function<bool(Params *, const char *, double)> WorhpSetDoubleParam;
- *    std::function<void(int *major, int *minor, char patch[8])> WorhpVersion;
- *    std::function<void(worhp_print_t)> SetWorhpPrint;
+ *    This plugin for the WORHP was developed around version 1.12. The plugin will also work with future verions of
+ *    the worhp library as long as their developer will but it will not change the API of the following functions:
+ *    ReadParams; WorhpPreInit; WorhpInit; GetUserAction; DoneUserAction; IterationOutput; Worhp; StatusMsg;
+ *    StatusMsgString; WorhpFree; WorhpFidif; WorhpSetBoolParam; WorhpSetIntParam; WorhpSetDoubleParam; WorhpVersion;
+ *    SetWorhpPrint;
  *
  * .. warning::
  *
@@ -195,10 +229,10 @@ public:
      * .. warning::
      *
      *    All options passed to the WORHP interface are determined first by the xml parameter file, or (if not found) by
-     * the default options. Then FGtogether is set to true (for constrained problems) and UserDF, UserDG , UserHM to the
-     * values detected by the pagmo::has_gradient, pagmo::has_hessians methods. TolFeas is then set to be the minimum
-     * of prob.get_c_tol() if not 0. All the other options, contained in the data members m_integer_opts,
-     * m_numeric_opts and m_bool_opts are set after and thus overwrite the above rules.
+     *    the default options. Then FGtogether is set to true (for constrained problems) and UserDF, UserDG , UserHM to
+     *    the values detected by the pagmo::has_gradient, pagmo::has_hessians methods. TolFeas is then set to be the
+     *    minimum of prob.get_c_tol() if not 0. All the other options, contained in the data members m_integer_opts,
+     *    m_numeric_opts and m_bool_opts are set after and thus overwrite the above rules.
      *
      * \endverbatim
      *

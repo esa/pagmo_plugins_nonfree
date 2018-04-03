@@ -50,6 +50,7 @@ Contents:
    :maxdepth: 1
 
    cpp_snopt7
+   cpp_worhp
 
 
 Python
@@ -60,3 +61,4 @@ Contents:
    :maxdepth: 1
 
    py_snopt7
+   py_worhp
