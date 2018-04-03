@@ -7,3 +7,5 @@ pagmo_plugins_nonfree
 
 
 Project documentation can be found here https://esa.github.io/pagmo_plugins_nonfree/
+
+pagmo documentation can be found here https://esa.github.io/pagmo2/
