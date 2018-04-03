@@ -123,7 +123,9 @@ if is_python_build:
     # Just skip it.
     run_command(pip + ' install cloudpickle')
     if is_release_build:
-        run_command(pip + ' install twine')
+        # call pip via python, workaround to avoid path issues when calling pip from win
+        # (https://github.com/pypa/pip/issues/1997)
+        run_command(pinterp + r' -m pip install twine')
 
     # Install pygmo
     os.chdir('c:\\projects\\pagmo2-2.6')
