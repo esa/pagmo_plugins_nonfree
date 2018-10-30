@@ -196,7 +196,7 @@ extern "C" {
 // declared within an 'extern "C"' block (otherwise, it might be UB to pass C++ function pointers
 // to a C API).
 // https://www.reddit.com/r/cpp/comments/4fqfy7/using_c11_capturing_lambdas_w_vanilla_c_api/d2b9bh0/
-void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF, double F[], int *needG, int *neG,
+inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF, double F[], int *needG, int *neG,
                            double G[], char cu[], int *lencu, int iu[], int *leniu, double ru[], int *lenru)
 {
     (void)n;
@@ -206,7 +206,7 @@ void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF,
     (void)lenru;
     (void)leniu;
     // First we recover the info we have hidden in the workspace
-    auto &info = *(detail::user_data *)iu;
+    auto &info = *(static_cast<detail::user_data *>(static_cast<void *>(iu)));
     auto &verb = info.m_verbosity;
     auto &log = info.m_log;
     auto &f_count = info.m_objfun_counter;
@@ -619,7 +619,7 @@ We report the exact text of the original exception thrown:
         info.m_prob = prob;
         info.m_verbosity = m_verbosity;
         info.m_dv = vector_double(dim);
-        snopt7_problem.iu = (int *)(&info);
+        snopt7_problem.iu = reinterpret_cast<int *> (&info);
 
         // -------- Linear Part Of the Problem. As pagmo does not support linear problems we do not use this -------
         int neA = 0;        // We switch off the linear part of the fitness
