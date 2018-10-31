@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.2)
 
-set(PAGMO_PLUGINS_NONFREE_PROJECT_VERSION 0.4)
+set(PAGMO_PLUGINS_NONFREE_PROJECT_VERSION 0.5)
 project(pagmo_plugins_nonfree VERSION ${PAGMO_PLUGINS_NONFREE_PROJECT_VERSION})
 
 enable_testing()
@@ -57,29 +57,26 @@ if(MINGW)
 	list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE "-Wa,-mbig-obj")
 endif()
 
+if(PAGMO_PLUGINS_NONFREE_BUILD_PYTHON)
+    # pygmo_pnf dependencies.
+    include(YACMAPythonSetup)
+
+    # Python version check.
+    if(${PYTHON_VERSION_MAJOR} LESS 2 OR (${PYTHON_VERSION_MAJOR} EQUAL 2 AND ${PYTHON_VERSION_MINOR} LESS 7))
+        message(FATAL_ERROR "Minimum supported Python version is 2.7.")
+    endif()
+
+    # Internal variable that will be used to tell PagmoFindBoost to locate Boost.Python.
+    set(_PAGMO_PLUGINS_NONFREE_FIND_BOOST_PYTHON TRUE)
+endif()
+
+# Boost setup (common to pagmo/pygmo).
+include(PagmoPNFFindBoost)
+
 # Pagmo setup.
 message(STATUS "\nFinding the pagmo package:")
 find_package(Pagmo REQUIRED)
 message(STATUS "End of finding the pagmo package\n")
-
-# Boost setup.
-include(YACMAPythonSetup)
-list(APPEND PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS system filesystem)
-if(PAGMO_PLUGINS_NONFREE_BUILD_PYTHON)
-    if(${PYTHON_VERSION_MAJOR} EQUAL 2)
-        list(APPEND PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS python)
-    else()
-        list(APPEND PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS python3)
-    endif()
-endif()
-message(STATUS "Required Boost libraries: ${PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS} ")
-find_package(Boost 1.61.0 REQUIRED COMPONENTS "${PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS}")
-if(NOT Boost_FOUND)
-    message(FATAL_ERROR "Not all requested Boost components were found, exiting.")
-endif()
-#message(STATUS "Detected Boost version: ${Boost_VERSION}")
-#message(STATUS "Boost include dirs: ${Boost_INCLUDE_DIRS}")
-message(STATUS "Boost libraries paths: ${Boost_LIBRARIES}")
 
 # Setup of the header-only pagmo_plugins_nonfree library.
 add_library(pagmo_plugins_nonfree INTERFACE)
