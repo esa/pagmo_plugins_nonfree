@@ -8,7 +8,8 @@ set -e
 
 CMAKE_VERSION="3.11.1"
 EIGEN3_VERSION="3.3.4"
-BOOST_VERSION="1.63.0"
+# The boost version needs to be synchd with that of pygmp pip package
+BOOST_VERSION="1.67.0"
 NLOPT_VERSION="2.4.2"
 PAGMO_VERSION="2.9"
 
