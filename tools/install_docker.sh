@@ -8,7 +8,7 @@ set -e
 
 CMAKE_VERSION="3.11.1"
 EIGEN3_VERSION="3.3.4"
-BOOST_VERSION="1.68.0"
+BOOST_VERSION="1.63.0"
 NLOPT_VERSION="2.4.2"
 PAGMO_VERSION="2.9"
 
@@ -81,7 +81,7 @@ cd ..
 # Python deps (numpy is needed to install pygmo)
 /opt/python/${PYTHON_DIR}/bin/pip install cloudpickle numpy
 
-# pagmo & pygmo wget https://github.com/esa/pagmo2/archive/v2.4.tar.gz
+# pagmo & pygmo
 curl -L  https://github.com/esa/pagmo2/archive/v${PAGMO_VERSION}.tar.gz > pagmo2.tar.gz
 tar xzf pagmo2.tar.gz
 cd pagmo2-${PAGMO_VERSION}
@@ -95,7 +95,7 @@ cd build_pygmo
 cmake -DCMAKE_BUILD_TYPE=Release -DPAGMO_BUILD_PYGMO=yes -DPAGMO_BUILD_PAGMO=no -DPYTHON_EXECUTABLE=/opt/python/${PYTHON_DIR}/bin/python ../;
 make -j2 install
 
-# pagmo_plugins_nonfree
+# pygmo_plugins_nonfree
 cd /pagmo_plugins_nonfree
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release -DPAGMO_PLUGINS_NONFREE_HEADERS=no -DPAGMO_PLUGINS_NONFREE_BUILD_PYTHON=yes -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=no -DPYTHON_EXECUTABLE=/opt/python/${PYTHON_DIR}/bin/python ../;
