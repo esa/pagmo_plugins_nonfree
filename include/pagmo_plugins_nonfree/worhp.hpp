@@ -1092,7 +1092,7 @@ private:
     // Log update and print to screen
     void update_log(const problem &prob, const vector_double &fit, long long unsigned fevals0) const
     {
-        auto fevals = prob.get_fevals() - fevals0;
+        unsigned fevals = static_cast<unsigned>(prob.get_fevals() - fevals0);
         if (m_verbosity && !(fevals % m_verbosity)) {
             // Constraints bits.
             const auto ctol = prob.get_c_tol();

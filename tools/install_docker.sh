@@ -6,18 +6,18 @@ set -x
 # Exit on error.
 set -e
 
-CMAKE_VERSION="3.8.0"
-EIGEN3_VERSION="3.3.3"
-BOOST_VERSION="1.63.0"
+CMAKE_VERSION="3.11.1"
+EIGEN3_VERSION="3.3.4"
+BOOST_VERSION="1.68.0"
 NLOPT_VERSION="2.4.2"
 PAGMO_VERSION="2.6"
 
-if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *36 ]]; then
+if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *37 ]]; then
+	PYTHON_DIR="cp37-cp37m"
+elif [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *36 ]]; then
 	PYTHON_DIR="cp36-cp36m"
 elif [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *35 ]]; then
 	PYTHON_DIR="cp35-cp35m"
-elif [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *34 ]]; then
-	PYTHON_DIR="cp34-cp34m"
 elif [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *27 ]]; then
 	PYTHON_DIR="cp27-cp27mu"
 else
@@ -51,7 +51,7 @@ gmake install > /dev/null
 cd ..
 
 # Install Eigen
-curl -L https://bitbucket.org/eigen/eigen/get/${EIGEN3_VERSION}.tar.gz > ${EIGEN3_VERSION}
+curl -L http://bitbucket.org/eigen/eigen/get/${EIGEN3_VERSION}.tar.gz > ${EIGEN3_VERSION}
 tar xzf ${EIGEN3_VERSION} > /dev/null 2>&1
 cd eigen*
 mkdir build

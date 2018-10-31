@@ -2,10 +2,10 @@ environment:
   TWINE_PASSWORD:
     secure: fqy2DKVE2zM+97vNPB8xgw3ae3SDPkL/T8RvC6s4ncY=
   matrix:
-    - BUILD_TYPE: "MSVC_64_Release"
+    - BUILD_TYPE: "MSVC_64_Python36"
       COMPILER: MSVC15
       PLATFORM: "x64"
-    - BUILD_TYPE: "MSVC_64_Python36"
+    - BUILD_TYPE: "MSVC_64_Release"
       COMPILER: MSVC15
       PLATFORM: "x64"
     - BUILD_TYPE: "MinGW_64_Debug"
@@ -56,10 +56,10 @@ build_script:
 test_script:
 - if [%BUILD_TYPE%]==[MSVC_64_Release] ctest --output-on-failure
 
-- if [%BUILD_TYPE%]==[MSVC_64_Python36] start /b ipcluster start
-- if [%BUILD_TYPE%]==[MSVC_64_Python36] timeout 20
 - if [%BUILD_TYPE%]==[MSVC_64_Python36] cd ..
 - if [%BUILD_TYPE%]==[MSVC_64_Python36] cd tools
+- if [%BUILD_TYPE%]==[MSVC_64_Python36] Powershell.exe -File start_ip_cluster.ps1
+- if [%BUILD_TYPE%]==[MSVC_64_Python36] timeout 20
 - if [%BUILD_TYPE%]==[MSVC_64_Python36] python -c "import pygmo_plugins_nonfree as pg7; pg7.test.run_test_suite(1)"
 
 artifacts:
