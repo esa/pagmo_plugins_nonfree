@@ -98,7 +98,7 @@ make -j2 install
 # pagmo_plugins_nonfree
 cd /pagmo_plugins_nonfree
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release -DPAGMO_PLUGINS_NONFREE_HEADERS=no -DPAGMO_PLUGINS_NONFREE_BUILD_PYTHON=yes -DPAGMO_PLUGINS_NONFREE_BUILD_TEST=no -DPYTHON_EXECUTABLE=/opt/python/${PYTHON_DIR}/bin/python ../;
+cmake -DCMAKE_BUILD_TYPE=Release -DPAGMO_PLUGINS_NONFREE_HEADERS=no -DPAGMO_PLUGINS_NONFREE_BUILD_PYTHON=yes -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=no -DPYTHON_EXECUTABLE=/opt/python/${PYTHON_DIR}/bin/python ../;
 make -j2 install
 
 cd wheel
