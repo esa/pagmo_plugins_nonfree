@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>C++: Sparse Nonlinear OPTimizer (SNOPT) &#8212; pagmo_plugins_nonfree 0.4 documentation</title>
+    <title>C++: Sparse Nonlinear OPTimizer (SNOPT) &#8212; pagmo_plugins_nonfree 0.5 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -17,7 +17,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4',
+        VERSION:     '0.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -52,7 +52,7 @@
         </button>
         <a class="navbar-brand" href="index.html"><span><img src="_static/logo_small_html.png"></span>
            </a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -123,7 +123,7 @@
 <h1>C++: Sparse Nonlinear OPTimizer (SNOPT)<a class="headerlink" href="#c-sparse-nonlinear-optimizer-snopt" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="_CPPv2N5pagmo6snopt7E">
-<span id="pagmo::snopt7"></span><span class="target" id="classpagmo_1_1snopt7"></span><em class="property">class </em><code class="descclassname">pagmo::</code><code class="descname">snopt7</code><a class="headerlink" href="#_CPPv2N5pagmo6snopt7E" title="Permalink to this definition">¶</a><br /></dt>
+<span id="pagmo::snopt7"></span><span class="target" id="classpagmo_1_1snopt7"></span><em class="property">class </em><code class="descname">snopt7</code> : <em class="property">public</em> not_population_based<a class="headerlink" href="#_CPPv2N5pagmo6snopt7E" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>SNOPT 7 - (Sparse Nonlinear OPTimizer, Version 7) </p>
 <p><img alt="_images/sol.png" src="_images/sol.png" /></p>
 <p>This class is a user-defined algorithm (UDA) that contains a plugin to the Sparse Nonlinear OPTimizer (SNOPT) solver, a software package for large-scale nonlinear optimization. SNOPT is a powerful solver that is able to handle robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. Since the wrapper was developed arounf the version 7 of SNOPT the class is called <a class="reference internal" href="#classpagmo_1_1snopt7"><span class="std std-ref">pagmo::snopt7</span></a>.</p>
@@ -163,7 +163,6 @@ is deactivated in this plugin for pagmo.</p>
 <p class="last"><a class="reference external" href="https://web.stanford.edu/group/SOL/guides/sndoc7.pdf">https://web.stanford.edu/group/SOL/guides/sndoc7.pdf</a>.</p>
 </div>
  </p>
-<p>Inherits from not_population_based</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Types</p>
 <dl class="type">
@@ -250,8 +249,8 @@ among the values returned by pagmo::problem::get_c_tol() if not zero.</p>
 <span id="pagmo::snopt7::set_verbosity__unsigned"></span><span class="target" id="classpagmo_1_1snopt7_1a91f63966dbc4d37a1c5d014937338031"></span>void <code class="descname">set_verbosity</code><span class="sig-paren">(</span>unsigned <em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo6snopt713set_verbosityEj" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set verbosity. </p>
 <p>This method will set the algorithm&#8217;s verbosity. If <code class="docutils literal"><span class="pre">n</span></code> is zero, no output is produced during the optimisation and no logging is performed. If <code class="docutils literal"><span class="pre">n</span></code> is nonzero, then every <code class="docutils literal"><span class="pre">n</span></code> objective function evaluations the status of the optimisation will be both printed to screen and recorded internally. See <a class="reference internal" href="#classpagmo_1_1snopt7_1a84de215a6fde551532bb768e33cc116e"><span class="std std-ref">snopt7::log_line_type</span></a> and <a class="reference internal" href="#classpagmo_1_1snopt7_1abf11a74f7482e3eab6145d766f2c3a6e"><span class="std std-ref">snopt7::log_type</span></a> for information on the logging format. The internal log can be fetched via <a class="reference internal" href="#classpagmo_1_1snopt7_1a0dc70b9c53d2e2b84fc53bbcc65255a3"><span class="std std-ref">get_log()</span></a>.</p>
-<p>
-Example (verbosity 1): <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">objevals</span><span class="p">:</span>        <span class="n">objval</span><span class="p">:</span>      <span class="n">violated</span><span class="p">:</span>    <span class="n">viol</span><span class="o">.</span> <span class="n">norm</span><span class="p">:</span>
+<p><p>Example (verbosity 1): </p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">objevals</span><span class="p">:</span>        <span class="n">objval</span><span class="p">:</span>      <span class="n">violated</span><span class="p">:</span>    <span class="n">viol</span><span class="o">.</span> <span class="n">norm</span><span class="p">:</span>
         <span class="mi">1</span>        <span class="mf">48.9451</span>              <span class="mi">1</span>        <span class="mf">1.25272</span> <span class="n">i</span>
         <span class="mi">2</span>         <span class="mf">30.153</span>              <span class="mi">1</span>       <span class="mf">0.716591</span> <span class="n">i</span>
         <span class="mi">3</span>        <span class="mf">26.2884</span>              <span class="mi">1</span>        <span class="mf">1.04269</span> <span class="n">i</span>
@@ -337,10 +336,8 @@ object pagmo::snopt7 passing <code class="docutils literal"><span class="pre">Tr
 </dd></dl>
 
 <dl class="function">
-<dt>
-<em class="property">template </em>&lt;<em class="property">typename</em> Archive&gt;</dt>
 <dt id="_CPPv2N5pagmo6snopt79serializeER7Archive">
-<span id="pagmo::snopt7::serialize__ArchiveR"></span><span class="target" id="classpagmo_1_1snopt7_1aa4e69f6d3026eae838ff24825dcf4888"></span>void <code class="descname">serialize</code><span class="sig-paren">(</span>Archive &amp;<em>ar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo6snopt79serializeER7Archive" title="Permalink to this definition">¶</a><br /></dt>
+<span id="pagmo::snopt7::serialize__ArchiveR"></span><em class="property">template </em>&lt;<em class="property">typename</em> Archive&gt;<br /><span class="target" id="classpagmo_1_1snopt7_1aa4e69f6d3026eae838ff24825dcf4888"></span>void <code class="descname">serialize</code><span class="sig-paren">(</span>Archive &amp;<em>ar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo6snopt79serializeER7Archive" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Object serialization. </p>
 <p>This method will save/load <code class="docutils literal"><span class="pre">this</span></code> into the archive <code class="docutils literal"><span class="pre">ar</span></code>.</p>
 <p><dl class="docutils">

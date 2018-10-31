@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>C++: We Optimize Really Huge Problems (WORHP) &#8212; pagmo_plugins_nonfree 0.4 documentation</title>
+    <title>C++: We Optimize Really Huge Problems (WORHP) &#8212; pagmo_plugins_nonfree 0.5 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -17,7 +17,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4',
+        VERSION:     '0.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -52,7 +52,7 @@
         </button>
         <a class="navbar-brand" href="index.html"><span><img src="_static/logo_small_html.png"></span>
            </a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -123,7 +123,7 @@
 <h1>C++: We Optimize Really Huge Problems (WORHP)<a class="headerlink" href="#c-we-optimize-really-huge-problems-worhp" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
 <dt id="_CPPv2N5pagmo5worhpE">
-<span id="pagmo::worhp"></span><span class="target" id="classpagmo_1_1worhp"></span><em class="property">class </em><code class="descclassname">pagmo::</code><code class="descname">worhp</code><a class="headerlink" href="#_CPPv2N5pagmo5worhpE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="pagmo::worhp"></span><span class="target" id="classpagmo_1_1worhp"></span><em class="property">class </em><code class="descname">worhp</code> : <em class="property">public</em> not_population_based<a class="headerlink" href="#_CPPv2N5pagmo5worhpE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>WORHP - (We Optimize Really Huge Problems) </p>
 <p><img alt="_images/worhp.png" src="_images/worhp.png" /></p>
 <p>This class is a user-defined algorithm (UDA) that contains a plugin to the WORHP (We Optimize Really Huge Problems) solver (<a class="reference external" href="https://worhp.de/">https://worhp.de/</a>), a software package for large-scale nonlinear optimization. WORHP is a powerful solver that is able to handle robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. The wrapper was developed around the version 1.12 of WORHP and the Full Feature Interface (FFI) using the Unified Solver Interface and the Reverse Communication paradigm (see worhp user manual).</p>
@@ -157,7 +157,6 @@ in undefined behaviour.</p>
 <p class="last"><a class="reference external" href="https://worhp.de/">https://worhp.de/</a></p>
 </div>
  </p>
-<p>Inherits from not_population_based</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Types</p>
 <dl class="type">
@@ -241,8 +240,8 @@ m_numeric_opts and m_bool_opts are set after and thus overwrite the above rules.
 <span id="pagmo::worhp::set_verbosity__unsigned"></span><span class="target" id="classpagmo_1_1worhp_1a21ffa1b18ecf20e7b511cb31affa012b"></span>void <code class="descname">set_verbosity</code><span class="sig-paren">(</span>unsigned <em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo5worhp13set_verbosityEj" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set verbosity. </p>
 <p>This method will set the algorithm&#8217;s verbosity. If <code class="docutils literal"><span class="pre">n</span></code> is zero, no output is produced during the optimisation by pagmo and no logging is performed. If <code class="docutils literal"><span class="pre">n</span></code> is nonzero, then every <code class="docutils literal"><span class="pre">n</span></code> objective function evaluations the status of the optimisation will be both printed to screen and recorded internally. See <a class="reference internal" href="#classpagmo_1_1worhp_1a24034b6d08edefc9bf7ccd7039edeba4"><span class="std std-ref">worhp::log_line_type</span></a> and <a class="reference internal" href="#classpagmo_1_1worhp_1a2606dce9a960363881f7b3834b1e0582"><span class="std std-ref">worhp::log_type</span></a> for information on the logging format. The internal log can be fetched via <a class="reference internal" href="#classpagmo_1_1worhp_1a558e1f0ad8864d9e1d4028069809a881"><span class="std std-ref">get_log()</span></a>.</p>
-<p>
-Example (verbosity 1): <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">objevals</span><span class="p">:</span>        <span class="n">objval</span><span class="p">:</span>      <span class="n">violated</span><span class="p">:</span>    <span class="n">viol</span><span class="o">.</span> <span class="n">norm</span><span class="p">:</span>
+<p><p>Example (verbosity 1): </p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">objevals</span><span class="p">:</span>        <span class="n">objval</span><span class="p">:</span>      <span class="n">violated</span><span class="p">:</span>    <span class="n">viol</span><span class="o">.</span> <span class="n">norm</span><span class="p">:</span>
         <span class="mi">1</span>        <span class="mf">48.9451</span>              <span class="mi">1</span>        <span class="mf">1.25272</span> <span class="n">i</span>
         <span class="mi">2</span>         <span class="mf">30.153</span>              <span class="mi">1</span>       <span class="mf">0.716591</span> <span class="n">i</span>
         <span class="mi">3</span>        <span class="mf">26.2884</span>              <span class="mi">1</span>        <span class="mf">1.04269</span> <span class="n">i</span>
@@ -487,10 +486,8 @@ object pagmo::WORHP passing <code class="docutils literal"><span class="pre">tru
 </dd></dl>
 
 <dl class="function">
-<dt>
-<em class="property">template </em>&lt;<em class="property">typename</em> Archive&gt;</dt>
 <dt id="_CPPv2N5pagmo5worhp9serializeER7Archive">
-<span id="pagmo::worhp::serialize__ArchiveR"></span><span class="target" id="classpagmo_1_1worhp_1a9877ff182bed6a3bf9e00aa3fbd570e7"></span>void <code class="descname">serialize</code><span class="sig-paren">(</span>Archive &amp;<em>ar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo5worhp9serializeER7Archive" title="Permalink to this definition">¶</a><br /></dt>
+<span id="pagmo::worhp::serialize__ArchiveR"></span><em class="property">template </em>&lt;<em class="property">typename</em> Archive&gt;<br /><span class="target" id="classpagmo_1_1worhp_1a9877ff182bed6a3bf9e00aa3fbd570e7"></span>void <code class="descname">serialize</code><span class="sig-paren">(</span>Archive &amp;<em>ar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo5worhp9serializeER7Archive" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Object serialization. </p>
 <p>This method will save/load <code class="docutils literal"><span class="pre">this</span></code> into the archive <code class="docutils literal"><span class="pre">ar</span></code>.</p>
 <p><dl class="docutils">

@@ -5,7 +5,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Quick start &#8212; pagmo_plugins_nonfree 0.4 documentation</title>
+    <title>Quick start &#8212; pagmo_plugins_nonfree 0.5 documentation</title>
     
     <link rel="stylesheet" href="_static/basic.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -17,7 +17,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.4',
+        VERSION:     '0.5',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -52,7 +52,7 @@
         </button>
         <a class="navbar-brand" href="index.html"><span><img src="_static/logo_small_html.png"></span>
            </a>
-        <span class="navbar-text navbar-version pull-left"><b>0.4</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.5</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -165,8 +165,7 @@
 29
 30
 31
-32
-33</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;pagmo/algorithm.hpp&gt;</span><span class="cp"></span>
+32</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;pagmo/algorithm.hpp&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;pagmo/archipelago.hpp&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;pagmo/problem.hpp&gt;</span><span class="cp"></span>
 <span class="cp">#include</span> <span class="cpf">&lt;pagmo/problems/rosenbrock.hpp&gt;</span><span class="cp"></span>
@@ -180,10 +179,9 @@
     <span class="c1">// UDP (user defined problem).</span>
     <span class="n">problem</span> <span class="n">prob</span><span class="p">{</span><span class="n">rosenbrock</span><span class="p">(</span><span class="mi">30</span><span class="p">)};</span>
 
-    <span class="c1">// 2 - Instantiate a pagmo_plugins_nonfree algorithm, in this case SNOPT. THis assumes a library snopt7_c is found</span>
-    <span class="c1">// in</span>
-    <span class="c1">// the path &quot;/usr/local/lib/&quot;. Otherwise you will get a runtime error.</span>
-    <span class="n">algorithm</span> <span class="n">algo</span><span class="p">(</span><span class="n">snopt7</span><span class="p">(</span><span class="nb">false</span><span class="p">,</span> <span class="s">&quot;/usr/local/lib/&quot;</span><span class="p">));</span>
+    <span class="c1">// 2 - Instantiate a pagmo_plugins_nonfree algorithm, in this case SNOPT. This assumes a library libsnopt7_c.so is</span>
+    <span class="c1">// found in the path &quot;/usr/local/lib/&quot;. Otherwise you will get a runtime error.</span>
+    <span class="n">algorithm</span> <span class="n">algo</span><span class="p">(</span><span class="n">snopt7</span><span class="p">(</span><span class="nb">false</span><span class="p">,</span> <span class="s">&quot;/usr/local/lib/libsnopt7_c.so&quot;</span><span class="p">));</span>
 
     <span class="c1">// 3 - Instantiate an archipelago with 16 islands having each 1 individual (the initial guess)</span>
     <span class="n">archipelago</span> <span class="n">archi</span><span class="p">{</span><span class="mi">16</span><span class="p">,</span> <span class="n">algo</span><span class="p">,</span> <span class="n">prob</span><span class="p">,</span> <span class="mi">1</span><span class="p">};</span>
