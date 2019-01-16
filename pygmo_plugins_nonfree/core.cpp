@@ -38,7 +38,6 @@ BOOST_PYTHON_MODULE(core)
         (bp::arg("screen_output") = false, bp::arg("library") = "/usr/local/lib/")));
     worhp_.def("set_integer_option", &pagmo::worhp::set_integer_option, pg::worhp_set_integer_option_docstring().c_str(), (bp::arg("name"), bp::arg("value")));
     worhp_.def("set_numeric_option", &pagmo::worhp::set_numeric_option, pg::worhp_set_numeric_option_docstring().c_str(), (bp::arg("name"), bp::arg("value")));
-    worhp_.def("set_bool_option", &pagmo::worhp::set_numeric_option, pg::worhp_set_bool_option_docstring().c_str(), (bp::arg("name"), bp::arg("value")));
+    worhp_.def("set_bool_option", &pagmo::worhp::set_bool_option, pg::worhp_set_bool_option_docstring().c_str(), (bp::arg("name"), bp::arg("value")));
     pg::expose_algo_log(worhp_, pg::worhp_get_log_docstring().c_str());
-
 }
