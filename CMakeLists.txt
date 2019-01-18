@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.2)
 
-set(PAGMO_PLUGINS_NONFREE_PROJECT_VERSION 0.5)
+set(PAGMO_PLUGINS_NONFREE_PROJECT_VERSION 0.7)
 project(pagmo_plugins_nonfree VERSION ${PAGMO_PLUGINS_NONFREE_PROJECT_VERSION})
 
 enable_testing()
