@@ -9,3 +9,9 @@ pagmo_plugins_nonfree
 Project documentation can be found here https://esa.github.io/pagmo_plugins_nonfree/
 
 pagmo documentation can be found here https://esa.github.io/pagmo2/
+
+Version compatibility
+=====================
+WARNING: plugin compatible with worhp 1.12 and snopt7 (with the snopt7 c interface built by the github project snopt-interface v2.1, commit 76b166ecdf5c55a3289ce0f849d8d3d101954a22.). It will not work with worhp 1.13 nor snopt7_c v 2.2 (headers were changed upstream). If anyone wants us to develop plugins for those versions vote up the related issues.
+
+
