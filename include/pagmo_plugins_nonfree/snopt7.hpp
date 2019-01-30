@@ -378,14 +378,14 @@ public:
      * @param screen_output when ``true`` will activate the screen output from the SNOPT7 library, otherwise
      * will let pagmo regulate logs and screen_output via its pagmo::algorithm::set_verbosity mechanism.
      * @param snopt7_c_library The path to the snopt7_c library.
-     * @param snopt7_minor_version The minor version of your Snopt7 library. Only two APIs are supported at the
+     * @param minor_version The minor version of your Snopt7 library. Only two APIs are supported at the
      * moment: 7.6 and 7.7. You may try to use this plugin with different minor version numbers, but at your own risk.
      *
      */
     snopt7(bool screen_output = false, std::string snopt7_c_library = "/usr/local/lib/libsnopt7_c.so",
            unsigned minor_version = 6u)
-        : m_snopt7_c_library(snopt7_c_library), m_minor_version(minor_version), m_integer_opts(),
-          m_numeric_opts(), m_screen_output(screen_output), m_verbosity(0), m_log(){};
+        : m_snopt7_c_library(snopt7_c_library), m_minor_version(minor_version), m_integer_opts(), m_numeric_opts(),
+          m_screen_output(screen_output), m_verbosity(0), m_log(){};
 
     /// Evolve population.
     /**
@@ -524,6 +524,8 @@ public:
     {
         std::ostringstream ss;
         stream(ss, "\tName of the snopt7_c library: ", m_snopt7_c_library);
+        stream(ss, "\n\tLibrary version declared: 7.", m_minor_version);
+
         if (!m_screen_output) {
             stream(ss, "\n\tScreen output: (pagmo/pygmo) - verbosity ", std::to_string(m_verbosity));
         } else {
@@ -562,8 +564,8 @@ public:
     template <typename Archive>
     void serialize(Archive &ar)
     {
-        ar(cereal::base_class<not_population_based>(this), m_snopt7_c_library, m_integer_opts, m_numeric_opts,
-           m_last_opt_res, m_screen_output, m_verbosity, m_log);
+        ar(cereal::base_class<not_population_based>(this), m_snopt7_c_library, m_minor_version, m_integer_opts,
+           m_numeric_opts, m_last_opt_res, m_screen_output, m_verbosity, m_log);
     }
 
     /// Set integer option.
@@ -767,8 +769,8 @@ We report the exact text of the original exception thrown:
         auto problem_name = s_to_C(prob.get_name());
 
         // Here we call snInit and ensure deleteSNOPT will be called whenever the object spr is destroyed.
-        detail::sn_problem_raii<snProblem> spr(&snopt7_problem, problem_name.data(), empty_string, m_screen_output, snInit,
-                                    deleteSNOPT);
+        detail::sn_problem_raii<snProblem> spr(&snopt7_problem, problem_name.data(), empty_string, m_screen_output,
+                                               snInit, deleteSNOPT);
         // Logic for the handling of constraints tolerances. The logic is as follows:
         // - if the user provides the "Major feasibility tolerance" option, use that *unconditionally*. Otherwise,
         // - compute the minimum tolerance min_tol among those returned by  problem.c_tol(). If zero, ignore
