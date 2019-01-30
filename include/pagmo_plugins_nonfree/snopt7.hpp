@@ -81,11 +81,16 @@ extern "C" {
 namespace boost
 {
 template <>
-struct is_object<int(snProblem *, int, int, int, double, int, snFunA, int, int *, int *, double *, int, int *, int *,
+struct is_object<int(snProblem_76 *, int, int, int, double, int, snFunA, int, int *, int *, double *, int, int *, int *,
                      double *, double *, double *, double *, double *, int *, double *, double *, int *, double *,
                      int *, int *, double *)> : std::false_type {
 };
-}
+template <>
+struct is_object<int(snProblem_77 *, int, int, int, double, int, snFunA, int, int *, int *, double *, int, int *, int *,
+                     double *, double *, double *, double *, double *, int *, double *, double *, int *, double *,
+                     int *, int *, double *)> : std::false_type {
+};
+} // namespace boost
 
 namespace pagmo
 {
@@ -116,6 +121,7 @@ struct user_data {
 };
 
 // We use this to ensure deleteSNOPT is called also if exceptions occur.
+template <typename snProblem>
 struct sn_problem_raii {
     sn_problem_raii(snProblem *p, char *a, char *b, int n,
                     std::function<void(snProblem *, char *, char *, int)> &snInit,
@@ -196,8 +202,9 @@ extern "C" {
 // declared within an 'extern "C"' block (otherwise, it might be UB to pass C++ function pointers
 // to a C API).
 // https://www.reddit.com/r/cpp/comments/4fqfy7/using_c11_capturing_lambdas_w_vanilla_c_api/d2b9bh0/
-inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF, double F[], int *needG, int *neG,
-                           double G[], char cu[], int *lencu, int iu[], int *leniu, double ru[], int *lenru)
+inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF, double F[], int *needG,
+                                  int *neG, double G[], char cu[], int *lencu, int iu[], int *leniu, double ru[],
+                                  int *lenru)
 {
     (void)n;
     (void)cu;
@@ -264,7 +271,7 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
     }
 }
 } // extern "C"
-} // detail namespace
+} // namespace detail
 
 /// SNOPT 7 - (Sparse Nonlinear OPTimizer, Version 7)
 /**
@@ -273,7 +280,7 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
  * This class is a user-defined algorithm (UDA) that contains a plugin to the Sparse Nonlinear OPTimizer (SNOPT)
  * solver, a software package for large-scale nonlinear optimization. SNOPT is a powerful solver that is able to handle
  * robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. Since the wrapper
- * was developed arounf the version 7 of SNOPT the class is called pagmo::snopt7.
+ * was developed around the version 7 of SNOPT the class is called pagmo::snopt7.
  *
  * \verbatim embed:rst:leading-asterisk
  *
@@ -281,9 +288,10 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
  *
  *    SNOPT7 fortran code is only available acquiring a licence.
  *    If you do have such a licence, then you will also have the fortran files and can build them into the library
- *    snopt7 (one single library). In what follows, we assume the library snopt7_c is available, which is open
- *    source and can be obtained from https://github.com/snopt/snopt-interface. This library will link to your fortran
- *    snopt7 library (licensed).
+ *    snopt7 (one single library). The library snopt7_c will then need to be built, which can be obtained
+ *    compiling the correct release of the project https://github.com/snopt/snopt-interface. The library thus created
+ *    will link to your fortran snopt7 library. As an alternative you may have only one library libsnopt7 containing
+ *    both the Fortran and the C interface (this is the case, for example, of the library downloaded for evaluation).
  *
  * \endverbatim
  *
@@ -305,9 +313,8 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
  *
  * .. note::
  *
- *    We developed this plugin for the SNOPT version 7.6, but nothing significant has changed in the fortran
- *    files since the old days. As a consequence, as long as your snopt7_c library has the symbols snInit,
- *    setIntParameter, setRealParameter, deleteSNOPT and solveA this plugin will work also with older SNOPT versions.
+ *    This plugin was tested with snopt versions 7.6 and 7.7 as well as with the compiled evaluation libraries (7.7)
+ *    made available via the snopt7 official web site (C/Fortran library).
  *
  * .. warning::
  *
@@ -371,11 +378,14 @@ public:
      * @param screen_output when ``true`` will activate the screen output from the SNOPT7 library, otherwise
      * will let pagmo regulate logs and screen_output via its pagmo::algorithm::set_verbosity mechanism.
      * @param snopt7_c_library The path to the snopt7_c library.
+     * @param snopt7_minor_version The minor version of your Snopt7 library. Only two APIs are supported at the
+     * moment: 7.6 and 7.7. You may try to use this plugin with different minor version numbers, but at your own risk.
      *
      */
-    snopt7(bool screen_output = false, std::string snopt7_c_library = "/usr/local/lib/libsnopt7_c.so")
-        : m_snopt7_c_library(snopt7_c_library), m_integer_opts(), m_numeric_opts(), m_screen_output(screen_output),
-          m_verbosity(0), m_log(){};
+    snopt7(bool screen_output = false, std::string snopt7_c_library = "/usr/local/lib/libsnopt7_c.so",
+           unsigned minor_version = 6u)
+        : m_snopt7_c_library(snopt7_c_library), m_minor_version(minor_version), m_integer_opts(),
+          m_numeric_opts(), m_screen_output(screen_output), m_verbosity(0), m_log(){};
 
     /// Evolve population.
     /**
@@ -414,272 +424,11 @@ public:
      */
     population evolve(population pop) const
     {
-        // We store some useful properties
-        const auto &prob
-            = pop.get_problem(); // This is a const reference, so using set_seed, for example, will not work
-        auto dim = prob.get_nx();
-        const auto bounds = prob.get_bounds();
-        const auto &lb = bounds.first;
-        const auto &ub = bounds.second;
-
-        // PREAMBLE-------------------------------------------------------------------------------------------------
-        // We start by checking that the problem is suitable for this particular algorithm.
-        if (prob.get_nobj() != 1u) {
-            pagmo_throw(std::invalid_argument, "Multiple objectives detected in " + prob.get_name() + " instance. "
-                                                   + get_name() + " cannot deal with them");
-        }
-        if (prob.is_stochastic()) {
-            pagmo_throw(std::invalid_argument,
-                        "The problem appears to be stochastic " + get_name() + " cannot deal with it");
-        }
-
-        if (!pop.size()) {
-            pagmo_throw(std::invalid_argument, get_name() + " does not work on an empty population");
-        }
-        // ---------------------------------------------------------------------------------------------------------
-
-        // ------------------------- SNOPT7 PLUGIN (we attempt loading the snopt7 library at run-time)--------------
-        // We first declare the prototypes of the functions used from the library
-        std::function<void(snProblem *, char *, char *, int)> snInit;
-        std::function<int(snProblem *, char[], int)> setIntParameter;
-        std::function<int(snProblem *, char[], double)> setRealParameter;
-        std::function<void(snProblem *)> deleteSNOPT;
-        std::function<int(snProblem *, int, int, int, double, int, snFunA, int, int *, int *, double *, int, int *,
-                          int *, double *, double *, double *, double *, double *, int *, double *, double *, int *,
-                          double *, int *, int *, double *)>
-            solveA;
-        // We then try to load the library at run time and locate the symbols used.
-        try {
-            // Here we import at runtime the snopt7_c library and protect the whole try block with a mutex
-            std::lock_guard<std::mutex> lock(detail::snopt_statics<>::library_load_mutex);
-            boost::filesystem::path path_to_lib(m_snopt7_c_library);
-            if (!boost::filesystem::is_regular_file(path_to_lib)) {
-                pagmo_throw(std::invalid_argument, "The snopt7_c library path was constructed to be: "
-                                                       + path_to_lib.string() + " and it does not appear to be a file");
-            }
-            boost::dll::shared_library libsnopt7_c(path_to_lib);
-            // We then load the symbols we need for the SNOPT7 plugin
-            snInit = boost::dll::import<void(snProblem *, char *, char *,
-                                             int)>( // type of the function to import
-                libsnopt7_c,                        // the library
-                "snInit"                            // name of the function to import
-            );
-
-            setIntParameter = boost::dll::import<int(snProblem *, char[], int)>( // type of the function to import
-                libsnopt7_c,                                                     // the library
-                "setIntParameter"                                                // name of the function to import
-            );
-
-            setRealParameter = boost::dll::import<int(snProblem *, char[], double)>( // type of the function to import
-                libsnopt7_c,                                                         // the library
-                "setRealParameter"                                                   // name of the function to import
-            );
-
-            deleteSNOPT = boost::dll::import<void(snProblem *)>( // type of the function to import
-                libsnopt7_c,                                     // the library
-                "deleteSNOPT"                                    // name of the function to import
-            );
-
-            solveA = boost::dll::import<int(snProblem *, int, int, int, double, int, snFunA, int, int *, int *,
-                                            double *, int, int *, int *, double *, double *, double *, double *,
-                                            double *, int *, double *, double *, int *, double *, int *, int *,
-                                            double *)>( // type of the function to import
-                libsnopt7_c,                            // the library
-                "solveA"                                // name of the function to import
-            );
-        } catch (const std::exception &e) {
-            std::string message(
-                R"(
-An error occurred while loading the snopt7_c library at run-time. This is typically caused by one of the following
-reasons:
-
-- The file declared to be the snopt7_c library, i.e. )"
-                + m_snopt7_c_library
-                + R"(, is not a shared library containing the necessary C interface symbols (is the file path really pointing to
-a valid shared library?)
- - The library is found and it does contain the C interface symbols, but it needs linking to some additional libraries that are not found
-at run-time.
-
-We report the exact text of the original exception thrown:
-
- )" + std::string(e.what()));
-            pagmo_throw(std::invalid_argument, message);
-        }
-        // ------------------------- END SNOPT7 PLUGIN -------------------------------------------------------------
-
-        // We init and set up SNOPT options
-        // We init the SNOPT workspace suppressing the file output. TODO: should we allow the file output?
-        snProblem snopt7_problem;
-        char empty_string[] = "";
-
-        auto problem_name = s_to_C(prob.get_name());
-
-        // Here we call snInit and ensure deleteSNOPT will be called whenever the object spr is destroyed.
-        detail::sn_problem_raii spr(&snopt7_problem, problem_name.data(), empty_string, m_screen_output, snInit,
-                                    deleteSNOPT);
-        // Logic for the handling of constraints tolerances. The logic is as follows:
-        // - if the user provides the "Major feasibility tolerance" option, use that *unconditionally*. Otherwise,
-        // - compute the minimum tolerance min_tol among those returned by  problem.c_tol(). If zero, ignore
-        //   it and use the SNOPT7 default value for "Major feasibility tolerance" (1e-6). Otherwise, use min_tol as
-        //   the value for "Major feasibility tolerance".
-        int res = 0;
-        if (prob.get_nc() && !m_numeric_opts.count("Major feasibility tolerance")) {
-            const auto c_tol = prob.get_c_tol();
-            assert(!c_tol.empty());
-            const double min_tol = *std::min_element(c_tol.begin(), c_tol.end());
-            if (min_tol > 0.) {
-                auto option_name = s_to_C("Major feasibility tolerance");
-                res = setRealParameter(&snopt7_problem, option_name.data(), min_tol);
-                assert(res == 0);
-            }
-        }
-        // We prevent to set the "Derivative option" option as pagmo sets it according to the value of
-        // prob.has_gradient()
-        if (m_integer_opts.count("Derivative option")) {
-            pagmo_throw(
-                std::invalid_argument,
-                R"(The option "Derivative option" was set by the user. In pagmo that is not allowed, as its value is automatically set according to the value returned by has_gradient() (true -> 3, false -> 0))");
-        }
-        res = 0;
-        // We set all the other user defined options
-        for (const auto &p : m_numeric_opts) {
-            auto option_name = s_to_C(p.first);
-            double option_value(p.second);
-            res = setRealParameter(&snopt7_problem, option_name.data(), option_value);
-            if (res > 0) {
-                pagmo_throw(std::invalid_argument,
-                            "The option '" + p.first + "' was requested by the user to be set to the float value "
-                                + std::to_string(option_value)
-                                + ", but SNOPT7 interface returned an error. Did you mispell the option name?");
-            }
-        }
-        for (const auto &p : m_integer_opts) {
-            auto option_name = s_to_C(p.first);
-            int option_value(p.second);
-            res = setIntParameter(&snopt7_problem, option_name.data(), option_value);
-            if (res > 0) {
-                pagmo_throw(std::invalid_argument,
-                            "The option '" + p.first + "' was requested by the user to be set to the int value "
-                                + std::to_string(option_value)
-                                + ", but SNOPT7 interface returned an error. Did you mispell the option name?");
-            }
-        }
-
-        // ------- We define various inputs to call the snOptA interface
-        int Cold = 0;            // Cold start
-        auto nF = prob.get_nf(); // Fitness dimension
-        auto n = prob.get_nx();  // Decision vector dimension
-
-        // ------- Setting the bounds. -----------------------------------------------------------------------------
-        vector_double xlow(n), xupp(n);
-        vector_double Flow(nF), Fupp(nF);
-        // decision vector.
-        for (decltype(dim) i = 0u; i < dim; ++i) {
-            xlow[i] = lb[i];
-            xupp[i] = ub[i];
-        }
-        // fitness vector.
-        Flow[0] = -std::numeric_limits<double>::max(); // obj
-        Fupp[0] = std::numeric_limits<double>::max();
-        for (decltype(prob.get_nec()) i = 0u; i < prob.get_nec(); ++i) { // ec
-            Flow[i + 1] = 0.;
-            Fupp[i + 1] = 0.;
-        }
-        for (decltype(prob.get_nic()) i = 0u; i < prob.get_nic(); ++i) { // ic
-            Flow[i + 1 + prob.get_nec()] = -std::numeric_limits<double>::max();
-            Fupp[i + 1 + prob.get_nec()] = 0.;
-        }
-
-        // ------- Setting the initial point ---------------------------------------------------------------------
-        // We init the starting point using the inherited methods from not_population_based
-        auto sel_xf = select_individual(pop);
-        vector_double x0(std::move(sel_xf.first)), fit0(std::move(sel_xf.second));
-        // Initialize states, x and multipliers
-        std::vector<int> xstate(n), Fstate(nF);
-        vector_double x(n), xmul(n), F(nF), Fmul(nF);
-        for (decltype(x0.size()) i = 0u; i < x0.size(); i++) {
-            xstate[i] = 0;
-            x[i] = x0[i];
-            xmul[i] = 0.;
-        }
-        for (decltype(x0.size()) i = 0u; i < fit0.size(); i++) {
-            Fstate[i] = 0;
-            F[i] = fit0[0];
-            Fmul[i] = 0;
-        }
-
-        // ------- Some inits for quantities needed by the snOptA interface
-        int ObjRow = 0;
-        double ObjAdd = 0;
-        int nS, nInf;
-        double sInf;
-        // We use the user workspace (iu variable) to hide a pointer to user_data,
-        // so that it may be accessed in the user-defined function.
-        detail::user_data info;
-        info.m_prob = prob;
-        info.m_verbosity = m_verbosity;
-        info.m_dv = vector_double(dim);
-        snopt7_problem.iu = reinterpret_cast<int *> (&info);
-
-        // -------- Linear Part Of the Problem. As pagmo does not support linear problems we do not use this -------
-        int neA = 0;        // We switch off the linear part of the fitness
-        unsigned lenA = 1u; // Thats the minimum length allowed
-        std::vector<int> iAfun(lenA);
-        std::vector<int> jAvar(lenA);
-        vector_double A(lenA);
-
-        // -------- Non Linear Part Of the Problem. ----------------------------------------------------------------
-        auto sparsity = prob.gradient_sparsity();
-        int neG = static_cast<int>(sparsity.size());
-        auto lenG = sparsity.size();
-        std::vector<int> iGfun(lenG);
-        std::vector<int> jGvar(lenG);
-        for (decltype(sparsity.size()) i = 0u; i < sparsity.size(); ++i) {
-            iGfun[i] = static_cast<int>(sparsity[i].first);
-            jGvar[i] = static_cast<int>(sparsity[i].second);
-        }
-        if (prob.has_gradient()) {
-            res = setIntParameter(&snopt7_problem, &std::string("Derivative option")[0], 3);
-            assert(res == 0);
+        if (m_minor_version > 6) {
+            return evolve_version<snProblem_77>(pop);
         } else {
-            res = setIntParameter(&snopt7_problem, &std::string("Derivative option")[0], 0);
-            assert(res == 0);
+            return evolve_version<snProblem_76>(pop);
         }
-
-        // ------- We call the snOptA interface.
-        if (m_verbosity > 0u) {
-            print("SNOPT7 plugin for pagmo/pygmo: \n");
-            if (prob.has_gradient_sparsity()) {
-                print("The gradient sparsity is provided by the user: ", neG, " components detected.\n");
-            } else {
-                print("The gradient sparsity is assumed dense: ", neG, " components detected.\n");
-            }
-            if (prob.has_gradient()) {
-                print("The gradient is provided by the user.\n");
-            } else {
-                print("The gradient is computed numerically by SNOPT7.\n");
-            }
-        }
-        m_last_opt_res
-            = solveA(&snopt7_problem, Cold, static_cast<int>(nF), static_cast<int>(n), ObjAdd, ObjRow,
-                     detail::snopt_fitness_wrapper, neA, iAfun.data(), jAvar.data(), A.data(), neG, iGfun.data(),
-                     jGvar.data(), xlow.data(), xupp.data(), Flow.data(), Fupp.data(), x.data(), xstate.data(),
-                     xmul.data(), F.data(), Fstate.data(), Fmul.data(), &nS, &nInf, &sInf);
-        if (m_verbosity > 0u) {
-            print("\n", detail::snopt_statics<>::results.at(m_last_opt_res), "\n");
-        }
-        // ------- We reinsert the solution if better -----------------------------------------------------------
-        // Store the new individual into the population, but only if it is improved.
-        if (compare_fc(F, fit0, prob.get_nec(), prob.get_c_tol())) {
-            replace_individual(pop, x, F);
-        }
-        // ------- Store the log --------------------------------------------------------------------------------
-        m_log = std::move(info.m_log);
-        // ------- Handle any exception that might have been thrown during the evolve call. ---------------------
-        if (info.m_eptr) {
-            std::rethrow_exception(info.m_eptr);
-        }
-        return pop;
     };
     /// Set verbosity.
     /**
@@ -914,8 +663,282 @@ We report the exact text of the original exception thrown:
     }
 
 private:
+    template <typename snProblem>
+    population evolve_version(population &pop) const
+    {
+        // We store some useful properties
+        const auto &prob
+            = pop.get_problem(); // This is a const reference, so using set_seed, for example, will not work
+        auto dim = prob.get_nx();
+        const auto bounds = prob.get_bounds();
+        const auto &lb = bounds.first;
+        const auto &ub = bounds.second;
+
+        // PREAMBLE-------------------------------------------------------------------------------------------------
+        // We start by checking that the problem is suitable for this particular algorithm.
+        if (prob.get_nobj() != 1u) {
+            pagmo_throw(std::invalid_argument, "Multiple objectives detected in " + prob.get_name() + " instance. "
+                                                   + get_name() + " cannot deal with them");
+        }
+        if (prob.is_stochastic()) {
+            pagmo_throw(std::invalid_argument,
+                        "The problem appears to be stochastic " + get_name() + " cannot deal with it");
+        }
+
+        if (!pop.size()) {
+            pagmo_throw(std::invalid_argument, get_name() + " does not work on an empty population");
+        }
+        // ---------------------------------------------------------------------------------------------------------
+
+        // ------------------------- SNOPT7 PLUGIN (we attempt loading the snopt7 library at run-time)--------------
+        // We first declare the prototypes of the functions used from the library
+        std::function<void(snProblem *, char *, char *, int)> snInit;
+        std::function<int(snProblem *, char[], int)> setIntParameter;
+        std::function<int(snProblem *, char[], double)> setRealParameter;
+        std::function<void(snProblem *)> deleteSNOPT;
+        std::function<int(snProblem *, int, int, int, double, int, snFunA, int, int *, int *, double *, int, int *,
+                          int *, double *, double *, double *, double *, double *, int *, double *, double *, int *,
+                          double *, int *, int *, double *)>
+            solveA;
+        // We then try to load the library at run time and locate the symbols used.
+        try {
+            // Here we import at runtime the snopt7_c library and protect the whole try block with a mutex
+            std::lock_guard<std::mutex> lock(detail::snopt_statics<>::library_load_mutex);
+            boost::filesystem::path path_to_lib(m_snopt7_c_library);
+            if (!boost::filesystem::is_regular_file(path_to_lib)) {
+                pagmo_throw(std::invalid_argument, "The snopt7_c library path was constructed to be: "
+                                                       + path_to_lib.string() + " and it does not appear to be a file");
+            }
+            boost::dll::shared_library libsnopt7_c(path_to_lib);
+            // We then load the symbols we need for the SNOPT7 plugin
+            snInit = boost::dll::import<void(snProblem *, char *, char *,
+                                             int)>( // type of the function to import
+                libsnopt7_c,                        // the library
+                "snInit"                            // name of the function to import
+            );
+
+            setIntParameter = boost::dll::import<int(snProblem *, char[], int)>( // type of the function to import
+                libsnopt7_c,                                                     // the library
+                "setIntParameter"                                                // name of the function to import
+            );
+
+            setRealParameter = boost::dll::import<int(snProblem *, char[], double)>( // type of the function to import
+                libsnopt7_c,                                                         // the library
+                "setRealParameter"                                                   // name of the function to import
+            );
+
+            deleteSNOPT = boost::dll::import<void(snProblem *)>( // type of the function to import
+                libsnopt7_c,                                     // the library
+                "deleteSNOPT"                                    // name of the function to import
+            );
+
+            solveA = boost::dll::import<int(snProblem *, int, int, int, double, int, snFunA, int, int *, int *,
+                                            double *, int, int *, int *, double *, double *, double *, double *,
+                                            double *, int *, double *, double *, int *, double *, int *, int *,
+                                            double *)>( // type of the function to import
+                libsnopt7_c,                            // the library
+                "solveA"                                // name of the function to import
+            );
+        } catch (const std::exception &e) {
+            std::string message(
+                R"(
+An error occurred while loading the snopt7_c library at run-time. This is typically caused by one of the following
+reasons:
+
+- The file declared to be the snopt7_c library, i.e. )"
+                + m_snopt7_c_library
+                + R"(, is not a shared library containing the necessary C interface symbols (is the file path really pointing to
+a valid shared library?)
+ - The library is found and it does contain the C interface symbols, but it needs linking to some additional libraries that are not found
+at run-time.
+
+We report the exact text of the original exception thrown:
+
+ )" + std::string(e.what()));
+            pagmo_throw(std::invalid_argument, message);
+        }
+        // ------------------------- END SNOPT7 PLUGIN -------------------------------------------------------------
+
+        // We init and set up SNOPT options
+        // We init the SNOPT workspace suppressing the file output. TODO: should we allow the file output?
+        snProblem snopt7_problem;
+        char empty_string[] = "";
+
+        auto problem_name = s_to_C(prob.get_name());
+
+        // Here we call snInit and ensure deleteSNOPT will be called whenever the object spr is destroyed.
+        detail::sn_problem_raii<snProblem> spr(&snopt7_problem, problem_name.data(), empty_string, m_screen_output, snInit,
+                                    deleteSNOPT);
+        // Logic for the handling of constraints tolerances. The logic is as follows:
+        // - if the user provides the "Major feasibility tolerance" option, use that *unconditionally*. Otherwise,
+        // - compute the minimum tolerance min_tol among those returned by  problem.c_tol(). If zero, ignore
+        //   it and use the SNOPT7 default value for "Major feasibility tolerance" (1e-6). Otherwise, use min_tol as
+        //   the value for "Major feasibility tolerance".
+        int res = 0;
+        if (prob.get_nc() && !m_numeric_opts.count("Major feasibility tolerance")) {
+            const auto c_tol = prob.get_c_tol();
+            assert(!c_tol.empty());
+            const double min_tol = *std::min_element(c_tol.begin(), c_tol.end());
+            if (min_tol > 0.) {
+                auto option_name = s_to_C("Major feasibility tolerance");
+                res = setRealParameter(&snopt7_problem, option_name.data(), min_tol);
+                assert(res == 0);
+            }
+        }
+        // We prevent to set the "Derivative option" option as pagmo sets it according to the value of
+        // prob.has_gradient()
+        if (m_integer_opts.count("Derivative option")) {
+            pagmo_throw(
+                std::invalid_argument,
+                R"(The option "Derivative option" was set by the user. In pagmo that is not allowed, as its value is automatically set according to the value returned by has_gradient() (true -> 3, false -> 0))");
+        }
+        res = 0;
+        // We set all the other user defined options
+        for (const auto &p : m_numeric_opts) {
+            auto option_name = s_to_C(p.first);
+            double option_value(p.second);
+            res = setRealParameter(&snopt7_problem, option_name.data(), option_value);
+            if (res > 0) {
+                pagmo_throw(std::invalid_argument,
+                            "The option '" + p.first + "' was requested by the user to be set to the float value "
+                                + std::to_string(option_value)
+                                + ", but SNOPT7 interface returned an error. Did you mispell the option name?");
+            }
+        }
+        for (const auto &p : m_integer_opts) {
+            auto option_name = s_to_C(p.first);
+            int option_value(p.second);
+            res = setIntParameter(&snopt7_problem, option_name.data(), option_value);
+            if (res > 0) {
+                pagmo_throw(std::invalid_argument,
+                            "The option '" + p.first + "' was requested by the user to be set to the int value "
+                                + std::to_string(option_value)
+                                + ", but SNOPT7 interface returned an error. Did you mispell the option name?");
+            }
+        }
+
+        // ------- We define various inputs to call the snOptA interface
+        int Cold = 0;            // Cold start
+        auto nF = prob.get_nf(); // Fitness dimension
+        auto n = prob.get_nx();  // Decision vector dimension
+
+        // ------- Setting the bounds. -----------------------------------------------------------------------------
+        vector_double xlow(n), xupp(n);
+        vector_double Flow(nF), Fupp(nF);
+        // decision vector.
+        for (decltype(dim) i = 0u; i < dim; ++i) {
+            xlow[i] = lb[i];
+            xupp[i] = ub[i];
+        }
+        // fitness vector.
+        Flow[0] = -std::numeric_limits<double>::max(); // obj
+        Fupp[0] = std::numeric_limits<double>::max();
+        for (decltype(prob.get_nec()) i = 0u; i < prob.get_nec(); ++i) { // ec
+            Flow[i + 1] = 0.;
+            Fupp[i + 1] = 0.;
+        }
+        for (decltype(prob.get_nic()) i = 0u; i < prob.get_nic(); ++i) { // ic
+            Flow[i + 1 + prob.get_nec()] = -std::numeric_limits<double>::max();
+            Fupp[i + 1 + prob.get_nec()] = 0.;
+        }
+
+        // ------- Setting the initial point ---------------------------------------------------------------------
+        // We init the starting point using the inherited methods from not_population_based
+        auto sel_xf = select_individual(pop);
+        vector_double x0(std::move(sel_xf.first)), fit0(std::move(sel_xf.second));
+        // Initialize states, x and multipliers
+        std::vector<int> xstate(n), Fstate(nF);
+        vector_double x(n), xmul(n), F(nF), Fmul(nF);
+        for (decltype(x0.size()) i = 0u; i < x0.size(); i++) {
+            xstate[i] = 0;
+            x[i] = x0[i];
+            xmul[i] = 0.;
+        }
+        for (decltype(x0.size()) i = 0u; i < fit0.size(); i++) {
+            Fstate[i] = 0;
+            F[i] = fit0[0];
+            Fmul[i] = 0;
+        }
+
+        // ------- Some inits for quantities needed by the snOptA interface
+        int ObjRow = 0;
+        double ObjAdd = 0;
+        int nS, nInf;
+        double sInf;
+        // We use the user workspace (iu variable) to hide a pointer to user_data,
+        // so that it may be accessed in the user-defined function.
+        detail::user_data info;
+        info.m_prob = prob;
+        info.m_verbosity = m_verbosity;
+        info.m_dv = vector_double(dim);
+        snopt7_problem.iu = reinterpret_cast<int *>(&info);
+
+        // -------- Linear Part Of the Problem. As pagmo does not support linear problems we do not use this -------
+        int neA = 0;        // We switch off the linear part of the fitness
+        unsigned lenA = 1u; // Thats the minimum length allowed
+        std::vector<int> iAfun(lenA);
+        std::vector<int> jAvar(lenA);
+        vector_double A(lenA);
+
+        // -------- Non Linear Part Of the Problem. ----------------------------------------------------------------
+        auto sparsity = prob.gradient_sparsity();
+        int neG = static_cast<int>(sparsity.size());
+        auto lenG = sparsity.size();
+        std::vector<int> iGfun(lenG);
+        std::vector<int> jGvar(lenG);
+        for (decltype(sparsity.size()) i = 0u; i < sparsity.size(); ++i) {
+            iGfun[i] = static_cast<int>(sparsity[i].first);
+            jGvar[i] = static_cast<int>(sparsity[i].second);
+        }
+        if (prob.has_gradient()) {
+            res = setIntParameter(&snopt7_problem, &std::string("Derivative option")[0], 3);
+            assert(res == 0);
+        } else {
+            res = setIntParameter(&snopt7_problem, &std::string("Derivative option")[0], 0);
+            assert(res == 0);
+        }
+
+        // ------- We call the snOptA interface.
+        if (m_verbosity > 0u) {
+            print("SNOPT7 plugin for pagmo/pygmo: \n");
+            if (prob.has_gradient_sparsity()) {
+                print("The gradient sparsity is provided by the user: ", neG, " components detected.\n");
+            } else {
+                print("The gradient sparsity is assumed dense: ", neG, " components detected.\n");
+            }
+            if (prob.has_gradient()) {
+                print("The gradient is provided by the user.\n");
+            } else {
+                print("The gradient is computed numerically by SNOPT7.\n");
+            }
+        }
+        m_last_opt_res
+            = solveA(&snopt7_problem, Cold, static_cast<int>(nF), static_cast<int>(n), ObjAdd, ObjRow,
+                     detail::snopt_fitness_wrapper, neA, iAfun.data(), jAvar.data(), A.data(), neG, iGfun.data(),
+                     jGvar.data(), xlow.data(), xupp.data(), Flow.data(), Fupp.data(), x.data(), xstate.data(),
+                     xmul.data(), F.data(), Fstate.data(), Fmul.data(), &nS, &nInf, &sInf);
+
+        if (m_verbosity > 0u) {
+            print("\n", detail::snopt_statics<>::results.at(m_last_opt_res), "\n");
+        }
+        // ------- We reinsert the solution if better -----------------------------------------------------------
+        // Store the new individual into the population, but only if it is improved.
+        if (compare_fc(F, fit0, prob.get_nec(), prob.get_c_tol())) {
+            replace_individual(pop, x, F);
+        }
+        // ------- Store the log --------------------------------------------------------------------------------
+        m_log = std::move(info.m_log);
+        // ------- Handle any exception that might have been thrown during the evolve call. ---------------------
+        if (info.m_eptr) {
+            std::rethrow_exception(info.m_eptr);
+        }
+        return pop;
+    }
+
     // The absolute path to the snopt7 lib
     std::string m_snopt7_c_library;
+    // A flag if the snopt version is >=7.7
+    unsigned m_minor_version;
     // Options maps.
     std::map<std::string, int> m_integer_opts;
     std::map<std::string, double> m_numeric_opts;

@@ -7,7 +7,7 @@ namespace pygmo
 
 std::string snopt7_docstring()
 {
-    return R"(__init__(screen_output = False, library = "/usr/local/lib/libsnopt7.so")
+    return R"(__init__(screen_output = False, library = "/usr/local/lib/libsnopt7.so", minor_version=6)
 
 SNOPT 7 - (Sparse Nonlinear OPTimizer, Version 7)
 
@@ -18,7 +18,7 @@ robustly and efficiently constrained nonlinear opimization problems also at high
 Intended use::
    >>> import pygmo as pg
    >>> import pygmo_plugins_nonfree as ppnf
-   >>> uda = ppnf.snopt7(screen_output = False, library = "/usr/local/lib/libsnopt7.so")
+   >>> uda = ppnf.snopt7(screen_output = False, library = "/usr/local/lib/libsnopt76.so", minor_version = 6)
    >>> algo = pg.algorithm(uda)
 
 SNOPT7 supports only single-objective minimisation, using a sequential quadratic programming (SQP) algorithm.
@@ -35,6 +35,8 @@ Args:
    screen_output (``bool``): when True will activate the original screen output from SNOPT7 and deactivate the logging system based on
      :class:`~pygmo_snopt7.set_verbosity()`.
    library (``str``): the snopt7 library filename in your system (absolute path included)
+   minor_version (``int``): The minor version of your Snopt7 library. Only two APIs are supported at the moment: 
+     7.6 and 7.7. You may try to use this plugin with different minor version numbers, but at your own risk.
 
 Raises:
    ArgumentError: for any conversion problems between the python types and the c++ signature
@@ -518,4 +520,4 @@ Args:
 )";
 }
 
-} // namespace
+} // namespace pygmo
