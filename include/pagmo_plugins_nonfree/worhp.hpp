@@ -393,6 +393,18 @@ We report the exact text of the original exception thrown:
         }
         // ------------------------- END WORHP PLUGIN -------------------------------------------------------------
 
+        // We check for a version mismatch
+        // First we query the library
+        int major, minor;
+        char patch[PATCH_STRING_LENGTH];
+        WorhpVersion(&major, &minor, patch);
+        std::string patchstr(patch);
+        // Then we check with the pnf headers
+        if (major!=WORHP_MAJOR && minor!=WORHP_MINOR) {
+            pagmo_throw(std::invalid_argument, "Your WORHP library (" + library_filename.string() + ") version is: " + std::to_string(major) + "." + std::to_string(minor) + 
+            " while pagmo plugins nonfree supports only version: " + std::to_string(WORHP_MAJOR) + "." + std::to_string(WORHP_MINOR) );
+        }
+
         m_log.clear();
         auto fevals0 = prob.get_fevals();
 
@@ -638,10 +650,6 @@ We report the exact text of the original exception thrown:
         // -------------------------------------------------------------------------------------------------------------------------
 
         if (m_verbosity) {
-            int major, minor;
-            char patch[PATCH_STRING_LENGTH];
-            WorhpVersion(&major, &minor, patch);
-            std::string patchstr(patch);
             print("WORHP version is (library): ", major, ".", minor, ".", patchstr, "\n");
             print("WORHP version is (plugin headers): ", WORHP_VERSION, "\n");
             print("\nWORHP plugin for pagmo/pygmo: \n");
