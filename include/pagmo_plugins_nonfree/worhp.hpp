@@ -266,7 +266,6 @@ public:
             pagmo_throw(std::invalid_argument, get_name() + " does not work on an empty population");
         }
         // ---------------------------------------------------------------------------------------------------------
-
         // ------------------------- WORHP PLUGIN (we attempt loading the worhp library at run-time)--------------
         // We first declare the prototypes of the functions used from the library
         std::function<void(int *, char *, Params *)> ReadParams;
@@ -400,11 +399,12 @@ We report the exact text of the original exception thrown:
         WorhpVersion(&major, &minor, patch);
         std::string patchstr(patch);
         // Then we check with the pnf headers
-        if (major!=WORHP_MAJOR && minor!=WORHP_MINOR) {
+        if (major!=WORHP_MAJOR || minor!=WORHP_MINOR) {
             pagmo_throw(std::invalid_argument, "Your WORHP library (" + library_filename.string() + ") version is: " + std::to_string(major) + "." + std::to_string(minor) + 
             " while pagmo plugins nonfree supports only version: " + std::to_string(WORHP_MAJOR) + "." + std::to_string(WORHP_MINOR) );
         }
 
+        // All is good, proceed
         m_log.clear();
         auto fevals0 = prob.get_fevals();
 
