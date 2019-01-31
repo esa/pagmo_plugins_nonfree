@@ -156,11 +156,8 @@ typename std::mutex worhp_statics<T>::library_load_mutex;
  *
  * .. note::
  *
- *    This plugin for the WORHP was developed around version 1.12.1 of the worhp library. The plugin will
- *    also work with future verions of the worhp library as long as their developers will not change the API
- *    of the following functions: ReadParams; WorhpPreInit; WorhpInit; GetUserAction; DoneUserAction; IterationOutput;
- *    Worhp; StatusMsg; StatusMsgString; WorhpFree; WorhpFidif; WorhpSetBoolParam; WorhpSetIntParam;
- *    WorhpSetDoubleParam; WorhpVersion; SetWorhpPrint;
+ *    This plugin for the WORHP was developed around version 1.12.1 of the worhp library and will not work with
+ *    any other version.
  *
  * .. warning::
  *
@@ -235,9 +232,9 @@ public:
      *
      * @return the optimised population.
      *
+     * @throws std::invalid_argument if a version mismatch is found between the declared library and 1.12
      * @throws std::invalid_argument in the following cases:
      * - the population's problem is multi-objective or stochastic
-     * - the population is empty.
      * @throws unspecified any exception thrown by the public interface of pagmo::problem or
      * pagmo::not_population_based.
      */
@@ -263,10 +260,10 @@ public:
         }
 
         if (!pop.size()) {
-            pagmo_throw(std::invalid_argument, get_name() + " does not work on an empty population");
+            // In case of an empty pop, just return it.
+            return pop;
         }
         // ---------------------------------------------------------------------------------------------------------
-
         // ------------------------- WORHP PLUGIN (we attempt loading the worhp library at run-time)--------------
         // We first declare the prototypes of the functions used from the library
         std::function<void(int *, char *, Params *)> ReadParams;
@@ -286,11 +283,11 @@ public:
         std::function<void(int *major, int *minor, char patch[PATCH_STRING_LENGTH])> WorhpVersion;
         std::function<void(worhp_print_t)> SetWorhpPrint;
 
+        boost::filesystem::path library_filename(m_worhp_library);
         // We then try to load the library at run time and locate the symbols used.
         try {
             // Here we import at runtime the worhp library and protect the whole try block with a mutex
             std::lock_guard<std::mutex> lock(detail::worhp_statics<>::library_load_mutex);
-            boost::filesystem::path library_filename(m_worhp_library);
             if (!boost::filesystem::is_regular_file(library_filename)) {
                 pagmo_throw(std::invalid_argument,
                             "The worhp library file name was constructed to be: " + library_filename.string()
@@ -393,6 +390,21 @@ We report the exact text of the original exception thrown:
         }
         // ------------------------- END WORHP PLUGIN -------------------------------------------------------------
 
+        // We check for a version mismatch
+        // First we query the library
+        int major, minor;
+        char patch[PATCH_STRING_LENGTH];
+        WorhpVersion(&major, &minor, patch);
+        std::string patchstr(patch);
+        // Then we check with the pnf headers
+        if (major != WORHP_MAJOR || minor != WORHP_MINOR) {
+            pagmo_throw(std::invalid_argument,
+                        "Your WORHP library (" + library_filename.string() + ") version is: " + std::to_string(major)
+                            + "." + std::to_string(minor) + " while pagmo plugins nonfree supports only version: "
+                            + std::to_string(WORHP_MAJOR) + "." + std::to_string(WORHP_MINOR));
+        }
+
+        // All is good, proceed
         m_log.clear();
         auto fevals0 = prob.get_fevals();
 
@@ -638,10 +650,6 @@ We report the exact text of the original exception thrown:
         // -------------------------------------------------------------------------------------------------------------------------
 
         if (m_verbosity) {
-            int major, minor;
-            char patch[PATCH_STRING_LENGTH];
-            WorhpVersion(&major, &minor, patch);
-            std::string patchstr(patch);
             print("WORHP version is (library): ", major, ".", minor, ".", patchstr, "\n");
             print("WORHP version is (plugin headers): ", WORHP_VERSION, "\n");
             print("\nWORHP plugin for pagmo/pygmo: \n");

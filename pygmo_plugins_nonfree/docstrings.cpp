@@ -7,7 +7,7 @@ namespace pygmo
 
 std::string snopt7_docstring()
 {
-    return R"(__init__(screen_output = False, library = "/usr/local/lib/libsnopt7.so")
+    return R"(__init__(screen_output = False, library = "/usr/local/lib/libsnopt7.so", minor_version=6)
 
 SNOPT 7 - (Sparse Nonlinear OPTimizer, Version 7)
 
@@ -18,7 +18,7 @@ robustly and efficiently constrained nonlinear opimization problems also at high
 Intended use::
    >>> import pygmo as pg
    >>> import pygmo_plugins_nonfree as ppnf
-   >>> uda = ppnf.snopt7(screen_output = False, library = "/usr/local/lib/libsnopt7.so")
+   >>> uda = ppnf.snopt7(screen_output = False, library = "/usr/local/lib/libsnopt76.so", minor_version = 6)
    >>> algo = pg.algorithm(uda)
 
 SNOPT7 supports only single-objective minimisation, using a sequential quadratic programming (SQP) algorithm.
@@ -35,6 +35,8 @@ Args:
    screen_output (``bool``): when True will activate the original screen output from SNOPT7 and deactivate the logging system based on
      :class:`~pygmo_snopt7.set_verbosity()`.
    library (``str``): the snopt7 library filename in your system (absolute path included)
+   minor_version (``int``): The minor version of your Snopt7 library. Only two APIs are supported at the moment: 
+     7.6 and 7.7. You may try to use this plugin with different minor version numbers, but at your own risk.
 
 Raises:
    ArgumentError: for any conversion problems between the python types and the c++ signature
@@ -43,15 +45,19 @@ Raises:
 
    SNOPT7 fortran code is only available acquiring a licence.
    If you do have such a licence, then you will also have the fortran files and can build them into the library
-   snopt7 (one single library). In what follows, we assume the snopt7 fortran library is available in your
-   system. Since pagmo wraps around the C interface you will have to compile also the library snopt7_c, which is open
-   source and can be obtained from https://github.com/snopt/snopt-interface. 
+   snopt7 (one single library). The library snopt7_c will then need to be built,
+   compiling the correct release of the project https://github.com/snopt/snopt-interface. The library thus created
+   will link to your fortran snopt7 library. As an alternative you may have only one library libsnopt7 containing
+   both the Fortran and the C interface (this is the case, for example, of the library you can download for evaluation).
 
 .. note::
 
-   We developed this plugin for the SNOPT version 7.6, but nothing significant has changed in the fortran
-   files since the old days. As a consequence, as long as your C library has the symbols snInit, setIntParameter,
-   setRealParameter, deleteSNOPT and solveA this plugin will work also with older SNOPT versions.
+   This plugin was tested with snopt version 7.2 as well as with the compiled evaluation libraries (7.7)
+   made available via the snopt7 official web site (C/Fortran library).
+
+.. warning::
+
+   Constructing this class with an inconsistent *minor_version* parameter results in undefined behaviour.
 
 .. warning::
 
@@ -351,11 +357,8 @@ Raises:
 
 .. note::
 
-   This plugin for the WORHP was developed around version 1.12.1 of the worhp library. The plugin will
-   also work with future verions of the worhp library as long as their developers will not change the API
-   of the following functions: ReadParams; WorhpPreInit; WorhpInit; GetUserAction; DoneUserAction; IterationOutput;
-   Worhp; StatusMsg; StatusMsgString; WorhpFree; WorhpFidif; WorhpSetBoolParam; WorhpSetIntParam;
-   WorhpSetDoubleParam; WorhpVersion; SetWorhpPrint;
+   This plugin for the WORHP was developed around version 1.12.1 of the worhp library. It will not 
+   work with versions having a different amajor or minor version.
 
 .. warning::
 
@@ -518,4 +521,4 @@ Args:
 )";
 }
 
-} // namespace
+} // namespace pygmo

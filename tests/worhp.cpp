@@ -12,7 +12,6 @@
 #include <pagmo/problems/luksan_vlcek1.hpp>
 #include <pagmo/problems/rastrigin.hpp>
 #include <pagmo/problems/rosenbrock.hpp>
-#include <pagmo/problems/ackley.hpp>
 #include <pagmo/problems/zdt.hpp>
 #include <pagmo/types.hpp>
 #include <stdexcept>
@@ -129,6 +128,17 @@ BOOST_AUTO_TEST_CASE(evolve)
     BOOST_CHECK_NO_THROW(uda.evolve(population{hock_schittkowsky_71{}, 1u}));
     BOOST_CHECK_NO_THROW(uda.evolve(population{rastrigin{10u}, 1u}));
     BOOST_CHECK_NO_THROW(uda.evolve(population{worhp_test_problem{}, 1u}));
+    BOOST_CHECK_NO_THROW((uda.evolve(population{ackley{10}, 0u})));
+
+    // We call evolve and test that it does not throw in allowed cases (screen output brnach is different)
+    worhp uda2{false, WORHP_LIB};
+    problem p{worhp_test_problem{}};
+    p.set_c_tol({1e-7, 1e-7, 1e-7, 1e-7});
+    BOOST_CHECK_NO_THROW(uda2.evolve(population{p, 1u}));
+    BOOST_CHECK_NO_THROW(uda2.evolve(population{hock_schittkowsky_71{}, 1u}));
+    BOOST_CHECK_NO_THROW(uda2.evolve(population{rastrigin{10u}, 1u}));
+    BOOST_CHECK_NO_THROW(uda2.evolve(population{worhp_test_problem{}, 1u}));
+    BOOST_CHECK_NO_THROW((uda2.evolve(population{ackley{10}, 0u})));
 }
 
 BOOST_AUTO_TEST_CASE(verbosity)
