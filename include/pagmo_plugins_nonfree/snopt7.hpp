@@ -318,7 +318,7 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
  *
  * .. warning::
  *
- *    Constructing this class with the wrong \p minor_version parameter results in undefined behaviour.
+ *    Constructing this class with an inconsistent \p minor_version parameter results in undefined behaviour.
  *
  * .. warning::
  *
