@@ -126,23 +126,28 @@
 <span id="pagmo::snopt7"></span><span class="target" id="classpagmo_1_1snopt7"></span><em class="property">class </em><code class="descname">snopt7</code> : <em class="property">public</em> not_population_based<a class="headerlink" href="#_CPPv2N5pagmo6snopt7E" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>SNOPT 7 - (Sparse Nonlinear OPTimizer, Version 7) </p>
 <p><img alt="_images/sol.png" src="_images/sol.png" /></p>
-<p>This class is a user-defined algorithm (UDA) that contains a plugin to the Sparse Nonlinear OPTimizer (SNOPT) solver, a software package for large-scale nonlinear optimization. SNOPT is a powerful solver that is able to handle robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. Since the wrapper was developed arounf the version 7 of SNOPT the class is called <a class="reference internal" href="#classpagmo_1_1snopt7"><span class="std std-ref">pagmo::snopt7</span></a>.</p>
+<p>This class is a user-defined algorithm (UDA) that contains a plugin to the Sparse Nonlinear OPTimizer (SNOPT) solver, a software package for large-scale nonlinear optimization. SNOPT is a powerful solver that is able to handle robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. Since the wrapper was developed around the version 7 of SNOPT the class is called <a class="reference internal" href="#classpagmo_1_1snopt7"><span class="std std-ref">pagmo::snopt7</span></a>.</p>
 <p><div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">SNOPT7 fortran code is only available acquiring a licence.
 If you do have such a licence, then you will also have the fortran files and can build them into the library
-snopt7 (one single library). In what follows, we assume the library snopt7_c is available, which is open
-source and can be obtained from <a class="reference external" href="https://github.com/snopt/snopt-interface">https://github.com/snopt/snopt-interface</a>. This library will link to your fortran
-snopt7 library (licensed).</p>
+snopt7 (one single library). The library snopt7_c will then need to be built,
+compiling the correct release of the project <a class="reference external" href="https://github.com/snopt/snopt-interface">https://github.com/snopt/snopt-interface</a>. The library thus created
+will link to your fortran snopt7 library. As an alternative you may have only one library libsnopt7 containing
+both the Fortran and the C interface (this is the case, for example, of the library you can download for
+evaluation).</p>
 </div>
 </p>
 <p>SNOPT7 supports only single-objective minimisation, using a sequential quadratic programming (SQP) algorithm. Search directions are obtained from QP subproblems that minimize a quadratic model of the Lagrangian function subject to linearized constraints. An augmented Lagrangian merit function is reduced along each search direction to ensure convergence from any starting point.</p>
 <p>In order to support pagmo&#8217;s population-based optimisation model, <a class="reference internal" href="#classpagmo_1_1snopt7_1a155932af8634e03a1c43ab2dbdb240ad"><span class="std std-ref">snopt7::evolve()</span></a> will select a single individual from the input pagmo::population to be optimised. If the optimisation produces an improved individual (as established by pagmo::compare_fc()), the optimised individual will be inserted back into the population. The selection and replacement strategies can be configured via set_selection(const std::string &amp;), set_selection(population::size_type), set_replacement(const std::string &amp;) and set_replacement(population::size_type).</p>
 <p><div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">We developed this plugin for the SNOPT version 7.6, but nothing significant has changed in the fortran
-files since the old days. As a consequence, as long as your snopt7_c library has the symbols snInit,
-setIntParameter, setRealParameter, deleteSNOPT and solveA this plugin will work also with older SNOPT versions.</p>
+<p class="last">This plugin was tested with snopt version 7.2 as well as with the compiled evaluation libraries (7.7)
+made available via the snopt7 official web site (C/Fortran library).</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">Constructing this class with an inconsistent p minor_version parameter results in undefined behaviour.</p>
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -190,8 +195,8 @@ is deactivated in this plugin for pagmo.</p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">
-<dt id="_CPPv2N5pagmo6snopt76snopt7EbNSt6stringE">
-<span id="pagmo::snopt7::snopt7__b.ss"></span><span class="target" id="classpagmo_1_1snopt7_1a02d4d48ff2021e13a5664a4a8dbae46f"></span><code class="descname">snopt7</code><span class="sig-paren">(</span>bool <em>screen_output</em> = false, std::string <em>snopt7_c_library</em> = &quot;/usr/local/lib/libsnopt7_c.so&quot;<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo6snopt76snopt7EbNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv2N5pagmo6snopt76snopt7EbNSt6stringEj">
+<span id="pagmo::snopt7::snopt7__b.ss.unsigned"></span><span class="target" id="classpagmo_1_1snopt7_1a5ab7ba6d71ffd6fb5188e228cd048f9f"></span><code class="descname">snopt7</code><span class="sig-paren">(</span>bool <em>screen_output</em> = false, std::string <em>snopt7_c_library</em> = &quot;/usr/local/lib/libsnopt7_c.so&quot;, unsigned <em>minor_version</em> = 6u<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo6snopt76snopt7EbNSt6stringEj" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Constructor. </p>
 <p>The algorithm SNOPT7 can be constructed in two different ways, according to the user chioce, only one among the original SNOPT7 screen output and the pagmo logging system will be activated.</p>
 <p><dl class="docutils">
@@ -199,6 +204,7 @@ is deactivated in this plugin for pagmo.</p>
 <dd><ul class="breatheparameterlist first last simple">
 <li><code class="docutils literal"><span class="pre">screen_output</span></code>: when <code class="docutils literal"><span class="pre">true</span></code> will activate the screen output from the SNOPT7 library, otherwise will let pagmo regulate logs and screen_output via its pagmo::algorithm::set_verbosity mechanism. </li>
 <li><code class="docutils literal"><span class="pre">snopt7_c_library</span></code>: The path to the snopt7_c library. </li>
+<li><code class="docutils literal"><span class="pre">minor_version</span></code>: The minor version of your Snopt7 library. Only two APIs are supported at the moment: a) 7.2 - 7.6 and b) 7.7. You may try to use this plugin with different minor version numbers, but at your own risk. </li>
 </ul>
 </dd>
 </dl>
@@ -233,8 +239,7 @@ among the values returned by pagmo::problem::get_c_tol() if not zero.</p>
 <dt><strong>Exceptions</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
 <li><code class="docutils literal"><span class="pre">std::invalid_argument</span></code>: in the following cases:<ul>
-<li>the population&#8217;s problem is multi-objective or stochastic</li>
-<li>the population is empty. </li>
+<li>the population&#8217;s problem is multi-objective or stochastic </li>
 </ul>
 </li>
 <li><code class="docutils literal"><span class="pre">unspecified</span></code>: any exception thrown by the public interface of pagmo::problem or pagmo::not_population_based. </li>

@@ -141,11 +141,8 @@ library when constructing this UDA.</p>
 <p>In order to support pagmo&#8217;s population-based optimisation model, <a class="reference internal" href="#classpagmo_1_1worhp_1a29b901aded835d5b5fcad9e5aa3a73e8"><span class="std std-ref">worhp::evolve()</span></a> will select a single individual from the input pagmo::population to be optimised. If the optimisation produces an improved individual (as established by pagmo::compare_fc()), the optimised individual will be inserted back into the population. The selection and replacement strategies can be configured via set_selection(const std::string &amp;), set_selection(population::size_type), set_replacement(const std::string &amp;) and set_replacement(population::size_type).</p>
 <p><div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">This plugin for the WORHP was developed around version 1.12.1 of the worhp library. The plugin will
-also work with future verions of the worhp library as long as their developers will not change the API
-of the following functions: ReadParams; WorhpPreInit; WorhpInit; GetUserAction; DoneUserAction; IterationOutput;
-Worhp; StatusMsg; StatusMsgString; WorhpFree; WorhpFidif; WorhpSetBoolParam; WorhpSetIntParam;
-WorhpSetDoubleParam; WorhpVersion; SetWorhpPrint;</p>
+<p class="last">This plugin for the WORHP was developed around version 1.12.1 of the worhp library and will not work with
+any other version.</p>
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -223,9 +220,9 @@ m_numeric_opts and m_bool_opts are set after and thus overwrite the above rules.
 </dd>
 <dt><strong>Exceptions</strong></dt>
 <dd><ul class="breatheparameterlist first last simple">
+<li><code class="docutils literal"><span class="pre">std::invalid_argument</span></code>: if a version mismatch is found between the declared library and 1.12 </li>
 <li><code class="docutils literal"><span class="pre">std::invalid_argument</span></code>: in the following cases:<ul>
-<li>the population&#8217;s problem is multi-objective or stochastic</li>
-<li>the population is empty. </li>
+<li>the population&#8217;s problem is multi-objective or stochastic </li>
 </ul>
 </li>
 <li><code class="docutils literal"><span class="pre">unspecified</span></code>: any exception thrown by the public interface of pagmo::problem or pagmo::not_population_based. </li>
