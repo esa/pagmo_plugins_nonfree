@@ -156,11 +156,8 @@ typename std::mutex worhp_statics<T>::library_load_mutex;
  *
  * .. note::
  *
- *    This plugin for the WORHP was developed around version 1.12.1 of the worhp library. The plugin will
- *    also work with future verions of the worhp library as long as their developers will not change the API
- *    of the following functions: ReadParams; WorhpPreInit; WorhpInit; GetUserAction; DoneUserAction; IterationOutput;
- *    Worhp; StatusMsg; StatusMsgString; WorhpFree; WorhpFidif; WorhpSetBoolParam; WorhpSetIntParam;
- *    WorhpSetDoubleParam; WorhpVersion; SetWorhpPrint;
+ *    This plugin for the WORHP was developed around version 1.12.1 of the worhp library and will not work with 
+ *    any other version.
  *
  * .. warning::
  *
@@ -235,6 +232,7 @@ public:
      *
      * @return the optimised population.
      *
+     * @throws std::invalid_argument if a version mismatch is found between the declared library and 1.12
      * @throws std::invalid_argument in the following cases:
      * - the population's problem is multi-objective or stochastic
      * - the population is empty.
