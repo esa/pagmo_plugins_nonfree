@@ -156,7 +156,7 @@ typename std::mutex worhp_statics<T>::library_load_mutex;
  *
  * .. note::
  *
- *    This plugin for the WORHP was developed around version 1.12.1 of the worhp library and will not work with 
+ *    This plugin for the WORHP was developed around version 1.12.1 of the worhp library and will not work with
  *    any other version.
  *
  * .. warning::
@@ -235,7 +235,6 @@ public:
      * @throws std::invalid_argument if a version mismatch is found between the declared library and 1.12
      * @throws std::invalid_argument in the following cases:
      * - the population's problem is multi-objective or stochastic
-     * - the population is empty.
      * @throws unspecified any exception thrown by the public interface of pagmo::problem or
      * pagmo::not_population_based.
      */
@@ -261,7 +260,8 @@ public:
         }
 
         if (!pop.size()) {
-            pagmo_throw(std::invalid_argument, get_name() + " does not work on an empty population");
+            // In case of an empty pop, just return it.
+            return pop;
         }
         // ---------------------------------------------------------------------------------------------------------
         // ------------------------- WORHP PLUGIN (we attempt loading the worhp library at run-time)--------------
@@ -397,9 +397,11 @@ We report the exact text of the original exception thrown:
         WorhpVersion(&major, &minor, patch);
         std::string patchstr(patch);
         // Then we check with the pnf headers
-        if (major!=WORHP_MAJOR || minor!=WORHP_MINOR) {
-            pagmo_throw(std::invalid_argument, "Your WORHP library (" + library_filename.string() + ") version is: " + std::to_string(major) + "." + std::to_string(minor) + 
-            " while pagmo plugins nonfree supports only version: " + std::to_string(WORHP_MAJOR) + "." + std::to_string(WORHP_MINOR) );
+        if (major != WORHP_MAJOR || minor != WORHP_MINOR) {
+            pagmo_throw(std::invalid_argument,
+                        "Your WORHP library (" + library_filename.string() + ") version is: " + std::to_string(major)
+                            + "." + std::to_string(minor) + " while pagmo plugins nonfree supports only version: "
+                            + std::to_string(WORHP_MAJOR) + "." + std::to_string(WORHP_MINOR));
         }
 
         // All is good, proceed

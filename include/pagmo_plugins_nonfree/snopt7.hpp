@@ -291,7 +291,8 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
  *    snopt7 (one single library). The library snopt7_c will then need to be built,
  *    compiling the correct release of the project https://github.com/snopt/snopt-interface. The library thus created
  *    will link to your fortran snopt7 library. As an alternative you may have only one library libsnopt7 containing
- *    both the Fortran and the C interface (this is the case, for example, of the library you can download for evaluation).
+ *    both the Fortran and the C interface (this is the case, for example, of the library you can download for
+ *    evaluation).
  *
  * \endverbatim
  *
@@ -383,7 +384,8 @@ public:
      * will let pagmo regulate logs and screen_output via its pagmo::algorithm::set_verbosity mechanism.
      * @param snopt7_c_library The path to the snopt7_c library.
      * @param minor_version The minor version of your Snopt7 library. Only two APIs are supported at the
-     * moment: a) 7.2 - 7.6 and b) 7.7. You may try to use this plugin with different minor version numbers, but at your own risk.
+     * moment: a) 7.2 - 7.6 and b) 7.7. You may try to use this plugin with different minor version numbers, but at your
+     * own risk.
      *
      */
     snopt7(bool screen_output = false, std::string snopt7_c_library = "/usr/local/lib/libsnopt7_c.so",
@@ -422,7 +424,6 @@ public:
      *
      * @throws std::invalid_argument in the following cases:
      * - the population's problem is multi-objective or stochastic
-     * - the population is empty.
      * @throws unspecified any exception thrown by the public interface of pagmo::problem or
      * pagmo::not_population_based.
      */
@@ -692,7 +693,8 @@ private:
         }
 
         if (!pop.size()) {
-            pagmo_throw(std::invalid_argument, get_name() + " does not work on an empty population");
+            // In case of an empty pop, just return it.
+            return pop;
         }
         // ---------------------------------------------------------------------------------------------------------
 

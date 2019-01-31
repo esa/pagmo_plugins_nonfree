@@ -106,6 +106,7 @@ BOOST_AUTO_TEST_CASE(evolve)
     {
         // We start testing the throws if the problem in the population is not suitable for snopt7
         snopt7 uda{true, SNOPT7C_LIB};
+
         BOOST_CHECK_THROW(uda.evolve(population{zdt{1}, 20u}), std::invalid_argument);
         BOOST_CHECK_THROW(uda.evolve(population{inventory{}, 20u}), std::invalid_argument);
         BOOST_CHECK_THROW(uda.evolve(population{ackley{10}, 0u}), std::invalid_argument);
@@ -126,15 +127,19 @@ BOOST_AUTO_TEST_CASE(evolve)
         BOOST_CHECK_THROW(uda.evolve(population{ackley{10}, 1u}), std::invalid_argument);
         uda.reset_numeric_options();
 
+        // We change screen output to trigger that branch in the coverage
+        snopt7 uda2{false, SNOPT7C_LIB};
+
         // We call the evolve having set the constraint tolerance as to test the setting of "Major feasibility
         // tolerance"
         problem prob{cec2006{1}};
-        prob.set_c_tol({1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6,1e-6,1e-6});
-        BOOST_CHECK_NO_THROW((uda.evolve(population{prob, 1u})));
+        prob.set_c_tol({1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6});
+        BOOST_CHECK_NO_THROW((uda2.evolve(population{prob, 1u})));
         // We now call the evolve. Not much to test in terms of outputs, so we just check that it does not throw.
-        BOOST_CHECK_NO_THROW((uda.evolve(population{hock_schittkowsky_71{}, 1u})));
-        BOOST_CHECK_NO_THROW((uda.evolve(population{cec2006{1}, 1u})));
-        BOOST_CHECK_NO_THROW((uda.evolve(population{ackley{10}, 1u})));
+        BOOST_CHECK_NO_THROW((uda2.evolve(population{hock_schittkowsky_71{}, 1u})));
+        BOOST_CHECK_NO_THROW((uda2.evolve(population{cec2006{1}, 1u})));
+        BOOST_CHECK_NO_THROW((uda2.evolve(population{ackley{10}, 1u})));
+        BOOST_CHECK_NO_THROW((uda2.evolve(population{ackley{10}, 0u})));
     }
 
     // We now test the mechanism to rethrow exceptions thrown by the usrfun
