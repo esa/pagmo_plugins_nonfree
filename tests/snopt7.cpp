@@ -109,7 +109,6 @@ BOOST_AUTO_TEST_CASE(evolve)
 
         BOOST_CHECK_THROW(uda.evolve(population{zdt{1}, 20u}), std::invalid_argument);
         BOOST_CHECK_THROW(uda.evolve(population{inventory{}, 20u}), std::invalid_argument);
-        BOOST_CHECK_THROW(uda.evolve(population{ackley{10}, 0u}), std::invalid_argument);
 
         // We test the throw if the library is not well formed
         BOOST_CHECK_THROW(snopt7(true, "IDONOTEXIST").evolve(population{ackley{10}, 1u}), std::invalid_argument);
@@ -140,6 +139,7 @@ BOOST_AUTO_TEST_CASE(evolve)
         BOOST_CHECK_NO_THROW((uda2.evolve(population{cec2006{1}, 1u})));
         BOOST_CHECK_NO_THROW((uda2.evolve(population{ackley{10}, 1u})));
         BOOST_CHECK_NO_THROW((uda2.evolve(population{ackley{10}, 0u})));
+        BOOST_CHECK_NO_THROW(uda.evolve(population{ackley{10}, 0u}));
     }
 
     // We now test the mechanism to rethrow exceptions thrown by the usrfun

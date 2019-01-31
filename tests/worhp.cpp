@@ -132,8 +132,6 @@ BOOST_AUTO_TEST_CASE(evolve)
 
     // We call evolve and test that it does not throw in allowed cases (screen output brnach is different)
     worhp uda2{false, WORHP_LIB};
-    problem p{worhp_test_problem{}};
-    p.set_c_tol({1e-7, 1e-7, 1e-7, 1e-7});
     BOOST_CHECK_NO_THROW(uda2.evolve(population{p, 1u}));
     BOOST_CHECK_NO_THROW(uda2.evolve(population{hock_schittkowsky_71{}, 1u}));
     BOOST_CHECK_NO_THROW(uda2.evolve(population{rastrigin{10u}, 1u}));
