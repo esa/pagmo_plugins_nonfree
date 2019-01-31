@@ -357,11 +357,8 @@ Raises:
 
 .. note::
 
-   This plugin for the WORHP was developed around version 1.12.1 of the worhp library. The plugin will
-   also work with future verions of the worhp library as long as their developers will not change the API
-   of the following functions: ReadParams; WorhpPreInit; WorhpInit; GetUserAction; DoneUserAction; IterationOutput;
-   Worhp; StatusMsg; StatusMsgString; WorhpFree; WorhpFidif; WorhpSetBoolParam; WorhpSetIntParam;
-   WorhpSetDoubleParam; WorhpVersion; SetWorhpPrint;
+   This plugin for the WORHP was developed around version 1.12.1 of the worhp library. It will not 
+   work with versions having a different amajor or minor version.
 
 .. warning::
 
