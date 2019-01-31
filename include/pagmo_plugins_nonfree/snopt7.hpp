@@ -288,10 +288,10 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
  *
  *    SNOPT7 fortran code is only available acquiring a licence.
  *    If you do have such a licence, then you will also have the fortran files and can build them into the library
- *    snopt7 (one single library). The library snopt7_c will then need to be built, which can be obtained
+ *    snopt7 (one single library). The library snopt7_c will then need to be built,
  *    compiling the correct release of the project https://github.com/snopt/snopt-interface. The library thus created
  *    will link to your fortran snopt7 library. As an alternative you may have only one library libsnopt7 containing
- *    both the Fortran and the C interface (this is the case, for example, of the library downloaded for evaluation).
+ *    both the Fortran and the C interface (this is the case, for example, of the library you can download for evaluation).
  *
  * \endverbatim
  *
@@ -313,8 +313,12 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
  *
  * .. note::
  *
- *    This plugin was tested with snopt versions 7.6 and 7.7 as well as with the compiled evaluation libraries (7.7)
+ *    This plugin was tested with snopt version 7.2 as well as with the compiled evaluation libraries (7.7)
  *    made available via the snopt7 official web site (C/Fortran library).
+ *
+ * .. warning::
+ *
+ *    Constructing this class with the wrong \p minor_version parameter results in undefined behaviour.
  *
  * .. warning::
  *
