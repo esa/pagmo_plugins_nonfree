@@ -286,11 +286,11 @@ public:
         std::function<void(int *major, int *minor, char patch[PATCH_STRING_LENGTH])> WorhpVersion;
         std::function<void(worhp_print_t)> SetWorhpPrint;
 
+        boost::filesystem::path library_filename(m_worhp_library);
         // We then try to load the library at run time and locate the symbols used.
         try {
             // Here we import at runtime the worhp library and protect the whole try block with a mutex
             std::lock_guard<std::mutex> lock(detail::worhp_statics<>::library_load_mutex);
-            boost::filesystem::path library_filename(m_worhp_library);
             if (!boost::filesystem::is_regular_file(library_filename)) {
                 pagmo_throw(std::invalid_argument,
                             "The worhp library file name was constructed to be: " + library_filename.string()
