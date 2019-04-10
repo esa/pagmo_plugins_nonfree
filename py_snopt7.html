@@ -235,7 +235,16 @@ is deactivated in this plugin for pagmo.</p>
 <p class="last">The number of constraints violated, the constraints violation norm and the feasibility flag stored in the log
 are all determined via the facilities and the tolerances specified within <code class="xref py py-class docutils literal"><span class="pre">pygmo.problem</span></code>. That
 is, they might not necessarily be consistent with Snopt&#8217;s notion of feasibility. See the explanation
-of how the <code class="docutils literal"><span class="pre">&quot;Major</span> <span class="pre">feasibility</span> <span class="pre">tolerance&quot;</span></code> numeric option is handled in <code class="xref py py-class docutils literal"><span class="pre">pygmo.snopt7</span></code>.</p>
+of how the <code class="docutils literal"><span class="pre">&quot;Major</span> <span class="pre">feasibility</span> <span class="pre">tolerance&quot;</span></code> numeric option is handled in <code class="xref py py-class docutils literal"><span class="pre">pygmo.snopt7</span></code> and the note below.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The definitions of feasibility are different for SNOPT7 and pygmo. SNOPT7 requires that <em>max(c_viol)/||x|| &lt;= eps_r</em>
+where <em>||x||</em> is the Euclidean norm of <em>x</em>, a candidate solution vector, and <em>eps_r</em> is the &#8220;Major feasibility tolerance&#8221; option in SNOPT7.
+In contrast, pygmo requires that <em>c_viol &lt;= c_tol</em> where <em>c_viol</em>
+is the vector of absolute values of the nonlinear constraint violations and <em>c_tol</em> is the vector of constraint tolerances in pygmo.problem. To guarantee
+feasibility with respect to pygmo when SNOPT7 reports feasibility, try setting <em>eps_r &lt;= min(c_tol)/||x||_ub</em>, where
+<em>||x||_ub</em> is an upper bound on the value of <em>||x||</em>. Care must be taken with this approach to ensure <em>eps_r</em> is not too small.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>

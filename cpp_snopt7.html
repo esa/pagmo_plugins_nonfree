@@ -223,6 +223,15 @@ where no user specifications are available, to the default detailed on the User 
 with the following exception: &#8220;Major feasibility tolerance&#8221; is set to the default value 1E-6 or to the minimum
 among the values returned by pagmo::problem::get_c_tol() if not zero.</p>
 </div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The definitions of feasibility are different for SNOPT7 and pagmo. SNOPT7 requires that <em>max(c_viol)/||x|| &lt;= eps_r</em>
+where <em>||x||</em> is the Euclidean norm of <em>x</em>, a candidate solution vector, and <em>eps_r</em> is the &#8220;Major feasibility tolerance&#8221; option in SNOPT7. 
+In contrast, pagmo requires that <em>c_viol &lt;= c_tol</em> where <em>c_viol</em> 
+is the vector of absolute values of the nonlinear constraint violations and <em>c_tol</em> is the vector of constraint tolerances in pagmo::problem. To guarantee
+feasibility with respect to pagmo when SNOPT7 reports feasibility, try setting <em>eps_r &lt;= min(c_tol)/||x||_ub</em>, where
+<em>||x||_ub</em> is an upper bound on the value of <em>||x||</em>. Care must be taken with this approach to ensure <em>eps_r</em> is not too small.</p>
+</div>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference external" href="https://www-leland.stanford.edu/group/SOL/guides/sndoc7.pdf">https://www-leland.stanford.edu/group/SOL/guides/sndoc7.pdf</a></p>
