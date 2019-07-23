@@ -178,14 +178,14 @@ BOOST_AUTO_TEST_CASE(serialization_test)
     auto before_log = algo.extract<snopt7>()->get_log();
     // Now serialize, deserialize and compare the result.
     {
-        cereal::JSONOutputArchive oarchive(ss);
-        oarchive(algo);
+        boost::archive::binary_oarchive oarchive(ss);
+        oarchive << algo;
     }
-    // Change the content of p before deserializing.
+    // Change the content of algo before deserializing.
     algo = algorithm{null_algorithm{}};
     {
-        cereal::JSONInputArchive iarchive(ss);
-        iarchive(algo);
+        boost::archive::binary_iarchive iarchive(ss);
+        iarchive >> algo;
     }
     auto after_text = boost::lexical_cast<std::string>(algo);
     BOOST_CHECK_EQUAL(before_text, after_text);

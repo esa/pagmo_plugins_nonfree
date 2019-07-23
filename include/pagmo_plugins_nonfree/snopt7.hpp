@@ -51,6 +51,7 @@ see https://www.gnu.org/licenses/. */
 #include <boost/dll/import.hpp>
 #include <boost/dll/shared_library.hpp>
 #include <boost/filesystem.hpp>
+#include <boost/serialization/map.hpp>
 #include <exception>
 #include <iomanip>
 #include <limits> // std::numeric_limits
@@ -62,6 +63,7 @@ see https://www.gnu.org/licenses/. */
 #include <pagmo/io.hpp>
 #include <pagmo/population.hpp>
 #include <pagmo/problem.hpp>
+#include <pagmo/s11n.hpp>
 #include <pagmo/utils/constrained.hpp>
 #include <random>
 #include <stdexcept>
@@ -567,10 +569,11 @@ public:
      * @throws unspecified any exception thrown by the serialization of the UDA and of primitive types.
      */
     template <typename Archive>
-    void serialize(Archive &ar)
+    void serialize(Archive &ar, unsigned)
     {
-        ar(cereal::base_class<not_population_based>(this), m_snopt7_c_library, m_minor_version, m_integer_opts,
-           m_numeric_opts, m_last_opt_res, m_screen_output, m_verbosity, m_log);
+        pagmo::detail::archive(ar, boost::serialization::base_object<not_population_based>(*this), m_snopt7_c_library,
+                               m_minor_version, m_integer_opts, m_numeric_opts, m_last_opt_res, m_screen_output,
+                               m_verbosity, m_log);
     }
 
     /// Set integer option.
@@ -966,6 +969,7 @@ We report the exact text of the original exception thrown:
 
 } // namespace pagmo
 
-PAGMO_REGISTER_ALGORITHM(pagmo::snopt7)
+PAGMO_S11N_ALGORITHM_EXPORT_KEY(pagmo::snopt7)
+PAGMO_S11N_ALGORITHM_IMPLEMENT(pagmo::snopt7)
 
 #endif // PAGMO_SNOPT7

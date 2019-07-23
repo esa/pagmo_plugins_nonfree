@@ -52,6 +52,7 @@ see https://www.gnu.org/licenses/. */
 #include <boost/dll/shared_library.hpp>
 #include <boost/filesystem.hpp>
 #include <boost/functional/hash.hpp>
+#include <boost/serialization/map.hpp>
 #include <iomanip>
 #include <mutex>
 #include <pagmo/algorithm.hpp>
@@ -61,6 +62,7 @@ see https://www.gnu.org/licenses/. */
 #include <pagmo/io.hpp>
 #include <pagmo/population.hpp>
 #include <pagmo/problem.hpp>
+#include <pagmo/s11n.hpp>
 #include <pagmo/utils/constrained.hpp>
 #include <random>
 #include <stdexcept>
@@ -1077,10 +1079,11 @@ We report the exact text of the original exception thrown:
      * @throws unspecified any exception thrown by the serialization of the UDA and of primitive types.
      */
     template <typename Archive>
-    void serialize(Archive &ar)
+    void serialize(Archive &ar, unsigned)
     {
-        ar(cereal::base_class<not_population_based>(this), m_worhp_library, m_last_opt_res, m_integer_opts,
-           m_numeric_opts, m_bool_opts, m_screen_output, m_verbosity, m_f_cache, m_g_cache);
+        pagmo::detail::archive(ar, boost::serialization::base_object<not_population_based>(*this), m_worhp_library,
+                               m_last_opt_res, m_integer_opts, m_numeric_opts, m_bool_opts, m_screen_output,
+                               m_verbosity, m_f_cache, m_g_cache);
     }
 
 private:
@@ -1270,6 +1273,6 @@ private:
 
 } // namespace pagmo
 
-PAGMO_REGISTER_ALGORITHM(pagmo::worhp)
-
+PAGMO_S11N_ALGORITHM_EXPORT_KEY(pagmo::worhp)
+PAGMO_S11N_ALGORITHM_IMPLEMENT(pagmo::worhp)
 #endif // PAGMO_WORHP
