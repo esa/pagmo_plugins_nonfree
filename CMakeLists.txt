@@ -34,7 +34,7 @@ if(PPNF_BUILD_CPP)
     message(STATUS "System name: ${CMAKE_SYSTEM_NAME}")
     enable_testing()
     # Build option: enable test set.
-    option(PAGMO_PLUGINS_NONFREE_BUILD_TESTS "Build test set." OFF)
+    option(PPNF_BUILD_TESTS "Build test set." OFF)
 else()
     # Initial setup of a pygmo_plugins_nonfree build.
     project(pygmo_plugins_nonfree VERSION ${PAGMO_PLUGINS_NONFREE_PROJECT_VERSION} LANGUAGES CXX C)
@@ -103,35 +103,36 @@ if(PPNF_BUILD_CPP)
         #"${CMAKE_CURRENT_SOURCE_DIR}/src/worhp.cpp"
     )
 
-   # Setup of the pagmo library.
-   add_library(pagmo_plugins_nonfree SHARED "${PAGMO_PLUGINS_NONFREE_SRC_FILES}")
-   set_property(TARGET pagmo_plugins_nonfree PROPERTY VERSION "1.0")
-   set_property(TARGET pagmo_plugins_nonfree PROPERTY SOVERSION 1)
-   target_compile_options(pagmo_plugins_nonfree PRIVATE "$<$<CONFIG:DEBUG>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG}>" "$<$<CONFIG:RELEASE>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE}>")
-   set_target_properties(pagmo_plugins_nonfree PROPERTIES CXX_VISIBILITY_PRESET hidden)
-   set_target_properties(pagmo_plugins_nonfree PROPERTIES VISIBILITY_INLINES_HIDDEN TRUE)
-   # Let's setup the target C++ standard, but only if the user did not provide it manually.
-   if(NOT CMAKE_CXX_STANDARD)
-       set_property(TARGET pagmo_plugins_nonfree PROPERTY CXX_STANDARD 11)
-   endif()
-   set_property(TARGET pagmo_plugins_nonfree PROPERTY CXX_STANDARD_REQUIRED YES)
-   set_property(TARGET pagmo_plugins_nonfree PROPERTY CXX_EXTENSIONS NO)
-   # NOTE: make sure the include directories from the current build
-   # are included first, so that if there is already a pagmo_plugins_nonfree installation
-   # in the prefix path we don't risk including the headers from that
-   # one instead.
-   target_include_directories(pagmo_plugins_nonfree PUBLIC
+    # Setup of the pagmo library.
+    add_library(pagmo_plugins_nonfree SHARED "${PAGMO_PLUGINS_NONFREE_SRC_FILES}")
+    set_property(TARGET pagmo_plugins_nonfree PROPERTY VERSION "1.0")
+    set_property(TARGET pagmo_plugins_nonfree PROPERTY SOVERSION 1)
+    target_compile_options(pagmo_plugins_nonfree PRIVATE "$<$<CONFIG:DEBUG>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG}>" "$<$<CONFIG:RELEASE>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE}>")
+    set_target_properties(pagmo_plugins_nonfree PROPERTIES CXX_VISIBILITY_PRESET hidden)
+    set_target_properties(pagmo_plugins_nonfree PROPERTIES VISIBILITY_INLINES_HIDDEN TRUE)
+    # Let's setup the target C++ standard, but only if the user did not provide it manually.
+    if(NOT CMAKE_CXX_STANDARD)
+        set_property(TARGET pagmo_plugins_nonfree PROPERTY CXX_STANDARD 11)
+    endif()
+    set_property(TARGET pagmo_plugins_nonfree PROPERTY CXX_STANDARD_REQUIRED YES)
+    set_property(TARGET pagmo_plugins_nonfree PROPERTY CXX_EXTENSIONS NO)
+    # NOTE: make sure the include directories from the current build
+    # are included first, so that if there is already a pagmo_plugins_nonfree installation
+    # in the prefix path we don't risk including the headers from that
+    # one instead.
+    target_include_directories(pagmo_plugins_nonfree PUBLIC
        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
        $<INSTALL_INTERFACE:include>)
 
-   # Boost.
-   target_link_libraries(pagmo_plugins_nonfree PUBLIC Boost::boost Boost::serialization)
+    # Boost.
+    target_link_libraries(pagmo_plugins_nonfree PUBLIC Boost::boost Boost::serialization Boost::disable_autolinking Boost::system Boost::filesystem)
 
-   # Pagmo.
-   target_link_libraries(pagmo_plugins_nonfree PUBLIC Pagmo::pagmo)
+    # Pagmo.
+    target_link_libraries(pagmo_plugins_nonfree PUBLIC Pagmo::pagmo)
 
-    #target_link_libraries(pagmo_plugins_nonfree INTERFACE Boost::disable_autolinking Boost::system Boost::filesystem Pagmo::pagmo ${CMAKE_DL_LIBS})
+    # DL libraries
+    target_link_libraries(pagmo_plugins_nonfree PUBLIC ${CMAKE_DL_LIBS})
 
     # Configure config.hpp.
     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/config.hpp.in" "${CMAKE_CURRENT_BINARY_DIR}/include/pagmo_plugins_nonfree/config.hpp" @ONLY)
@@ -162,7 +163,18 @@ endif()
 #    endif()
 #endif()
 #
-#if(PAGMO_PLUGINS_NONFREE_HEADERS)
-#  install(DIRECTORY include/ DESTINATION include)
-#  install(FILES "${CMAKE_CURRENT_BINARY_DIR}/include/pagmo_plugins_nonfree/config.hpp" DESTINATION include/pagmo_plugins_nonfree)
-#endif()
+
+# Library installation.
+if(PPNF_BUILD_CPP)
+    # Installation of the header files.
+    install(DIRECTORY include/ DESTINATION include)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/include/pagmo_plugins_nonfree/config.hpp" DESTINATION include/pagmo_plugins_nonfree)
+
+    # Installation of the library.
+    install(TARGETS pagmo_plugins_nonfree
+        EXPORT pagmo_plugins_nonfree_export
+        LIBRARY DESTINATION lib
+        ARCHIVE DESTINATION lib
+        RUNTIME DESTINATION bin
+    )
+endif()

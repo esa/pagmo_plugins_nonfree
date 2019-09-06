@@ -86,22 +86,8 @@ std::vector<char> snopt7::s_to_C(const std::string &in)
     return retval;
 }
 
-///  Constructor.
-/**
- * The algorithm SNOPT7 can be constructed in two different ways, according to the user
- * chioce, only one among the original SNOPT7 screen output and the pagmo logging system will
- * be activated.
- *
- * @param screen_output when ``true`` will activate the screen output from the SNOPT7 library, otherwise
- * will let pagmo regulate logs and screen_output via its pagmo::algorithm::set_verbosity mechanism.
- * @param snopt7_c_library The path to the snopt7_c library.
- * @param minor_version The minor version of your Snopt7 library. Only two APIs are supported at the
- * moment: a) 7.2 - 7.6 and b) 7.7. You may try to use this plugin with different minor version numbers, but at your
- * own risk.
- *
- */
-snopt7::snopt7(bool screen_output = false, std::string snopt7_c_library = "/usr/local/lib/libsnopt7_c.so",
-               unsigned minor_version = 6u)
+snopt7::snopt7(bool screen_output, std::string snopt7_c_library,
+               unsigned minor_version)
     : m_snopt7_c_library(snopt7_c_library), m_minor_version(minor_version), m_integer_opts(), m_numeric_opts(),
       m_screen_output(screen_output), m_verbosity(0), m_log()
 {
@@ -396,6 +382,7 @@ int snopt7::get_last_opt_result() const
     return m_last_opt_res;
 }
 
+// This is the evolve which will be version dependent via the template argument (snProblem declaration is)
 template <typename snProblem>
 population snopt7::evolve_version(population &pop) const
 {

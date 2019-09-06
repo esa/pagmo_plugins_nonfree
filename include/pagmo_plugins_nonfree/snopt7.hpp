@@ -344,7 +344,7 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
  *
  * \endverbatim
  */
-class snopt7 : public not_population_based
+class PAGMO_DLL_PUBLIC snopt7 : public not_population_based
 {
 public:
     /// Single data line for the algorithm's log.
@@ -371,7 +371,22 @@ private:
     static std::vector<char> s_to_C(const std::string &);
 
 public:
-    snopt7(bool, std::string, unsigned);
+    ///  Constructor.
+    /**
+     * The algorithm SNOPT7 can be constructed in two different ways, according to the user
+     * chioce, only one among the original SNOPT7 screen output and the pagmo logging system will
+     * be activated.
+     *
+     * @param screen_output when ``true`` will activate the screen output from the SNOPT7 library, otherwise
+     * will let pagmo regulate logs and screen_output via its pagmo::algorithm::set_verbosity mechanism.
+     * @param snopt7_c_library The path to the snopt7_c library.
+     * @param minor_version The minor version of your Snopt7 library. Only two APIs are supported at the
+     * moment: a) 7.2 - 7.6 and b) 7.7. You may try to use this plugin with different minor version numbers, but at your
+     * own risk.
+     *
+     */
+    snopt7(bool screen_output = false, std::string snopt7_c_library = "/usr/local/lib/libsnopt7_c.so",
+           unsigned minor_version = 6u);
     population evolve(population) const;
     void set_verbosity(unsigned);
     const log_type &get_log() const;
@@ -380,15 +395,16 @@ public:
     std::string get_extra_info() const;
     template <typename Archive>
     void serialize(Archive &ar, unsigned);
-    void set_integer_option(const std::string &, int );
+    void set_integer_option(const std::string &, int);
     void set_integer_options(const std::map<std::string, int> &);
     std::map<std::string, int> get_integer_options() const;
-    void set_numeric_option(const std::string &, double );
+    void set_numeric_option(const std::string &, double);
     void set_numeric_options(const std::map<std::string, double> &);
     std::map<std::string, double> get_numeric_options() const;
     void reset_integer_options();
     void reset_numeric_options();
     int get_last_opt_result() const;
+
 private:
     template <typename snProblem>
     population evolve_version(population &) const;
@@ -407,7 +423,8 @@ private:
     unsigned int m_verbosity;
     mutable log_type m_log;
 
-    // Deleting the methods load save public in base as to avoid conflict with serialize
+    // Deleting the methods load save public inherited from not_population_based as to avoid conflict with serialize
+    // implemented by snopt7
     template <typename Archive>
     void load(Archive &ar) = delete;
     template <typename Archive>
