@@ -105,7 +105,16 @@ Raises:
    The number of constraints violated, the constraints violation norm and the feasibility flag stored in the log
    are all determined via the facilities and the tolerances specified within :class:`pygmo.problem`. That
    is, they might not necessarily be consistent with Snopt's notion of feasibility. See the explanation
-   of how the ``"Major feasibility tolerance"`` numeric option is handled in :class:`pygmo.snopt7`.
+   of how the ``"Major feasibility tolerance"`` numeric option is handled in :class:`pygmo.snopt7` and the note below.
+
+.. note::
+
+   The definitions of feasibility are different for SNOPT7 and pygmo. SNOPT7 requires that *max(c_viol)/||x|| <= eps_r*
+   where *||x||* is the Euclidean norm of *x*, a candidate solution vector, and *eps_r* is the "Major feasibility tolerance" option in SNOPT7. 
+   In contrast, pygmo requires that *c_viol <= c_tol* where *c_viol* 
+   is the vector of absolute values of the nonlinear constraint violations and *c_tol* is the vector of constraint tolerances in pygmo.problem. To guarantee
+   feasibility with respect to pygmo when SNOPT7 reports feasibility, try setting *eps_r <= min(c_tol)/||x||_ub*, where
+   *||x||_ub* is an upper bound on the value of *||x||*. Care must be taken with this approach to ensure *eps_r* is not too small.
 
 .. note::
 
