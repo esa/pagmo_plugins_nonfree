@@ -2,6 +2,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/test/included/unit_test.hpp>
 #include <pagmo/algorithm.hpp>
+#include <pagmo/algorithms/null_algorithm.hpp>
 #include <pagmo/io.hpp>
 #include <pagmo/population.hpp>
 #include <pagmo/problem.hpp>
