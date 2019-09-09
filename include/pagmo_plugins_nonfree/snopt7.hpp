@@ -96,7 +96,6 @@ struct is_object<int(snProblem_77 *, int, int, int, double, int, snFunA, int, in
 
 namespace pagmo
 {
-
 namespace detail
 {
 // Encapsulating struct for data that are used in the fitness wrapper.
@@ -122,157 +121,16 @@ struct user_data {
     std::exception_ptr m_eptr;
 };
 
-// We use this to ensure deleteSNOPT is called also if exceptions occur.
-template <typename snProblem>
-struct sn_problem_raii {
-    sn_problem_raii(snProblem *p, char *a, char *b, int n,
-                    std::function<void(snProblem *, char *, char *, int)> &snInit,
-                    std::function<void(snProblem *)> &deleteSNOPT)
-        : m_prob(p), m_deleteSNOPT(deleteSNOPT)
-    {
-        snInit(p, a, b, n);
-    }
-    ~sn_problem_raii()
-    {
-        m_deleteSNOPT(m_prob);
-    }
-    snProblem *m_prob;
-    std::function<void(snProblem *)> &m_deleteSNOPT;
-};
-
-// Usual trick with global read-only data useful to the SNOPT7 wrapper.
-template <typename = void>
-struct snopt_statics {
-    // A map to link a human-readable description to snOptA return codes for the
-    // call result.
-    using result_map_t = std::unordered_map<int, std::string>;
-    static const result_map_t results;
-    using mutex_t = std::mutex;
-    static mutex_t library_load_mutex;
-};
-
-// Init of the statics data
-template <typename T>
-typename snopt_statics<T>::mutex_t snopt_statics<T>::library_load_mutex;
-
-template <typename T>
-const typename snopt_statics<T>::result_map_t snopt_statics<T>::results
-    = {{0, "None"},
-       {1, "Finished successfully - optimality conditions satisfied"},
-       {2, "Finished successfully - feasible point found"},
-       {3, "Finished successfully - requested accuracy could not be achieved"},
-       {5, "Finished successfully - elastic objective minimized"},
-       {6, "Finished successfully - elastic infeasibilities minimized"},
-       {11, "The problem appears to be infeasible - infeasible linear constraints"},
-       {12, "The problem appears to be infeasible - infeasible linear equality constraints"},
-       {13, "The problem appears to be infeasible - nonlinear infeasibilities minimized"},
-       {14, "The problem appears to be infeasible - linear infeasibilities minimized"},
-       {15, "The problem appears to be infeasible - infeasible linear constraints in QP subproblem"},
-       {16, "The problem appears to be infeasible - infeasible nonelastic constraints"},
-       {21, "The problem appears to be unbounded - unbounded objective"},
-       {22, "The problem appears to be unbounded - constraint violation limit reached"},
-       {31, "Resource limit error - iteration limit reached"},
-       {32, "Resource limit error - major iteration limit reached"},
-       {33, "Resource limit error - the superbasics limit is too small"},
-       {34, "Resource limit error - time limit reached"},
-       {41, "Terminated after numerical difficulties - current point cannot be improved"},
-       {42, "Terminated after numerical difficulties - singular basis"},
-       {43, "Terminated after numerical difficulties - cannot satisfy the general constraints"},
-       {44, "Terminated after numerical difficulties - ill-conditioned null-space basis"},
-       {45, "Terminated after numerical difficulties - unable to compute acceptable LU factors"},
-       {51, "Error in the user-supplied functions - incorrect objective derivatives"},
-       {52, "Error in the user-supplied functions - incorrect constraint derivatives"},
-       {56, "Error in the user-supplied functions - irregular or badly scaled problem functions"},
-       {61, "Undefined user-supplied functions - undefined function at the first feasible point"},
-       {62, "Undefined user-supplied functions - undefined function at the initial point"},
-       {63, "Undefined user-supplied functions - unable to proceed into undefined region"},
-       {71, "User requested termination - terminated during function evaluation"},
-       {74, "User requested termination - terminated from monitor routine"},
-       {81, "Insufficient storage allocated - work arrays must have at least 500 elements"},
-       {82, "Insufficient storage allocated - not enough character storage"},
-       {83, "Insufficient storage allocated - not enough integer storage"},
-       {84, "Insufficient storage allocated - not enough real storage"},
-       {91, "Input arguments out of range - invalid input argument"},
-       {92, "Input arguments out of range - basis file dimensions do not match this problem"},
-       {141, "System error - wrong number of basic variables"},
-       {142, "System error - error in basis package"}};
-
-extern "C" {
-
 // Wrapper to connect pagmo's fitness calculation machinery to SNOPT7's.
 // NOTE: this function needs to be passed to the SNOPT7 C API, and as such it needs to be
 // declared within an 'extern "C"' block (otherwise, it might be UB to pass C++ function pointers
 // to a C API).
 // https://www.reddit.com/r/cpp/comments/4fqfy7/using_c11_capturing_lambdas_w_vanilla_c_api/d2b9bh0/
+extern "C" {
 inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, int *nF, double F[], int *needG,
                                   int *neG, double G[], char cu[], int *lencu, int iu[], int *leniu, double ru[],
-                                  int *lenru)
-{
-    (void)n;
-    (void)cu;
-    (void)lencu;
-    (void)ru;
-    (void)lenru;
-    (void)leniu;
-    // First we recover the info we have hidden in the workspace
-    auto &info = *(static_cast<detail::user_data *>(static_cast<void *>(iu)));
-    auto &verb = info.m_verbosity;
-    auto &log = info.m_log;
-    auto &f_count = info.m_objfun_counter;
-    auto &p = info.m_prob;
-    auto &dv = info.m_dv;
-    // We copy the decision vector into the vector_double
-    std::copy(x, x + p.get_nx(), dv.begin());
-    // We try to call the UDP fitness and gradient
-    try {
-        if (*needF > 0) {
-            auto fit = p.fitness(dv);
-            for (size_t i = 0u; i < static_cast<size_t>(*nF); ++i) {
-                F[i] = fit[i];
-            }
-
-            if (verb && !(f_count % verb)) {
-                // Constraints bits.
-                const auto ctol = p.get_c_tol();
-                const auto c1eq
-                    = detail::test_eq_constraints(fit.data() + 1, fit.data() + 1 + p.get_nec(), ctol.data());
-                const auto c1ineq = detail::test_ineq_constraints(fit.data() + 1 + p.get_nec(), fit.data() + fit.size(),
-                                                                  ctol.data() + p.get_nec());
-                // This will be the total number of violated constraints.
-                const auto nv = p.get_nc() - c1eq.first - c1ineq.first;
-                // This will be the norm of the violation.
-                const auto l = c1eq.second + c1ineq.second;
-                // Test feasibility.
-                const auto feas = p.feasibility_f(fit);
-
-                if (!(f_count / verb % 50u)) {
-                    // Every 50 lines print the column names.
-                    print("\n", std::setw(10), "objevals:", std::setw(15), "objval:", std::setw(15),
-                          "violated:", std::setw(15), "viol. norm:", '\n');
-                }
-                // Print to screen the log line.
-                print(std::setw(10), f_count + 1u, std::setw(15), fit[0], std::setw(15), nv, std::setw(15), l,
-                      feas ? "" : " i", '\n');
-                // Record the log.
-                log.emplace_back(f_count + 1u, fit[0], nv, l, feas);
-            }
-
-            // Update the counter.
-            ++f_count;
-        }
-
-        if (*needG > 0 && p.has_gradient()) {
-            auto grad = p.gradient(dv);
-            for (size_t i = 0u; i < static_cast<size_t>(*neG); ++i) {
-                G[i] = grad[i];
-            }
-        }
-    } catch (...) {
-        *Status = -100; // signals to snopt7 that things went south and it should stop.
-        info.m_eptr = std::current_exception();
-    }
-}
-} // extern "C"
+                                  int *lenru);
+} // extern C
 } // namespace detail
 
 /// SNOPT 7 - (Sparse Nonlinear OPTimizer, Version 7)
@@ -364,11 +222,17 @@ public:
      * (see snopt7::set_verbosity()).
      */
     using log_type = std::vector<log_line_type>;
+    /// Type for the map containing the association between then snopt7 results and their textual description
+    using result_map_t = std::unordered_map<int, std::string>;
+    /// Mutex type to protect the library load.
+    using mutex_t = std::mutex;
 
 private:
     static_assert(std::is_same<log_line_type, detail::user_data::log_line_type>::value, "Invalid log line type.");
     // Small helper function to convert a string to something that the C API can eat (i.e. retval.data())
     static std::vector<char> s_to_C(const std::string &);
+    static const result_map_t m_results;
+    static mutex_t m_library_load_mutex;
 
 public:
     ///  Constructor.
