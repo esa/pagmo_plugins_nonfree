@@ -26,18 +26,18 @@ if((NOT PPNF_BUILD_CPP) AND (NOT PPNF_BUILD_PYTHON))
 endif()
 
 # Main ppnf project version.
-set(PAGMO_PLUGINS_NONFREE_VERSION 0.10)
+set(pagmo_plugins_nonfree_VERSION 0.10)
 
 if(PPNF_BUILD_CPP)
     # Initial setup of a pagmo_plugins_nonfree build.
-    project(pagmo_plugins_nonfree VERSION ${PAGMO_PLUGINS_NONFREE_VERSION} LANGUAGES CXX C)
+    project(pagmo_plugins_nonfree VERSION ${pagmo_plugins_nonfree_VERSION} LANGUAGES CXX C)
     message(STATUS "System name: ${CMAKE_SYSTEM_NAME}")
     enable_testing()
     # Build option: enable test set.
     option(PPNF_BUILD_TESTS "Build test set." OFF)
 else()
     # Initial setup of a pygmo_plugins_nonfree build.
-    project(pygmo_plugins_nonfree VERSION ${PAGMO_PLUGINS_NONFREE_VERSION} LANGUAGES CXX C)
+    project(pygmo_plugins_nonfree VERSION ${pagmo_plugins_nonfree_VERSION} LANGUAGES CXX C)
     message(STATUS "System name: ${CMAKE_SYSTEM_NAME}")
 endif()
 
@@ -184,7 +184,7 @@ if(PPNF_BUILD_CPP)
     install(EXPORT pagmo_plugins_nonfree_export NAMESPACE Pagmo_plugins_nonfree:: DESTINATION lib/cmake/pagmo_plugins_nonfree)
     # Take care of versioning.
     include(CMakePackageConfigHelpers)
-    write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/pagmo_plugins_nonfree-config-version.cmake" VERSION ${PAGMO_PLUGINS_NONFREE_VERSION}
+    write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/pagmo_plugins_nonfree-config-version.cmake" VERSION ${pagmo_plugins_nonfree_VERSION}
         COMPATIBILITY ExactVersion)
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pagmo_plugins_nonfree-config-version.cmake" DESTINATION "lib/cmake/pagmo_plugins_nonfree")
 endif()
