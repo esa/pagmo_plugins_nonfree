@@ -26,18 +26,18 @@ if((NOT PPNF_BUILD_CPP) AND (NOT PPNF_BUILD_PYTHON))
 endif()
 
 # Main ppnf project version.
-set(PAGMO_PLUGINS_NONFREE_PROJECT_VERSION 0.10)
+set(PAGMO_PLUGINS_NONFREE_VERSION 0.10)
 
 if(PPNF_BUILD_CPP)
     # Initial setup of a pagmo_plugins_nonfree build.
-    project(pagmo_plugins_nonfree VERSION ${PAGMO_PLUGINS_NONFREE_PROJECT_VERSION} LANGUAGES CXX C)
+    project(pagmo_plugins_nonfree VERSION ${PAGMO_PLUGINS_NONFREE_VERSION} LANGUAGES CXX C)
     message(STATUS "System name: ${CMAKE_SYSTEM_NAME}")
     enable_testing()
     # Build option: enable test set.
     option(PPNF_BUILD_TESTS "Build test set." OFF)
 else()
     # Initial setup of a pygmo_plugins_nonfree build.
-    project(pygmo_plugins_nonfree VERSION ${PAGMO_PLUGINS_NONFREE_PROJECT_VERSION} LANGUAGES CXX C)
+    project(pygmo_plugins_nonfree VERSION ${PAGMO_PLUGINS_NONFREE_VERSION} LANGUAGES CXX C)
     message(STATUS "System name: ${CMAKE_SYSTEM_NAME}")
 endif()
 
@@ -148,21 +148,21 @@ if(PPNF_BUILD_CPP)
 endif()
 
 # Build the pygmo_plugins_nonfree module
-#if(PPNF_BUILD_PYTHON)
-#    add_subdirectory("${CMAKE_SOURCE_DIR}/pygmo_plugins_nonfree")
-#    if(MINGW OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-#        message(STATUS "Creating the files for the generation of a binary wheel.")
-#        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/wheel_setup.py" "${CMAKE_CURRENT_BINARY_DIR}/wheel/setup.py" @ONLY)
-#        if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
-#            # NOTE: this is necessary on linux but harmful on mingw.
-#            configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/wheel_setup.cfg" "${CMAKE_CURRENT_BINARY_DIR}/wheel/setup.cfg" @ONLY)
-#        endif()
-#        if(MINGW)
-#            configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/mingw_wheel_libs_python${PYTHON_VERSION_MAJOR}.txt" "${CMAKE_CURRENT_BINARY_DIR}/wheel/mingw_wheel_libs_python${PYTHON_VERSION_MAJOR}.txt" @ONLY)
-#        endif()
-#    endif()
-#endif()
-#
+if(PPNF_BUILD_PYTHON)
+    add_subdirectory("${CMAKE_SOURCE_DIR}/pygmo_plugins_nonfree")
+    if(MINGW OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+        message(STATUS "Creating the files for the generation of a binary wheel.")
+        configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/wheel_setup.py" "${CMAKE_CURRENT_BINARY_DIR}/wheel/setup.py" @ONLY)
+        if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
+            # NOTE: this is necessary on linux but harmful on mingw.
+            configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/wheel_setup.cfg" "${CMAKE_CURRENT_BINARY_DIR}/wheel/setup.cfg" @ONLY)
+        endif()
+        if(MINGW)
+            configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/mingw_wheel_libs_python${PYTHON_VERSION_MAJOR}.txt" "${CMAKE_CURRENT_BINARY_DIR}/wheel/mingw_wheel_libs_python${PYTHON_VERSION_MAJOR}.txt" @ONLY)
+        endif()
+    endif()
+endif()
+
 
 # Library installation.
 if(PPNF_BUILD_CPP)
@@ -177,4 +177,14 @@ if(PPNF_BUILD_CPP)
         ARCHIVE DESTINATION lib
         RUNTIME DESTINATION bin
     )
+
+    configure_file("${CMAKE_CURRENT_SOURCE_DIR}/pagmo_plugins_nonfree-config.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/pagmo_plugins_nonfree-config.cmake" @ONLY)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pagmo_plugins_nonfree-config.cmake" DESTINATION "lib/cmake/pagmo_plugins_nonfree")
+    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/PagmoPNFFindBoost.cmake" DESTINATION "lib/cmake/pagmo_plugins_nonfree")
+    install(EXPORT pagmo_plugins_nonfree_export NAMESPACE Pagmo_plugins_nonfree:: DESTINATION lib/cmake/pagmo_plugins_nonfree)
+    # Take care of versioning.
+    include(CMakePackageConfigHelpers)
+    write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/pagmo_plugins_nonfree-config-version.cmake" VERSION ${PAGMO_PLUGINS_NONFREE_VERSION}
+        COMPATIBILITY ExactVersion)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pagmo_plugins_nonfree-config-version.cmake" DESTINATION "lib/cmake/pagmo_plugins_nonfree")
 endif()
