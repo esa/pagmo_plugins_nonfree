@@ -100,7 +100,7 @@ if(PPNF_BUILD_CPP)
     set(PAGMO_PLUGINS_NONFREE_SRC_FILES
         # Core classes.
         "${CMAKE_CURRENT_SOURCE_DIR}/src/snopt7.cpp"
-        #"${CMAKE_CURRENT_SOURCE_DIR}/src/worhp.cpp"
+        "${CMAKE_CURRENT_SOURCE_DIR}/src/worhp.cpp"
     )
 
     # Setup of the pagmo library.
