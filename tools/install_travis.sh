@@ -20,7 +20,7 @@ if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "ReleaseGCC" ]]; then
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "DebugGCC" ]]; then
     cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Debug -DPPNF_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="-fsanitize=address -fuse-ld=gold" ../;
     make -j2 VERBOSE=1;
-    ctest;
+    ctest -VV;
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "CoverageGCC" ]]; then
     cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Debug -DPPNF_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="--coverage -fuse-ld=gold" ../;
     make -j2 VERBOSE=1;

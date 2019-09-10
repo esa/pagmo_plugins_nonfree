@@ -1,4 +1,5 @@
 #define BOOST_TEST_MODULE worhp_test
+#define BOOST_TEST_DYN_LINK
 #include <boost/lexical_cast.hpp>
 #include <boost/test/included/unit_test.hpp>
 #include <pagmo/algorithm.hpp>
