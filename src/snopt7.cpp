@@ -222,7 +222,7 @@ std::vector<char> snopt7::s_to_C(const std::string &in)
 
 snopt7::snopt7(bool screen_output, std::string snopt7_c_library, unsigned minor_version)
     : m_snopt7_c_library(snopt7_c_library), m_minor_version(minor_version), m_integer_opts(), m_numeric_opts(),
-      m_screen_output(screen_output), m_verbosity(0), m_log(){};
+      m_screen_output(screen_output), m_verbosity(0), m_log(){}
 
 /// Evolve population.
 /**

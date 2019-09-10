@@ -115,7 +115,7 @@ worhp::mutex_t worhp::m_library_load_mutex;
  */
 worhp::worhp(bool screen_output, std::string worhp_library)
     : m_worhp_library(worhp_library), m_integer_opts(), m_numeric_opts(), m_bool_opts(), m_screen_output(screen_output),
-      m_verbosity(0), m_log(){};
+      m_verbosity(0), m_log(){}
 
 /// Evolve population.
 /**
@@ -993,7 +993,7 @@ void worhp::serialize(Archive &ar, unsigned)
 }
 
 // Used to suppress screen output from worhp
-void worhp::no_screen_output(int, const char[]){};
+void worhp::no_screen_output(int, const char[]){}
 
 // Log update and print to screen
 void worhp::update_log(const problem &prob, const vector_double &fit, long long unsigned fevals0) const
