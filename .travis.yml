@@ -25,7 +25,7 @@ matrix:
   #  sudo: required
   #  services:
   #  - docker
-  - env: PAGMO_PLUGINS_NONFREE_BUILD="Debug"
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugGCC"
     dist: bionic
     compiler: gcc
     os: linux
@@ -35,7 +35,7 @@ matrix:
         - ubuntu-toolchain-r-test
         packages:
         - binutils-gold
-  - env: PAGMO_PLUGINS_NONFREE_BUILD="Release"
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseGCC"
     dist: bionic
     compiler: gcc
     os: linux
@@ -45,7 +45,7 @@ matrix:
         - ubuntu-toolchain-r-test
         packages:
         - binutils-gold
-  - env: PAGMO_PLUGINS_NONFREE_BUILD="Coverage"
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="CoverageGCC"
     dist: bionic
     compiler: gcc
     os: linux
@@ -55,6 +55,16 @@ matrix:
         - ubuntu-toolchain-r-test
         packages:
         - binutils-gold
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseClang"
+    dist: bionic
+    compiler: clang
+    os: linux
+    addons:
+      apt:
+        sources:
+        - ubuntu-toolchain-r-test
+        packages:
+        - clang-7
   - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugClang"
     dist: bionic
     compiler: clang

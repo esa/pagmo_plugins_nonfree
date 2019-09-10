@@ -13,28 +13,24 @@ if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
     export PATH="$deps_dir/bin:$PATH"
 fi
 
-if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "ReleaseGCC48" ]]; then
+if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "ReleaseGCC" ]]; then
     CXX=g++-4.8 CC=gcc-4.8 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="-fuse-ld=gold" ../;
     make -j2 VERBOSE=1;
     ctest;
-elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "DebugGCC48" ]]; then
+elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "DebugGCC" ]]; then
     CXX=g++-4.8 CC=gcc-4.8 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Debug -DPPNF_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="-fsanitize=address -fuse-ld=gold" ../;
     make -j2 VERBOSE=1;
     ctest;
-elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "CoverageGCC5" ]]; then
+elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "CoverageGCC" ]]; then
     CXX=g++-5 CC=gcc-5 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Debug -DPPNF_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="--coverage -fuse-ld=gold" ../;
     make -j2 VERBOSE=1;
     ctest;
     bash <(curl -s https://codecov.io/bash) -x gcov-5;
-elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "DebugGCC6" ]]; then
-    CXX=g++-6 CC=gcc-6 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Debug -DPPNF_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="-fuse-ld=gold" ../;
-    make -j2 VERBOSE=1;
-    ctest;
-elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "DebugClang38" ]]; then
+elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "DebugClang" ]]; then
     CXX=clang++-3.8 CC=clang-3.8 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Debug -DPPNF_BUILD_TESTS=yes ../;
     make -j2 VERBOSE=1;
     ctest;
-elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "ReleaseClang38" ]]; then
+elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "ReleaseClang" ]]; then
     CXX=clang++-3.8 CC=clang-3.8 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=yes ../;
     make -j2 VERBOSE=1;
     ctest;
