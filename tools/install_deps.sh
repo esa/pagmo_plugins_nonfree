@@ -35,7 +35,7 @@ if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
     # We create the conda environment and activate it
     conda create -q -p $deps_dir -y
     source activate $deps_dir
-    conda install -c conda-forge/label/cf201901 $conda_pkgs -y
+    conda install $conda_pkgs -y
 fi
 
 set +e
