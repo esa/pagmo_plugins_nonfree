@@ -14,36 +14,36 @@ if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
 fi
 
 if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "ReleaseGCC48" ]]; then
-    CXX=g++-4.8 CC=gcc-4.8 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Release -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="-fuse-ld=gold" ../;
+    CXX=g++-4.8 CC=gcc-4.8 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Release -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="-fuse-ld=gold" ../;
     make -j2 VERBOSE=1;
     ctest;
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "DebugGCC48" ]]; then
-    CXX=g++-4.8 CC=gcc-4.8 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="-fsanitize=address -fuse-ld=gold" ../;
+    CXX=g++-4.8 CC=gcc-4.8 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="-fsanitize=address -fuse-ld=gold" ../;
     make -j2 VERBOSE=1;
     ctest;
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "CoverageGCC5" ]]; then
-    CXX=g++-5 CC=gcc-5 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="--coverage -fuse-ld=gold" ../;
+    CXX=g++-5 CC=gcc-5 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="--coverage -fuse-ld=gold" ../;
     make -j2 VERBOSE=1;
     ctest;
     bash <(curl -s https://codecov.io/bash) -x gcov-5;
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "DebugGCC6" ]]; then
-    CXX=g++-6 CC=gcc-6 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="-fuse-ld=gold" ../;
+    CXX=g++-6 CC=gcc-6 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="-fuse-ld=gold" ../;
     make -j2 VERBOSE=1;
     ctest;
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "DebugClang38" ]]; then
-    CXX=clang++-3.8 CC=clang-3.8 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes ../;
+    CXX=clang++-3.8 CC=clang-3.8 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes ../;
     make -j2 VERBOSE=1;
     ctest;
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "ReleaseClang38" ]]; then
-    CXX=clang++-3.8 CC=clang-3.8 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Release -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes ../;
+    CXX=clang++-3.8 CC=clang-3.8 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Release -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes ../;
     make -j2 VERBOSE=1;
     ctest;
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "OSXDebug" ]]; then
-    CXX=clang++ CC=clang cmake -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="-g0 -O2" ../;
+    CXX=clang++ CC=clang cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Debug -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="-g0 -O2" ../;
     make -j2 VERBOSE=1;
     ctest;
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "OSXRelease" ]]; then
-    CXX=clang++ CC=clang cmake -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Release -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes ../;
+    CXX=clang++ CC=clang cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Release -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=yes ../;
     make -j2 VERBOSE=1;
     ctest;
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
@@ -58,7 +58,7 @@ elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
     # Move out of the build dir.
     cd ../tools
     # Run the test suite
-    python -c "import pygmo_plugins_nonfree as pg7; pg7.test.run_test_suite(1)";
+    python -c "import pygmo_plugins_nonfree as ppnf; ppnf.test.run_test_suite(1)";
 
     # Documentation.
     cd ../build
