@@ -25,7 +25,7 @@ matrix:
   #  sudo: required
   #  services:
   #  - docker
-  - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugGCC48"
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="Debug"
     dist: bionic
     compiler: gcc
     os: linux
@@ -34,10 +34,8 @@ matrix:
         sources:
         - ubuntu-toolchain-r-test
         packages:
-        - gcc-4.8
-        - g++-4.8
         - binutils-gold
-  - env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseGCC48"
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="Release"
     dist: bionic
     compiler: gcc
     os: linux
@@ -46,10 +44,8 @@ matrix:
         sources:
         - ubuntu-toolchain-r-test
         packages:
-        - gcc-4.8
-        - g++-4.8
         - binutils-gold
-  - env: PAGMO_PLUGINS_NONFREE_BUILD="CoverageGCC5"
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="Coverage"
     dist: bionic
     compiler: gcc
     os: linux
@@ -58,32 +54,26 @@ matrix:
         sources:
         - ubuntu-toolchain-r-test
         packages:
-        - gcc-5
-        - g++-5
         - binutils-gold
-  - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugGCC6"
-    dist: bionic
-    compiler: gcc
-    os: linux
-    addons:
-      apt:
-        sources:
-        - ubuntu-toolchain-r-test
-        packages:
-        - gcc-6
-        - g++-6
-        - binutils-gold
-  - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugClang38"
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugClang"
     dist: bionic
     compiler: clang
     os: linux
     addons:
       apt:
         sources:
-        - llvm-toolchain-precise-3.8
         - ubuntu-toolchain-r-test
         packages:
-        - clang-3.8
+        - clang-7
+
+
+
+env:
+  # may need to be under 'global:' or 'matrix:' if 'env:' is on top level,
+  # see https://docs.travis-ci.com/user/environment-variables/
+  # Or just 'export' them in the script
+   - CC=clang-7
+     CXX=clang++-7
   #- env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseClang38"
   #  compiler: clang
   #  os: linux
