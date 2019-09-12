@@ -25,8 +25,57 @@ matrix:
   #  sudo: required
   #  services:
   #  - docker
-  - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugGCC"
-    dist: bionic
+# - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugGCC"
+#   dist: bionic
+#   compiler: gcc
+#   os: linux
+#   addons:
+#     apt:
+#       sources:
+#       - ubuntu-toolchain-r-test
+#       packages:
+#       - binutils-gold
+# - env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseGCC"
+#   dist: bionic
+#   compiler: gcc
+#   os: linux
+#   addons:
+#     apt:
+#       sources:
+#       - ubuntu-toolchain-r-test
+#       packages:
+#       - binutils-gold
+# - env: PAGMO_PLUGINS_NONFREE_BUILD="CoverageGCC"
+#   dist: bionic
+#   compiler: gcc
+#   os: linux
+#   addons:
+#     apt:
+#       sources:
+#       - ubuntu-toolchain-r-test
+#       packages:
+#       - binutils-gold
+# - env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseClang"
+#   dist: bionic
+#   compiler: clang
+#   os: linux
+#   addons:
+#     apt:
+#       sources:
+#       - ubuntu-toolchain-r-test
+#       packages:
+#       - clang-7
+# - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugClang"
+#   dist: bionic
+#   compiler: clang
+#   os: linux
+#   addons:
+#     apt:
+#       sources:
+#       - ubuntu-toolchain-r-test
+#       packages:
+#       - clang-7
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="Python37"
     compiler: gcc
     os: linux
     addons:
@@ -34,76 +83,8 @@ matrix:
         sources:
         - ubuntu-toolchain-r-test
         packages:
-        - binutils-gold
-  - env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseGCC"
-    dist: bionic
-    compiler: gcc
-    os: linux
-    addons:
-      apt:
-        sources:
-        - ubuntu-toolchain-r-test
-        packages:
-        - binutils-gold
-  - env: PAGMO_PLUGINS_NONFREE_BUILD="CoverageGCC"
-    dist: bionic
-    compiler: gcc
-    os: linux
-    addons:
-      apt:
-        sources:
-        - ubuntu-toolchain-r-test
-        packages:
-        - binutils-gold
-  - env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseClang"
-    dist: bionic
-    compiler: clang
-    os: linux
-    addons:
-      apt:
-        sources:
-        - ubuntu-toolchain-r-test
-        packages:
-        - clang-7
-  - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugClang"
-    dist: bionic
-    compiler: clang
-    os: linux
-    addons:
-      apt:
-        sources:
-        - ubuntu-toolchain-r-test
-        packages:
-        - clang-7
+        - python3.7
 
-
-
-env:
-  # may need to be under 'global:' or 'matrix:' if 'env:' is on top level,
-  # see https://docs.travis-ci.com/user/environment-variables/
-  # Or just 'export' them in the script
-   - CC=clang-7
-     CXX=clang++-7
-  #- env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseClang38"
-  #  compiler: clang
-  #  os: linux
-  #  addons:
-  #    apt:
-  #      sources:
-  #      - llvm-toolchain-precise-3.8
-  #      - ubuntu-toolchain-r-test
-  #      packages:
-  #      - clang-3.8
-  #- env: PAGMO_PLUGINS_NONFREE_BUILD="Python36"
-  #  compiler: gcc
-  #  os: linux
-  #  addons:
-  #    apt:
-  #      sources:
-  #      - ubuntu-toolchain-r-test
-  #      packages:
-  #      - gcc-4.8
-  #      - g++-4.8
   #- env: PAGMO_PLUGINS_NONFREE_BUILD="Python27"
   #  compiler: gcc
   #  os: linux
