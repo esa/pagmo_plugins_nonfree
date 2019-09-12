@@ -39,7 +39,6 @@ if [[ $PY_INCLUDE_DIR_NAME == *m ]]; then
 fi
 
 cd
-mkdir install
 cd install
 
 # Python deps (numpy is needed to install pygmo)
