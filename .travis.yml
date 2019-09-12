@@ -76,6 +76,7 @@ matrix:
 #       packages:
 #       - clang-7
   - env: PAGMO_PLUGINS_NONFREE_BUILD="Python37"
+  - dist: bionic
     compiler: gcc
     os: linux
     addons:
@@ -83,7 +84,7 @@ matrix:
         sources:
         - ubuntu-toolchain-r-test
         packages:
-        - python3.7
+        - python3.6
 
   #- env: PAGMO_PLUGINS_NONFREE_BUILD="Python27"
   #  compiler: gcc
