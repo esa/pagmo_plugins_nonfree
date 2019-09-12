@@ -42,43 +42,6 @@ cd
 mkdir install
 cd install
 
-# Install CMake
-curl -L https://github.com/Kitware/CMake/archive/v${CMAKE_VERSION}.tar.gz > v${CMAKE_VERSION}
-tar xzf v${CMAKE_VERSION} > /dev/null 2>&1
-cd CMake-${CMAKE_VERSION}/
-./configure > /dev/null
-gmake -j2 > /dev/null
-gmake install > /dev/null
-cd ..
-
-# Install Eigen
-curl -L http://bitbucket.org/eigen/eigen/get/${EIGEN3_VERSION}.tar.gz > ${EIGEN3_VERSION}
-tar xzf ${EIGEN3_VERSION} > /dev/null 2>&1
-cd eigen*
-mkdir build
-cd build
-cmake ../ > /dev/null
-make install > /dev/null
-cd ..
-cd ..
-
-# Boost (python, system, filesystem libs needed)
-curl -L http://dl.bintray.com/boostorg/release/${BOOST_VERSION}/source/boost_`echo ${BOOST_VERSION}|tr "." "_"`.tar.bz2 > boost_`echo ${BOOST_VERSION}|tr "." "_"`.tar.bz2
-tar xjf boost_`echo ${BOOST_VERSION}|tr "." "_"`.tar.bz2
-cd boost_`echo ${BOOST_VERSION}|tr "." "_"`
-sh bootstrap.sh --with-python=/opt/python/${PYTHON_DIR}/bin/python > /dev/null
-./bjam --toolset=gcc link=shared threading=multi cxxflags="-std=c++11" variant=release --with-python --with-system --with-filesystem -j2 install > /dev/null
-cd ..
-
-# NLopt
-# NOTE: use alternative mirror as the one from the original webpage is faulty.
-curl -L  http://pkgs.fedoraproject.org/repo/pkgs/NLopt/NLopt-${NLOPT_VERSION}.tar.gz/d0b8f139a4acf29b76dbae69ade8ac54/NLopt-${NLOPT_VERSION}.tar.gz > NLopt-${NLOPT_VERSION}.tar.gz
-tar xzf NLopt-${NLOPT_VERSION}.tar.gz
-cd nlopt-${NLOPT_VERSION}
-./configure --enable-shared --disable-static > /dev/null
-make -j2 install > /dev/null
-cd ..
-
 # Python deps (numpy is needed to install pygmo)
 /opt/python/${PYTHON_DIR}/bin/pip install cloudpickle numpy
 
@@ -98,8 +61,13 @@ make -j2 install
 
 # pygmo_plugins_nonfree
 cd /pagmo_plugins_nonfree
+mkdir build_pagmo_plugins_nonfree
+cd build_pagmo_plugins_nonfree
+cmake -DCMAKE_BUILD_TYPE=Release ../;
+make install
+cd ..
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release -DPAGMO_PLUGINS_NONFREE_HEADERS=no -DPAGMO_PLUGINS_NONFREE_BUILD_PYTHON=yes -DPAGMO_PLUGINS_NONFREE_BUILD_TESTS=no -DPYTHON_EXECUTABLE=/opt/python/${PYTHON_DIR}/bin/python ../;
+cmake -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_CPP=no -DPPNF_BUILD_PYTHON=yes -DPYTHON_EXECUTABLE=/opt/python/${PYTHON_DIR}/bin/python ../;
 make -j2 install
 
 cd wheel
