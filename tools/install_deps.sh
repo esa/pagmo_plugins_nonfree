@@ -22,8 +22,8 @@ if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
     conda_pkgs="boost>=1.56 cmake>=3.2 pagmo>=2.0"
 
     # Only Python builds will need these
-    if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "Python36" || "${PAGMO_PLUGINS_NONFREE_BUILD}" == "OSXPython36" ]]; then
-        conda_pkgs="$conda_pkgs python=3.6 pygmo>=2.0"
+    if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "Python37" || "${PAGMO_PLUGINS_NONFREE_BUILD}" == "OSXPython36" ]]; then
+        conda_pkgs="$conda_pkgs python=3.7 pygmo>=2.0"
     elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "Python27" || "${PAGMO_PLUGINS_NONFREE_BUILD}" == "OSXPython27" ]]; then
         conda_pkgs="$conda_pkgs python=2.7 pygmo>=2.0"
     fi

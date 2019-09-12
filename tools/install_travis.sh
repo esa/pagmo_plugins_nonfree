@@ -43,10 +43,11 @@ elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "OSXRelease" ]]; then
     make -j2 VERBOSE=1;
     ctest -VV;
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
-    export CXX=g++-4.8
-    export CC=gcc-4.8
+    # Install pagmo_plugins_nonfree
+    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=no -DPPNF_BUILD_CPP=yes -DPPNF_BUILD_PYTHON=no ../;
+    make install VERBOSE=1;
     # Install pygmo_plugins_nonfree.
-    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Debug -DPPNF_BUILD_TESTS=no -DPPNF_BUILD_PYTHON=yes ../;
+    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=no -DPPNF_BUILD_CPP=no -DPPNF_BUILD_PYTHON=yes ../;
     make install VERBOSE=1;
     ipcluster start --daemonize=True;
     # Give some time for the cluster to start up. The cluster may be needed in tests of archipelagos with ipyparallel islands
