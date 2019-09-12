@@ -50,7 +50,7 @@ tar xzf pagmo2.tar.gz
 cd pagmo2-${PAGMO_VERSION}
 mkdir build_pagmo
 cd build_pagmo
-cmake ../ -DPAGMO_WITH_EIGEN3=yes -DPAGMO_WITH_NLOPT=yes -DCMAKE_BUILD_TYPE=Release
+cmake ../ -DBoost_NO_BOOST_CMAKE=ON -DPAGMO_WITH_EIGEN3=yes -DPAGMO_WITH_NLOPT=yes -DCMAKE_BUILD_TYPE=Release
 make install
 cd ..
 mkdir build_pygmo 
@@ -66,7 +66,7 @@ cmake -DCMAKE_BUILD_TYPE=Release ../;
 make install
 cd ..
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_CPP=no -DPPNF_BUILD_PYTHON=yes -DPYTHON_EXECUTABLE=/opt/python/${PYTHON_DIR}/bin/python ../;
+cmake -DCMAKE_BUILD_TYPE=Release -DBoost_NO_BOOST_CMAKE=ON -DPPNF_BUILD_CPP=no -DPPNF_BUILD_PYTHON=yes -DPYTHON_EXECUTABLE=/opt/python/${PYTHON_DIR}/bin/python ../;
 make -j2 install
 
 cd wheel
