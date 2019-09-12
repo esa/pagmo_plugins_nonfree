@@ -44,7 +44,7 @@ elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "OSXRelease" ]]; then
     ctest -VV;
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
     # Install pagmo_plugins_nonfree
-    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=no -DPPNF_BUILD_CPP=yes -DPPNF_BUILD_PYTHON=no ../;
+    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=no -DPPNF_BUILD_CPP=yes -DPPNF_BUILD_PYTHON=no ../;
     make install VERBOSE=1;
     # Install pygmo_plugins_nonfree.
     cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=no -DPPNF_BUILD_CPP=no -DPPNF_BUILD_PYTHON=yes ../;
