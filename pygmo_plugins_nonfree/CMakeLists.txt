@@ -31,7 +31,10 @@ endif()
 
 # Create the module
 YACMA_PYTHON_MODULE(core core.cpp docstrings.cpp)
-target_link_libraries(core PRIVATE Pagmo_plugins_nonfree::pagmo_plugins_nonfree ${PYGMO_PLUGINS_NONFREE_BP_TARGET} Boost::disable_autolinking)
+find_package(pagmo_plugins_nonfree REQUIRED)
+find_package(pygmo REQUIRED)
+
+target_link_libraries(core PRIVATE Pagmo_plugins_nonfree::pagmo_plugins_nonfree ${PYGMO_PLUGINS_NONFREE_BP_TARGET} Boost::disable_autolinking Pygmo::pygmo)
 set_property(TARGET core PROPERTY CXX_STANDARD 11)
 set_property(TARGET core PROPERTY CXX_STANDARD_REQUIRED YES)
 set_property(TARGET core PROPERTY CXX_EXTENSIONS NO)
