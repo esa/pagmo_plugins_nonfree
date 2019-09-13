@@ -6,12 +6,7 @@ set -x
 # Exit on error.
 set -e
 
-CMAKE_VERSION="3.11.1"
-EIGEN3_VERSION="3.3.4"
-# The boost version needs to be synchd with that of pygmp pip package
-BOOST_VERSION="1.67.0"
-NLOPT_VERSION="2.4.2"
-PAGMO_VERSION="2.10"
+PAGMO_VERSION="2.11.3"
 
 if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *37 ]]; then
 	PYTHON_DIR="cp37-cp37m"
