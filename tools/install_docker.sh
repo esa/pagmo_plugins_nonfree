@@ -6,6 +6,8 @@ set -x
 # Exit on error.
 set -e
 
+PAGMO_VERSION="2.11.3"
+
 if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *37 ]]; then
 	PYTHON_DIR="cp37-cp37m"
 	BOOST_PYTHON_LIBRARY_NAME="libboost_python37.so"
