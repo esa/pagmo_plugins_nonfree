@@ -40,8 +40,8 @@ if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} != *27m ]]; then
 	# don't have binary wheels available for py27m, which makes pip try to
 	# install them from source (which fails).
 	/opt/python/${PYTHON_DIR}/bin/pip install dill ipyparallel
-	/opt/python/${PYTHON_DIR}/bin/ipcluster start --daemonize=True
-	sleep 20
+	#/opt/python/${PYTHON_DIR}/bin/ipcluster start --daemonize=True
+	#sleep 20
 fi
 
 # pagmo & pygmo
@@ -55,8 +55,10 @@ cmake -DBoost_NO_BOOST_CMAKE=ON \
 	-DPAGMO_WITH_NLOPT=yes \
 	-DPAGMO_WITH_IPOPT=yes \
 	-DCMAKE_BUILD_TYPE=Release ../;
-make install
-cd ../build
+make -j2 install
+cd ../
+mkdir build_pygmo
+cd build_pygmo
 cmake -DBoost_NO_BOOST_CMAKE=ON \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DPAGMO_BUILD_PYGMO=yes \
@@ -69,8 +71,12 @@ make -j2 install
 cd /pagmo_plugins_nonfree
 mkdir build_pagmo_plugins_nonfree
 cd build_pagmo_plugins_nonfree
-cmake -DCMAKE_BUILD_TYPE=Release ../;
-make install
+cmake -DCMAKE_BUILD_TYPE=Release \
+	-DBoost_NO_BOOST_CMAKE=ON \
+	-DPPNF_BUILD_CPP=yes \
+	-DPPNF_BUILD_TESTS=no \
+	-DPPNF_BUILD_PYTHON=no ../;
+make -j2 install
 cd ..
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release \
