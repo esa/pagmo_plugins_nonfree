@@ -28,6 +28,10 @@ if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
         conda_pkgs="$conda_pkgs python=2.7 pygmo>=2.0"
     fi
 
+    if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == OSX* ]]; then
+        conda_pkgs="$conda_pkgs clangdev"
+    fi
+
     if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
         conda_pkgs="$conda_pkgs graphviz doxygen"
     fi
