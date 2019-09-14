@@ -90,13 +90,13 @@ matrix:
 #      apt:
 #        sources:
 #        - ubuntu-toolchain-r-test
-  - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXDebug"
+#  - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXDebug"
+#    os: osx
+#  - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXRelease"
+#    os: osx
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXPython36"
     os: osx
-  - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXRelease"
-    os: osx
-  - env: PAGMO_BUILD="OSXPython36"
-    os: osx
-  - env: PAGMO_BUILD="OSXPython27"
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXPython27"
     os: osx
 script:
 - mkdir build
