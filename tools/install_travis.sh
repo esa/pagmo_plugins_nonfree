@@ -125,15 +125,15 @@ elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == OSXPython* ]]; then
     export CXX=clang++
     export CC=clang
-    # Install pygmo_plugins_nonfree.
-    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Debug -DPPNF_BUILD_PYTHON=yes ../;
+    # Install pagmo_plugins_nonfree
+    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=no -DPPNF_BUILD_CPP=yes -DPPNF_BUILD_PYTHON=no ../;
     make install VERBOSE=1;
-    ipcluster start --daemonize=True;
-    # Give some time for the cluster to start up.
-    sleep 20;
+    # Install pygmo_plugins_nonfree.
+    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=no -DPPNF_BUILD_CPP=no -DPPNF_BUILD_PYTHON=yes ../;
+    make install VERBOSE=1;
     # Move out of the build dir.
     cd ../tools
-    python -c "import pygmo_plugins_nonfree as pg7; pg7.test.run_test_suite(1)";
+    python -c "import pygmo_plugins_nonfree as ppnf; ppnf.test.run_test_suite(1)";
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == manylinux* ]]; then
     cd ..;
     docker pull ${DOCKER_IMAGE};
