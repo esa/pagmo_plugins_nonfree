@@ -120,10 +120,16 @@ elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
         fi
     done
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == OSXPython* ]]; then
-    # Install pagmo_plugins_nonfree
+    export CXX=clang++
+    export CC=clang
+    # Install pagmo_plugins_nonfree first
+    cd ..;
+    mkdir build_pagmo_plugins_nonfree;
+    cd build_pagmo_plugins_nonfree;
     cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=no -DPPNF_BUILD_CPP=yes -DPPNF_BUILD_PYTHON=no ../;
     make install VERBOSE=1;
     # Install pygmo_plugins_nonfree.
+    cd ../build;
     cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=no -DPPNF_BUILD_CPP=no -DPPNF_BUILD_PYTHON=yes ../;
     make install VERBOSE=1;
     # Move out of the build dir.
