@@ -99,7 +99,7 @@ matrix:
     osx_image: xcode11
   - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXPython27"
     os: osx
-    osx_image: xcode11
+    osx_image: xcode11 
 
 script:
 - mkdir build
