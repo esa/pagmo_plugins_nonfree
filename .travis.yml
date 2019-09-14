@@ -94,7 +94,7 @@ matrix:
 #    os: osx
 #  - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXRelease"
 #    os: osx
-  - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXPython36"
+  - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXPython37"
     os: osx
   - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXPython27"
     os: osx
