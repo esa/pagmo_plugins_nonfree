@@ -85,7 +85,7 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 	-DPPNF_BUILD_PYTHON=yes \
 	-DBoost_PYTHON${PYTHON_VERSION}_LIBRARY_RELEASE=/usr/local/lib/${BOOST_PYTHON_LIBRARY_NAME} \
 	-DPYTHON_EXECUTABLE=/opt/python/${PYTHON_DIR}/bin/python ../;
-make -j2 install
+make -j2 install 
 
 cd wheel
 # Copy the installed pygmo files, wherever they might be in /usr/local,
