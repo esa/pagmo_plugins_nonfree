@@ -173,31 +173,41 @@ if is_python_build:
 ## Configuration step.
 if is_python_build:
     os.chdir('C:\projects\pagmo-plugins-nonfree')
-    os.makedirs('build_pagmo')
-    os.chdir('build_pagmo')
+    os.makedirs('build_pagmo_plugins_nonfree')
+    os.chdir('build_pagmo_plugins_nonfree')
     run_command(r'cmake -G "MinGW Makefiles" .. ' +
                 common_cmake_opts +
-                r'-DPAGMO_WITH_EIGEN3=yes ' +
-                r'-DPAGMO_WITH_NLOPT=yes ' +
-                r'-DCMAKE_BUILD_TYPE=Release ')
+                r'-DCMAKE_BUILD_TYPE=Release ' +
+                r'-DPPNF_BUILD_TESTS=no ' +
+                r'-DBoost_UNIT_TEST_FRAMEWORK_LIBRARY_RELEASE=c:\\local\\lib\\libboost_unit_test_framework-mgw81-mt-x64-1_70.dll ' +
+                r'-DBoost_SYSTEM_LIBRARY_RELEASE=c:\\local\\lib\\libboost_system-mgw81-mt-x64-1_70.dll ' +
+                r'-DBoost_FILESYSTEM_LIBRARY_RELEASE=c:\\local\\lib\\libboost_filesystem-mgw81-mt-x64-1_70.dll ' +
+                r'-DCMAKE_CXX_FLAGS_DEBUG="-g0 -Os"')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
-    # Alter the path to find the pagmo dll.
+    # Alter the path to find the newly created dll.
     os.environ['PATH'] = os.getcwd() + ";" + os.environ['PATH']
     os.chdir('..')
-    os.makedirs('build_pygmo')
-    os.chdir('build_pygmo')
+    os.makedirs('build_pygmo_plugins_nonfree')
+    os.chdir('build_pygmo_plugins_nonfree')
     run_command(r'cmake -G "MinGW Makefiles" .. ' +
                 common_cmake_opts +
-                r'-DPAGMO_BUILD_PYGMO=yes ' +
-                r'-DPAGMO_BUILD_PAGMO=no ' +
                 r'-DCMAKE_BUILD_TYPE=Release ' +
+                r'-DPPNF_BUILD_CPP=no ' +
+                r'-DPPNF_BUILD_PYTHON=yes ' +
                 r'-DCMAKE_CXX_FLAGS=-s ' +
                 r'-DBoost_PYTHON' + python_version + r'_LIBRARY_RELEASE=c:\\local\\lib\\libboost_python' + python_version + r'-mgw81-mt-x64-1_70.dll ' +
+                r'-DBoost_UNIT_TEST_FRAMEWORK_LIBRARY_RELEASE=c:\\local\\lib\\libboost_unit_test_framework-mgw81-mt-x64-1_70.dll ' +
+                r'-DBoost_SYSTEM_LIBRARY_RELEASE=c:\\local\\lib\\libboost_system-mgw81-mt-x64-1_70.dll ' +
+                r'-DBoost_FILESYSTEM_LIBRARY_RELEASE=c:\\local\\lib\\libboost_filesystem-mgw81-mt-x64-1_70.dll ' +
                 r'-DPYTHON_INCLUDE_DIR=C:\\' + python_folder + r'\\include ' +
                 r'-DPYTHON_EXECUTABLE=C:\\' + python_folder + r'\\python.exe ' +
                 r'-DPYTHON_LIBRARY=' + python_library +
                 r'-DCMAKE_CXX_FLAGS="-D_hypot=hypot"')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
+    os.chdir('../tools')
+    # Run the Python tests.
+    run_command(pinterp + r' -c "import pygmo_plugins_nonfree as ppnf; ppnf.test.run_test_suite(1)"')
+    os.chdir('../build_pygmo_plugins_nonfree')
 elif 'Debug' in BUILD_TYPE:
     os.chdir('C:\projects\pagmo-plugins-nonfree')
     os.makedirs('build_ppnf')
@@ -219,9 +229,6 @@ else:
 
 ## Packaging.
 #if is_python_build:
-#    # Run the Python tests.
-#    run_command(
-#        pinterp + r' -c "import pygmo; pygmo.test.run_test_suite(1)"')
 #    # Build the wheel.
 #    import shutil
 #    os.chdir('wheel')

@@ -8,8 +8,8 @@ environment:
     #- BUILD_TYPE: "MSVC_64_Python37"
     #  COMPILER: MSVC15
     #  PLATFORM: "x64"
-    - BUILD_TYPE: "MinGW_64_Debug"
-    #- BUILD_TYPE: "MinGW_64_Python37"
+    #- BUILD_TYPE: "MinGW_64_Debug"
+    - BUILD_TYPE: "MinGW_64_Python37"
     #- BUILD_TYPE: "MinGW_64_Python36"
     #- BUILD_TYPE: "MinGW_64_Python27"
   global:
@@ -25,8 +25,6 @@ install:
 
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] call "C:\\Miniconda37-x64\\Scripts\\activate.bat"
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] conda config --add channels conda-forge --force
-# - if [%BUILD_TYPE%]==[MSVC_64_Python37] conda clean --all -y
-# - if [%BUILD_TYPE%]==[MSVC_64_Python37] conda update conda -y
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] conda update --all -y
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] conda create -y --name ppnf python=3.7 cmake pagmo pygmo
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] call activate ppnf
