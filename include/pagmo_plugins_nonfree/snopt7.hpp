@@ -47,30 +47,13 @@ see https://www.gnu.org/licenses/. */
 #ifndef PAGMO_SNOPT7_HPP
 #define PAGMO_SNOPT7_HPP
 
-#include <algorithm> // std::min_element
-#include <boost/dll/import.hpp>
-#include <boost/dll/shared_library.hpp>
-#include <boost/filesystem.hpp>
-#include <boost/serialization/map.hpp>
-#include <exception>
-#include <iomanip>
+#include <boost/type_traits/is_object.hpp>
 #include <limits> // std::numeric_limits
 #include <mutex>
-#include <pagmo/algorithm.hpp>
 #include <pagmo/algorithms/not_population_based.hpp>
-#include <pagmo/config.hpp>
-#include <pagmo/exceptions.hpp>
-#include <pagmo/io.hpp>
 #include <pagmo/population.hpp>
-#include <pagmo/problem.hpp>
-#include <pagmo/s11n.hpp>
-#include <pagmo/utils/constrained.hpp>
-#include <random>
-#include <stdexcept>
 #include <string>
-#include <tuple>
-#include <type_traits> // std::false_type
-#include <unordered_map>
+#include <map>
 #include <vector>
 
 #include <pagmo_plugins_nonfree/detail/visibility.hpp>
@@ -223,17 +206,9 @@ public:
      * (see snopt7::set_verbosity()).
      */
     using log_type = std::vector<log_line_type>;
-    /// Type for the map containing the association between then snopt7 results and their textual description
-    using result_map_t = std::unordered_map<int, std::string>;
-    /// Mutex type to protect the library load.
-    using mutex_t = std::mutex;
 
 private:
     static_assert(std::is_same<log_line_type, detail::user_data::log_line_type>::value, "Invalid log line type.");
-    // Small helper function to convert a string to something that the C API can eat (i.e. retval.data())
-    static std::vector<char> s_to_C(const std::string &);
-    static const result_map_t m_results;
-    static mutex_t m_library_load_mutex;
 
 public:
     ///  Constructor.

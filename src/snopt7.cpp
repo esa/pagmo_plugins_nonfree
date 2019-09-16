@@ -166,13 +166,16 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
         info.m_eptr = std::current_exception();
     }
 }
-
-} // namespace detail
-
-// Init of the statics data
-snopt7::mutex_t snopt7::m_library_load_mutex;
-
-const snopt7::result_map_t snopt7::m_results
+namespace
+{
+std::vector<char> s_to_C(const std::string &in)
+{
+    std::vector<char> retval(in.begin(), in.end());
+    retval.push_back('\0');
+    return retval;
+}
+/// Type for the map containing the association between then snopt7 results and their textual description
+const std::unordered_map<int, std::string> results
     = {{0, "None"},
        {1, "Finished successfully - optimality conditions satisfied"},
        {2, "Finished successfully - feasible point found"},
@@ -213,16 +216,15 @@ const snopt7::result_map_t snopt7::m_results
        {141, "System error - wrong number of basic variables"},
        {142, "System error - error in basis package"}};
 
-std::vector<char> snopt7::s_to_C(const std::string &in)
-{
-    std::vector<char> retval(in.begin(), in.end());
-    retval.push_back('\0');
-    return retval;
-}
+std::mutex library_load_mutex;
+} // namespace
+} // namespace detail
 
 snopt7::snopt7(bool screen_output, std::string snopt7_c_library, unsigned minor_version)
     : m_snopt7_c_library(snopt7_c_library), m_minor_version(minor_version), m_integer_opts(), m_numeric_opts(),
-      m_screen_output(screen_output), m_verbosity(0), m_log(){}
+      m_screen_output(screen_output), m_verbosity(0), m_log()
+{
+}
 
 /// Evolve population.
 /**
@@ -246,12 +248,12 @@ snopt7::snopt7(bool screen_output, std::string snopt7_c_library, unsigned minor_
  * .. note::
  *
  *    The definitions of feasibility are different for SNOPT7 and pagmo. SNOPT7 requires that *max(c_viol)/||x|| <=
- *    eps_r* where *||x||* is the Euclidean norm of *x*, a candidate solution vector, and *eps_r* is the "Major feasibility
- *    tolerance" option in SNOPT7. In contrast, pagmo requires that *c_viol <= c_tol* where *c_viol* is the vector of
- *    absolute values of the nonlinear constraint violations and *c_tol* is the vector of constraint tolerances in
- *    pagmo::problem. To guarantee feasibility with respect to pagmo when SNOPT7 reports feasibility, try setting *eps_r <=
- *    min(c_tol)/||x||_ub*, where *||x||_ub* is an upper bound on the value of *||x||*. Care must be taken with this approach to ensure *eps_r* is
- *    not too small.
+ *    eps_r* where *||x||* is the Euclidean norm of *x*, a candidate solution vector, and *eps_r* is the "Major
+ * feasibility tolerance" option in SNOPT7. In contrast, pagmo requires that *c_viol <= c_tol* where *c_viol* is the
+ * vector of absolute values of the nonlinear constraint violations and *c_tol* is the vector of constraint tolerances
+ * in pagmo::problem. To guarantee feasibility with respect to pagmo when SNOPT7 reports feasibility, try setting *eps_r
+ * <= min(c_tol)/||x||_ub*, where *||x||_ub* is an upper bound on the value of *||x||*. Care must be taken with this
+ * approach to ensure *eps_r* is not too small.
  *
  * .. seealso::
  *
@@ -378,7 +380,7 @@ std::string snopt7::get_extra_info() const
     } else {
         stream(ss, "\n\tScreen output: (snopt7)");
     }
-    stream(ss, "\n\tLast optimisation return code: ", m_results.at(m_last_opt_res));
+    stream(ss, "\n\tLast optimisation return code: ", detail::results.at(m_last_opt_res));
     stream(ss, "\n\tIndividual selection ");
     if (boost::any_cast<population::size_type>(&m_select)) {
         stream(ss, "idx: ", std::to_string(boost::any_cast<population::size_type>(m_select)));
@@ -553,7 +555,7 @@ population snopt7::evolve_version(population &pop) const
     // We then try to load the library at run time and locate the symbols used.
     try {
         // Here we import at runtime the snopt7_c library and protect the whole try block with a mutex
-        std::lock_guard<std::mutex> lock(m_library_load_mutex);
+        std::lock_guard<std::mutex> lock(detail::library_load_mutex);
         boost::filesystem::path path_to_lib(m_snopt7_c_library);
         if (!boost::filesystem::is_regular_file(path_to_lib)) {
             pagmo_throw(std::invalid_argument, "The snopt7_c library path was constructed to be: "
@@ -614,7 +616,7 @@ We report the exact text of the original exception thrown:
     snProblem snopt7_problem;
     char empty_string[] = "";
 
-    auto problem_name = s_to_C(prob.get_name());
+    auto problem_name = detail::s_to_C(prob.get_name());
 
     // Here we call snInit and ensure deleteSNOPT will be called whenever the object spr is destroyed.
     detail::sn_problem_raii<snProblem> spr(&snopt7_problem, problem_name.data(), empty_string, m_screen_output, snInit,
@@ -630,7 +632,7 @@ We report the exact text of the original exception thrown:
         assert(!c_tol.empty());
         const double min_tol = *std::min_element(c_tol.begin(), c_tol.end());
         if (min_tol > 0.) {
-            auto option_name = s_to_C("Major feasibility tolerance");
+            auto option_name = detail::s_to_C("Major feasibility tolerance");
             res = setRealParameter(&snopt7_problem, option_name.data(), min_tol);
             assert(res == 0);
         }
@@ -645,7 +647,7 @@ We report the exact text of the original exception thrown:
     res = 0;
     // We set all the other user defined options
     for (const auto &p : m_numeric_opts) {
-        auto option_name = s_to_C(p.first);
+        auto option_name = detail::s_to_C(p.first);
         double option_value(p.second);
         res = setRealParameter(&snopt7_problem, option_name.data(), option_value);
         if (res > 0) {
@@ -656,7 +658,7 @@ We report the exact text of the original exception thrown:
         }
     }
     for (const auto &p : m_integer_opts) {
-        auto option_name = s_to_C(p.first);
+        auto option_name = detail::s_to_C(p.first);
         int option_value(p.second);
         res = setIntParameter(&snopt7_problem, option_name.data(), option_value);
         if (res > 0) {
@@ -768,7 +770,7 @@ We report the exact text of the original exception thrown:
                             xmul.data(), F.data(), Fstate.data(), Fmul.data(), &nS, &nInf, &sInf);
 
     if (m_verbosity > 0u) {
-        print("\n", m_results.at(m_last_opt_res), "\n");
+        print("\n", detail::results.at(m_last_opt_res), "\n");
     }
     // ------- We reinsert the solution if better -----------------------------------------------------------
     // Store the new individual into the population, but only if it is improved.
