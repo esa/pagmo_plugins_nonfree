@@ -165,7 +165,7 @@ if is_python_build:
     os.chdir('..')
 
 
-## Proceed to the build of ppnf
+## Proceed to the build of ppnf-----------------------------------------------------------------------------------------------
 ## NOTE: at the moment boost 1.70 seems to have problem to autodetect
 ## the mingw library (with CMake 3.13 currently installed in appveyor)
 ## Thus we manually point to the boost libs.
@@ -228,20 +228,20 @@ else:
     raise RuntimeError('Unsupported build type: ' + BUILD_TYPE)#
 
 ## Packaging.
-#if is_python_build:
-#    # Build the wheel.
-#    import shutil
-#    os.chdir('wheel')
-#    shutil.move(pygmo_install_path, r'.')
-#    wheel_libs = 'mingw_wheel_libs_python{}.txt'.format(python_version)
-#    DLL_LIST = [_[:-1] for _ in open(wheel_libs, 'r').readlines()]
-#    for _ in DLL_LIST:
-#        shutil.copy(_, 'pygmo')
-#    run_command(pinterp + r' setup.py bdist_wheel')
-#    os.environ['PATH'] = ORIGINAL_PATH
-#    run_command(pip + r' install dist\\' + os.listdir('dist')[0])
-#    run_command(
-#        pinterp + r' -c "import pygmo; pygmo.test.run_test_suite(1)"', directory=r'c:\\')
-#    if is_release_build:
-#        run_command(twine + r' upload -u ci4esa dist\\' +
-#                    os.listdir('dist')[0])
+if is_python_build:
+    # Build the wheel.
+    import shutil
+    os.chdir('wheel')
+    shutil.move(pygmo_install_path, r'.')
+    wheel_libs = 'mingw_wheel_libs_python{}.txt'.format(python_version)
+    DLL_LIST = [_[:-1] for _ in open(wheel_libs, 'r').readlines()]
+    for _ in DLL_LIST:
+        shutil.copy(_, 'pygmo')
+    run_command(pinterp + r' setup.py bdist_wheel')
+    os.environ['PATH'] = ORIGINAL_PATH
+    run_command(pip + r' install dist\\' + os.listdir('dist')[0])
+    run_command(
+        pinterp + r' -c "import pygmo; pygmo.test.run_test_suite(1)"', directory=r'c:\\')
+    if is_release_build:
+        run_command(twine + r' upload -u ci4esa dist\\' +
+                    os.listdir('dist')[0])
