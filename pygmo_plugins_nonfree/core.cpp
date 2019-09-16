@@ -1,7 +1,6 @@
 #include <boost/python/docstring_options.hpp>
 #include <boost/python/module.hpp>
 
-#include <pygmo/expose_algorithms.hpp>
 #include <pygmo/algorithm_exposition_suite.hpp>
 #include <pygmo/register_ap.hpp>
 
