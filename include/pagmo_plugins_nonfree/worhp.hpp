@@ -72,6 +72,7 @@ see https://www.gnu.org/licenses/. */
 #include <unordered_map>
 #include <vector>
 
+#include <pagmo_plugins_nonfree/detail/visibility.hpp>
 #include "bogus_libs/worhp_lib/worhp_bogus.h"
 
 namespace pagmo
@@ -138,7 +139,7 @@ namespace pagmo
  *
  * \endverbatim
  */
-class PAGMO_DLL_PUBLIC worhp : public not_population_based
+class PPNF_DLL_PUBLIC worhp : public not_population_based
 {
 public:
     /// Single data line for the algorithm's log.

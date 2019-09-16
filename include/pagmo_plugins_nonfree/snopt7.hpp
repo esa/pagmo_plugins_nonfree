@@ -73,6 +73,7 @@ see https://www.gnu.org/licenses/. */
 #include <unordered_map>
 #include <vector>
 
+#include <pagmo_plugins_nonfree/detail/visibility.hpp>
 extern "C" {
 #include "bogus_libs/snopt7_c_lib/snopt7_c.h"
 }
@@ -202,7 +203,7 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
  *
  * \endverbatim
  */
-class PAGMO_DLL_PUBLIC snopt7 : public not_population_based
+class PPNF_DLL_PUBLIC snopt7 : public not_population_based
 {
 public:
     /// Single data line for the algorithm's log.
