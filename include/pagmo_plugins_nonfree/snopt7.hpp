@@ -175,7 +175,6 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
  *    The possibility to exploit the linear part of the problem fitness, part of the original SNOPT7 library,
  *    is deactivated in this plugin for pagmo.
  *
- *
  * .. seealso::
  *
  *    https://web.stanford.edu/group/SOL/snopt.htm.

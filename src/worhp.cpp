@@ -100,7 +100,7 @@ struct worhp_raii {
 namespace
 {
 // Used to suppress screen output from worhp
-void no_screen_output(int, const char[]){};
+void no_screen_output(int, const char[]){}
 // Mutex to protect the library loading.
 std::mutex library_load_mutex;
 } // namespace
