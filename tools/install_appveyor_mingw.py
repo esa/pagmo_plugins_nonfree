@@ -89,8 +89,11 @@ common_cmake_opts = r'-DCMAKE_PREFIX_PATH=c:\\local ' + \
                     r'-DBoost_INCLUDE_DIR=c:\\local\\include ' + \
                     r'-DBoost_SERIALIZATION_LIBRARY_RELEASE=c:\\local\\lib\\libboost_serialization-mgw81-mt-x64-1_70.dll '
 
-## ------------------------------ INSTALL PAGMO -------------------------------------##
-# Get pagmo from git, install the headers
+## Set the path so that the precompiled libs can be found.
+os.environ['PATH'] = os.environ['PATH'] + r';c:\\local\\lib'
+
+## ------------------------------ INSTALL C/C++ DEPENDENCIES -------------------------------------##
+# Get pagmo from git, install the headers and the library
 wget(r'https://github.com/esa/pagmo2/archive/v2.11.3.tar.gz', 'pagmo.tar.gz')
 run_command(r'7z x -aoa -oC:\\projects pagmo.tar.gz', verbose=False)
 run_command(r'7z x -aoa -oC:\\projects C:\\projects\\pagmo.tar', verbose=False)
@@ -103,10 +106,11 @@ run_command(r'cmake -G "MinGW Makefiles" .. ' +
             r'-DPAGMO_WITH_NLOPT=yes ' +
             r'-DCMAKE_BUILD_TYPE=Release ')
 run_command(r'mingw32-make install VERBOSE=1 -j2')
-# Alter the path to find the pagmo dll.
+
+# Alter the path to find the newly created pagmo dll.
 os.environ['PATH'] = os.getcwd() + ";" + os.environ['PATH']
 os.chdir('..')
-## -------------------------- END INSTALL PAGMO -------------------------------------##
+## -------------------------- END INSTALL C/C++ DEPENDENCIES -------------------------------------##
 
 # Setup of the dependencies for a Python build.
 if is_python_build:
@@ -163,64 +167,53 @@ if is_python_build:
     os.chdir('..')
 
 
-## Set the path so that the precompiled libs can be found.
-##os.environ['PATH'] = os.environ['PATH'] + r';c:\\local\\lib'#
+
 
 ## Proceed to the build.
 ## NOTE: at the moment boost 1.70 seems to have problem to autodetect
 ## the mingw library (with CMake 3.13 currently installed in appveyor)
 ## Thus we manually point to the boost libs.
-#common_cmake_opts = r'-DCMAKE_PREFIX_PATH=c:\\local ' + \
-#                    r'-DCMAKE_INSTALL_PREFIX=c:\\local ' + \
-#                    r'-DBoost_INCLUDE_DIR=c:\\local\\include ' + \
-#                    r'-DBoost_SERIALIZATION_LIBRARY_RELEASE=c:\\local\\lib\\libboost_serialization-mgw81-mt-x64-1_70.dll '#
-#
 
 ## Configuration step.
-#if is_python_build:
-#    os.makedirs('build_pagmo')
-#    os.chdir('build_pagmo')
-#    run_command(r'cmake -G "MinGW Makefiles" .. ' +
-#                common_cmake_opts +
-#                r'-DPAGMO_WITH_EIGEN3=yes ' +
-#                r'-DPAGMO_WITH_NLOPT=yes ' +
-#                r'-DCMAKE_BUILD_TYPE=Release ')
-#    run_command(r'mingw32-make install VERBOSE=1 -j2')
-#    # Alter the path to find the pagmo dll.
-#    os.environ['PATH'] = os.getcwd() + ";" + os.environ['PATH']
-#    os.chdir('..')
-#    os.makedirs('build_pygmo')
-#    os.chdir('build_pygmo')
-#    run_command(r'cmake -G "MinGW Makefiles" .. ' +
-#                common_cmake_opts +
-#                r'-DPAGMO_BUILD_PYGMO=yes ' +
-#                r'-DPAGMO_BUILD_PAGMO=no ' +
-#                r'-DCMAKE_BUILD_TYPE=Release ' +
-#                r'-DCMAKE_CXX_FLAGS=-s ' +
-#                r'-DBoost_PYTHON' + python_version + r'_LIBRARY_RELEASE=c:\\local\\lib\\libboost_python' + python_version + r'-mgw81-mt-x64-1_70.dll ' +
-#                r'-DPYTHON_INCLUDE_DIR=C:\\' + python_folder + r'\\include ' +
-#                r'-DPYTHON_EXECUTABLE=C:\\' + python_folder + r'\\python.exe ' +
-#                r'-DPYTHON_LIBRARY=' + python_library +
-#                r'-DCMAKE_CXX_FLAGS="-D_hypot=hypot"')
-#    run_command(r'mingw32-make install VERBOSE=1 -j2')
-#elif 'Debug' in BUILD_TYPE:
-#    os.makedirs('build_pagmo')
-#    os.chdir('build_pagmo')
-#    run_command(r'cmake -G "MinGW Makefiles" .. ' +
-#                common_cmake_opts +
-#                r'-DPAGMO_WITH_EIGEN3=yes ' +
-#                r'-DPAGMO_WITH_NLOPT=yes ' +
-#                r'-DCMAKE_BUILD_TYPE=Debug ' +
-#                r'-DPAGMO_BUILD_TESTS=yes ' +
-#                r'-DPAGMO_BUILD_TUTORIALS=yes ' +
-#                r'-DBoost_UNIT_TEST_FRAMEWORK_LIBRARY_RELEASE=c:\\local\\lib\\libboost_unit_test_framework-mgw81-mt-x64-1_70.dll ' +
-#                r'-DCMAKE_CXX_FLAGS_DEBUG="-g0 -Os"')
-#    run_command(r'mingw32-make install VERBOSE=1 -j2')
-#    # Alter the path to find the pagmo dll.
-#    os.environ['PATH'] = os.getcwd() + ";" + os.environ['PATH']
-#    run_command(r'ctest')
-#else:
-#    raise RuntimeError('Unsupported build type: ' + BUILD_TYPE)#
+if is_python_build:
+    os.makedirs('build_pagmo')
+    os.chdir('build_pagmo')
+    run_command(r'cmake -G "MinGW Makefiles" .. ' +
+                common_cmake_opts +
+                r'-DPAGMO_WITH_EIGEN3=yes ' +
+                r'-DPAGMO_WITH_NLOPT=yes ' +
+                r'-DCMAKE_BUILD_TYPE=Release ')
+    run_command(r'mingw32-make install VERBOSE=1 -j2')
+    # Alter the path to find the pagmo dll.
+    os.environ['PATH'] = os.getcwd() + ";" + os.environ['PATH']
+    os.chdir('..')
+    os.makedirs('build_pygmo')
+    os.chdir('build_pygmo')
+    run_command(r'cmake -G "MinGW Makefiles" .. ' +
+                common_cmake_opts +
+                r'-DPAGMO_BUILD_PYGMO=yes ' +
+                r'-DPAGMO_BUILD_PAGMO=no ' +
+                r'-DCMAKE_BUILD_TYPE=Release ' +
+                r'-DCMAKE_CXX_FLAGS=-s ' +
+                r'-DBoost_PYTHON' + python_version + r'_LIBRARY_RELEASE=c:\\local\\lib\\libboost_python' + python_version + r'-mgw81-mt-x64-1_70.dll ' +
+                r'-DPYTHON_INCLUDE_DIR=C:\\' + python_folder + r'\\include ' +
+                r'-DPYTHON_EXECUTABLE=C:\\' + python_folder + r'\\python.exe ' +
+                r'-DPYTHON_LIBRARY=' + python_library +
+                r'-DCMAKE_CXX_FLAGS="-D_hypot=hypot"')
+    run_command(r'mingw32-make install VERBOSE=1 -j2')
+elif 'Debug' in BUILD_TYPE:
+    os.makedirs('build_ppnf')
+    os.chdir('build_ppnf')
+    run_command(r'cmake -G "MinGW Makefiles" .. ' +
+                common_cmake_opts +
+                r'-DCMAKE_BUILD_TYPE=Debug ' +
+                r'-DPONF_BUILD_TESTS=yes ' +
+                r'-DBoost_UNIT_TEST_FRAMEWORK_LIBRARY_RELEASE=c:\\local\\lib\\libboost_unit_test_framework-mgw81-mt-x64-1_70.dll ' +
+                r'-DCMAKE_CXX_FLAGS_DEBUG="-g0 -Os"')
+    run_command(r'mingw32-make install VERBOSE=1 -j2')
+    run_command(r'ctest')
+else:
+    raise RuntimeError('Unsupported build type: ' + BUILD_TYPE)#
 
 ## Packaging.
 #if is_python_build:
