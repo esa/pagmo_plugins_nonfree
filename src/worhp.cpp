@@ -73,6 +73,13 @@ see https://www.gnu.org/licenses/. */
 #include "../include/pagmo_plugins_nonfree/bogus_libs/worhp_lib/worhp_bogus.h"
 #include <pagmo_plugins_nonfree/worhp.hpp>
 
+// MINGW-specific warnings.
+#if defined(__GNUC__) && defined(__MINGW32__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=pure"
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=const"
+#endif
+
 namespace pagmo
 {
 

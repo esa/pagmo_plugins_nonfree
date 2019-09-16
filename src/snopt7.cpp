@@ -76,6 +76,13 @@ extern "C" {
 #include "../include/pagmo_plugins_nonfree/bogus_libs/snopt7_c_lib/snopt7_c.h"
 }
 
+// MINGW-specific warnings.
+#if defined(__GNUC__) && defined(__MINGW32__)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=pure"
+#pragma GCC diagnostic ignored "-Wsuggest-attribute=const"
+#endif
+
 namespace pagmo
 {
 namespace detail
