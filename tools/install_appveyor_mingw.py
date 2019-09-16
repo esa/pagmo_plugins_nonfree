@@ -165,7 +165,7 @@ if is_python_build:
     os.chdir('..')
 
 
-## Proceed to the build.
+## Proceed to the build of ppnf
 ## NOTE: at the moment boost 1.70 seems to have problem to autodetect
 ## the mingw library (with CMake 3.13 currently installed in appveyor)
 ## Thus we manually point to the boost libs.
