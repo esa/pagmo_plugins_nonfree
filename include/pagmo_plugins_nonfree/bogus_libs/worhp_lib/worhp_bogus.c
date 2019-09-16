@@ -115,7 +115,7 @@ void SetWorhpPrint(worhp_print_t l1){}
 
 void WorhpVersion(int *major, int *minor, char patch[PATCH_STRING_LENGTH])
 {
-    strcpy(patch, "1");
+    strcpy_s(patch, "1");
     *major = 1;
     *minor = 12;
 };
