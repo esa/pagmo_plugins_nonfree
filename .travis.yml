@@ -76,7 +76,7 @@ matrix:
           packages:
           - clang-7
     - env: PAGMO_PLUGINS_NONFREE_BUILD="Python37"
-    - dist: bionic
+      dist: bionic
       compiler: gcc
       os: linux
       addons:

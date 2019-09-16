@@ -117,7 +117,7 @@ void SetWorhpPrint(worhp_print_t l1) {}
 
 void WorhpVersion(int *major, int *minor, char patch[PATCH_STRING_LENGTH])
 {
-#ifdef __STDC_LIB_EXT1__
+#ifdef __STDC_LIB_EXT1__ //Avoiding a warning in MSVC builds
     strcpy_s(patch, sizeof(char) * PATCH_STRING_LENGTH, "1");
 #else
     strcpy(patch, "1");

@@ -171,9 +171,6 @@ public:
      * @param worhp_library The filename, including the absolute path, of the worhp library.
      *
      */
-    /// Mutex type to protect the library load.
-    using mutex_t = std::mutex;
-
     worhp(bool screen_output = false, std::string worhp_library = "/usr/local/lib/libworhp.so");
     population evolve(population pop) const;
     void set_verbosity(unsigned n);
@@ -208,9 +205,6 @@ private:
             return seed;
         }
     };
-    // Used to suppress screen output from worhp
-    static void no_screen_output(int, const char[]);
-
     // Log update and print to screen
     void update_log(const problem &prob, const vector_double &fit, long long unsigned fevals0) const;
     // Objective function
@@ -256,9 +250,6 @@ private:
     void load(Archive &ar) = delete;
     template <typename Archive>
     void save(Archive &ar) const = delete;
-
-    // A mutex to protect the library load
-    static mutex_t m_library_load_mutex;
 };
 
 } // namespace pagmo

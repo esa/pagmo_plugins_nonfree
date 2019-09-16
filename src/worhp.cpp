@@ -70,8 +70,8 @@ see https://www.gnu.org/licenses/. */
 #include <unordered_map>
 #include <vector>
 
-#include <pagmo_plugins_nonfree/worhp.hpp>
 #include "../include/pagmo_plugins_nonfree/bogus_libs/worhp_lib/worhp_bogus.h"
+#include <pagmo_plugins_nonfree/worhp.hpp>
 
 namespace pagmo
 {
@@ -97,11 +97,15 @@ struct worhp_raii {
     Control *m_c;
     std::function<void(OptVar *, Workspace *, Params *, Control *)> m_WorhpFree;
 };
+namespace
+{
+// Used to suppress screen output from worhp
+void no_screen_output(int, const char[]){};
+// Mutex to protect the library loading.
+std::mutex library_load_mutex;
+} // namespace
 
 } // end of namespace detail
-
-// Mutex to protect the library loading.
-worhp::mutex_t worhp::m_library_load_mutex;
 
 ///  Constructor.
 /**
@@ -116,7 +120,9 @@ worhp::mutex_t worhp::m_library_load_mutex;
  */
 worhp::worhp(bool screen_output, std::string worhp_library)
     : m_worhp_library(worhp_library), m_integer_opts(), m_numeric_opts(), m_bool_opts(), m_screen_output(screen_output),
-      m_verbosity(0), m_log(){}
+      m_verbosity(0), m_log()
+{
+}
 
 /// Evolve population.
 /**
@@ -197,7 +203,7 @@ population worhp::evolve(population pop) const
     // We then try to load the library at run time and locate the symbols used.
     try {
         // Here we import at runtime the worhp library and protect the whole try block with a mutex
-        std::lock_guard<std::mutex> lock(m_library_load_mutex);
+        std::lock_guard<std::mutex> lock(detail::library_load_mutex);
         if (!boost::filesystem::is_regular_file(library_filename)) {
             pagmo_throw(std::invalid_argument,
                         "The worhp library file name was constructed to be: " + library_filename.string()
@@ -332,10 +338,10 @@ We report the exact text of the original exception thrown:
     int n_xml_param;
     if (m_verbosity) { // pagmo log is active
         ReadParams(&n_xml_param, const_cast<char *>("param.xml"), &par);
-        SetWorhpPrint(no_screen_output);
+        SetWorhpPrint(detail::no_screen_output);
     } else {
         if (!m_screen_output) { // pagmo log is active
-            SetWorhpPrint(no_screen_output);
+            SetWorhpPrint(detail::no_screen_output);
         }
         ReadParams(&n_xml_param, const_cast<char *>("param.xml"), &par);
     }
@@ -993,9 +999,6 @@ void worhp::serialize(Archive &ar, unsigned)
                            m_f_cache, m_g_cache);
 }
 
-// Used to suppress screen output from worhp
-void worhp::no_screen_output(int, const char[]){}
-
 // Log update and print to screen
 void worhp::update_log(const problem &prob, const vector_double &fit, long long unsigned fevals0) const
 {
@@ -1141,4 +1144,3 @@ vector_double worhp::gradient_with_cache(const vector_double &x, const problem &
 } // namespace pagmo
 
 PAGMO_S11N_ALGORITHM_IMPLEMENT(pagmo::worhp)
-
