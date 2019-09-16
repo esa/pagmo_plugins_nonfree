@@ -106,9 +106,6 @@ run_command(r'cmake -G "MinGW Makefiles" .. ' +
             r'-DPAGMO_WITH_NLOPT=yes ' +
             r'-DCMAKE_BUILD_TYPE=Release ')
 run_command(r'mingw32-make install VERBOSE=1 -j2')
-
-# Alter the path to find the newly created pagmo dll.
-os.environ['PATH'] = os.getcwd() + ";" + os.environ['PATH']
 os.chdir('..')
 ## -------------------------- END INSTALL C/C++ DEPENDENCIES -------------------------------------##
 
@@ -215,6 +212,8 @@ elif 'Debug' in BUILD_TYPE:
                 r'-DBoost_FILESYSTEM_LIBRARY_RELEASE=c:\\local\\lib\\libboost_filesystem-mgw81-mt-x64-1_70.dll ' +
                 r'-DCMAKE_CXX_FLAGS_DEBUG="-g0 -Os"')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
+    # Alter the path to find the newly created dll.
+    os.environ['PATH'] = os.getcwd() + ";" + os.environ['PATH']
     run_command(r'ctest -VV')
 else:
     raise RuntimeError('Unsupported build type: ' + BUILD_TYPE)#
