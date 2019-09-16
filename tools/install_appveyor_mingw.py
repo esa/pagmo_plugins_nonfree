@@ -137,7 +137,7 @@ if is_python_build:
     pinterp = r"C:\\" + python_folder + r'\\python.exe'
     pip = r"C:\\" + python_folder + r'\\scripts\\pip'
     twine = r"C:\\" + python_folder + r'\\scripts\\twine'
-    pygmo_install_path = r"C:\\" + python_folder + r'\\Lib\\site-packages\\pygmo'
+    pygmo_plugins_nonfree_install_path = r"C:\\" + python_folder + r'\\Lib\\site-packages\\pygmo_plugins_nonfree'
     # Install pip and deps.
     wget(r'https://bootstrap.pypa.io/get-pip.py', 'get-pip.py')
     run_command(pinterp + ' get-pip.py --force-reinstall')
@@ -230,7 +230,7 @@ if is_python_build:
     # Build the wheel.
     import shutil
     os.chdir('wheel')
-    shutil.move(pygmo_install_path, r'.')
+    shutil.move(pygmo_plugins_nonfree_install_path, r'.')
     wheel_libs = 'mingw_wheel_libs_python{}.txt'.format(python_version)
     DLL_LIST = [_[:-1] for _ in open(wheel_libs, 'r').readlines()]
     for _ in DLL_LIST:
