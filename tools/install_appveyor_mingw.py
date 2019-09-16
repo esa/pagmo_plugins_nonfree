@@ -236,12 +236,12 @@ if is_python_build:
     wheel_libs = 'mingw_wheel_libs_python{}.txt'.format(python_version)
     DLL_LIST = [_[:-1] for _ in open(wheel_libs, 'r').readlines()]
     for _ in DLL_LIST:
-        shutil.copy(_, 'pygmo')
+        shutil.copy(_, 'pygmo_plugins_nonfree')
     run_command(pinterp + r' setup.py bdist_wheel')
     os.environ['PATH'] = ORIGINAL_PATH
     run_command(pip + r' install dist\\' + os.listdir('dist')[0])
     run_command(
-        pinterp + r' -c "import pygmo; pygmo.test.run_test_suite(1)"', directory=r'c:\\')
+        pinterp + r' -c "import pygmo_plugins_nonfree as ppnf; ppnf.test.run_test_suite(1)"', directory=r'c:\\')
     if is_release_build:
         run_command(twine + r' upload -u ci4esa dist\\' +
                     os.listdir('dist')[0])
