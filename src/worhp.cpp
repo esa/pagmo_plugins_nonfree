@@ -52,6 +52,7 @@ see https://www.gnu.org/licenses/. */
 #include <boost/serialization/map.hpp>
 #include <iomanip>
 #include <mutex>
+#include <numeric>
 #include <pagmo/algorithm.hpp>
 #include <pagmo/algorithms/not_population_based.hpp>
 #include <pagmo/config.hpp>
