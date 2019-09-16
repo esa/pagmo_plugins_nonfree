@@ -106,6 +106,7 @@ run_command(r'cmake -G "MinGW Makefiles" .. ' +
             r'-DPAGMO_WITH_NLOPT=yes ' +
             r'-DCMAKE_BUILD_TYPE=Release ')
 run_command(r'mingw32-make install VERBOSE=1 -j2')
+os.environ['PATH'] = os.getcwd() + ";" + os.environ['PATH']
 os.chdir('..')
 ## -------------------------- END INSTALL C/C++ DEPENDENCIES -------------------------------------##
 
@@ -162,8 +163,6 @@ if is_python_build:
                 r'-DCMAKE_CXX_FLAGS="-D_hypot=hypot"')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
     os.chdir('..')
-
-
 
 
 ## Proceed to the build.
