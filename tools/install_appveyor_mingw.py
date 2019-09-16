@@ -176,6 +176,7 @@ if is_python_build:
 
 ## Configuration step.
 if is_python_build:
+    os.chdir('C:\projects\pagmo-plugins-nonfree')
     os.makedirs('build_pagmo')
     os.chdir('build_pagmo')
     run_command(r'cmake -G "MinGW Makefiles" .. ' +
@@ -202,12 +203,13 @@ if is_python_build:
                 r'-DCMAKE_CXX_FLAGS="-D_hypot=hypot"')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
 elif 'Debug' in BUILD_TYPE:
+    os.chdir('C:\projects\pagmo-plugins-nonfree')
     os.makedirs('build_ppnf')
     os.chdir('build_ppnf')
     run_command(r'cmake -G "MinGW Makefiles" .. ' +
                 common_cmake_opts +
                 r'-DCMAKE_BUILD_TYPE=Debug ' +
-                r'-DPONF_BUILD_TESTS=yes ' +
+                r'-DPPNF_BUILD_TESTS=yes ' +
                 r'-DBoost_UNIT_TEST_FRAMEWORK_LIBRARY_RELEASE=c:\\local\\lib\\libboost_unit_test_framework-mgw81-mt-x64-1_70.dll ' +
                 r'-DCMAKE_CXX_FLAGS_DEBUG="-g0 -Os"')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
