@@ -211,6 +211,8 @@ elif 'Debug' in BUILD_TYPE:
                 r'-DCMAKE_BUILD_TYPE=Debug ' +
                 r'-DPPNF_BUILD_TESTS=yes ' +
                 r'-DBoost_UNIT_TEST_FRAMEWORK_LIBRARY_RELEASE=c:\\local\\lib\\libboost_unit_test_framework-mgw81-mt-x64-1_70.dll ' +
+                r'-DBoost_SYSTEM_LIBRARY_RELEASE=c:\\local\\lib\\libboost_system-mgw81-mt-x64-1_70.dll ' +
+                r'-DBoost_FILESYSTEM_LIBRARY_RELEASE=c:\\local\\lib\\libboost_filesystem-mgw81-mt-x64-1_70.dll ' +
                 r'-DCMAKE_CXX_FLAGS_DEBUG="-g0 -Os"')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
     run_command(r'ctest')
