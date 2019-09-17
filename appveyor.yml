@@ -9,8 +9,8 @@ environment:
     #  COMPILER: MSVC15
     #  PLATFORM: "x64"
     #- BUILD_TYPE: "MinGW_64_Debug"
-    #- BUILD_TYPE: "MinGW_64_Python37"
-    - BUILD_TYPE: "MinGW_64_Python36"
+    - BUILD_TYPE: "MinGW_64_Python37"
+    #- BUILD_TYPE: "MinGW_64_Python36"
     - BUILD_TYPE: "MinGW_64_Python27"
   global:
     PLATFORMTOOLSET: "v140"

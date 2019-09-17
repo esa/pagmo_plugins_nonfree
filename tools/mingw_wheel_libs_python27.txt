@@ -1,6 +1,7 @@
-c:\local\lib\libboost_python-mgw62-mt-1_63.dll
-c:\local\lib\libboost_system-mgw62-mt-1_63.dll
-c:\local\lib\libboost_filesystem-mgw62-mt-1_63.dll
+c:\local\lib\libboost_python27-mgw81-mt-x64-1_70.dll
+c:\local\lib\libboost_serialization-mgw81-mt-x64-1_70.dll
+c:\local\lib\libboost_system-mgw81-mt-x64-1_70.dll
+c:\local\lib\libboost_filesystem-mgw81-mt-x64-1_70.dll
 c:\local\bin\libpagmo.dll
 c:\local\lib\tbb.dll
 c:\local\bin\libpagmo_plugins_nonfree.dll
