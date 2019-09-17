@@ -83,7 +83,7 @@ extern "C" {
 #pragma GCC diagnostic ignored "-Wsuggest-attribute=const"
 #endif
 
-namespace pagmo
+namespace ppnf
 {
 namespace detail
 {
@@ -136,8 +136,8 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
                 // Constraints bits.
                 const auto ctol = p.get_c_tol();
                 const auto c1eq
-                    = detail::test_eq_constraints(fit.data() + 1, fit.data() + 1 + p.get_nec(), ctol.data());
-                const auto c1ineq = detail::test_ineq_constraints(fit.data() + 1 + p.get_nec(), fit.data() + fit.size(),
+                    = pagmo::detail::test_eq_constraints(fit.data() + 1, fit.data() + 1 + p.get_nec(), ctol.data());
+                const auto c1ineq = pagmo::detail::test_ineq_constraints(fit.data() + 1 + p.get_nec(), fit.data() + fit.size(),
                                                                   ctol.data() + p.get_nec());
                 // This will be the total number of violated constraints.
                 const auto nv = p.get_nc() - c1eq.first - c1ineq.first;
@@ -148,11 +148,11 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
 
                 if (!(f_count / verb % 50u)) {
                     // Every 50 lines print the column names.
-                    print("\n", std::setw(10), "objevals:", std::setw(15), "objval:", std::setw(15),
+                    pagmo::print("\n", std::setw(10), "objevals:", std::setw(15), "objval:", std::setw(15),
                           "violated:", std::setw(15), "viol. norm:", '\n');
                 }
                 // Print to screen the log line.
-                print(std::setw(10), f_count + 1u, std::setw(15), fit[0], std::setw(15), nv, std::setw(15), l,
+                pagmo::print(std::setw(10), f_count + 1u, std::setw(15), fit[0], std::setw(15), nv, std::setw(15), l,
                       feas ? "" : " i", '\n');
                 // Record the log.
                 log.emplace_back(f_count + 1u, fit[0], nv, l, feas);
@@ -247,7 +247,7 @@ snopt7::snopt7(bool screen_output, std::string snopt7_c_library, unsigned minor_
  *
  * .. warning::
  *
- *    All options passed to the snOptA interface are those set by the user via the pagmo::snopt7 interface, or
+ *    All options passed to the snOptA interface are those set by the user via the ppnf::snopt7 interface, or
  *    where no user specifications are available, to the default detailed on the User Manual available online but
  *    with the following exception: "Major feasibility tolerance" is set to the default value 1E-6 or to the minimum
  *    among the values returned by pagmo::problem::get_c_tol() if not zero.
@@ -277,7 +277,7 @@ snopt7::snopt7(bool screen_output, std::string snopt7_c_library, unsigned minor_
  * @throws unspecified any exception thrown by the public interface of pagmo::problem or
  * pagmo::not_population_based.
  */
-population snopt7::evolve(population pop) const
+pagmo::population snopt7::evolve(pagmo::population pop) const
 {
     if (m_minor_version > 6) {
         return evolve_version<snProblem_77>(pop);
@@ -327,7 +327,7 @@ population snopt7::evolve(population pop) const
  *
  *    Snopt7 supports its own logging format and protocol, including the ability to print to screen and write to
  *    file. Snopt7's screen logging is disabled by default. On-screen logging can be enabled constructing the
- *    object pagmo::snopt7 passing ``True`` as argument. In this case verbosity will not be allowed to be set.
+ *    object ppnf::snopt7 passing ``True`` as argument. In this case verbosity will not be allowed to be set.
  *
  * \endverbatim
  *
@@ -379,34 +379,34 @@ std::string snopt7::get_name() const
 std::string snopt7::get_extra_info() const
 {
     std::ostringstream ss;
-    stream(ss, "\tName of the snopt7_c library: ", m_snopt7_c_library);
-    stream(ss, "\n\tLibrary version declared: 7.", m_minor_version);
+    pagmo::stream(ss, "\tName of the snopt7_c library: ", m_snopt7_c_library);
+    pagmo::stream(ss, "\n\tLibrary version declared: 7.", m_minor_version);
 
     if (!m_screen_output) {
-        stream(ss, "\n\tScreen output: (pagmo/pygmo) - verbosity ", std::to_string(m_verbosity));
+        pagmo::stream(ss, "\n\tScreen output: (pagmo/pygmo) - verbosity ", std::to_string(m_verbosity));
     } else {
-        stream(ss, "\n\tScreen output: (snopt7)");
+        pagmo::stream(ss, "\n\tScreen output: (snopt7)");
     }
-    stream(ss, "\n\tLast optimisation return code: ", detail::results.at(m_last_opt_res));
-    stream(ss, "\n\tIndividual selection ");
-    if (boost::any_cast<population::size_type>(&m_select)) {
-        stream(ss, "idx: ", std::to_string(boost::any_cast<population::size_type>(m_select)));
+    pagmo::stream(ss, "\n\tLast optimisation return code: ", detail::results.at(m_last_opt_res));
+    pagmo::stream(ss, "\n\tIndividual selection ");
+    if (boost::any_cast<pagmo::population::size_type>(&m_select)) {
+        pagmo::stream(ss, "idx: ", std::to_string(boost::any_cast<pagmo::population::size_type>(m_select)));
     } else {
-        stream(ss, "policy: ", boost::any_cast<std::string>(m_select));
+        pagmo::stream(ss, "policy: ", boost::any_cast<std::string>(m_select));
     }
-    stream(ss, "\n\tIndividual replacement ");
-    if (boost::any_cast<population::size_type>(&m_replace)) {
-        stream(ss, "idx: ", std::to_string(boost::any_cast<population::size_type>(m_replace)));
+    pagmo::stream(ss, "\n\tIndividual replacement ");
+    if (boost::any_cast<pagmo::population::size_type>(&m_replace)) {
+        pagmo::stream(ss, "idx: ", std::to_string(boost::any_cast<pagmo::population::size_type>(m_replace)));
     } else {
-        stream(ss, "policy: ", boost::any_cast<std::string>(m_replace));
+        pagmo::stream(ss, "policy: ", boost::any_cast<std::string>(m_replace));
     }
     if (m_integer_opts.size()) {
-        stream(ss, "\n\tInteger options: ", detail::to_string(m_integer_opts));
+        pagmo::stream(ss, "\n\tInteger options: ", pagmo::detail::to_string(m_integer_opts));
     }
     if (m_numeric_opts.size()) {
-        stream(ss, "\n\tNumeric options: ", detail::to_string(m_numeric_opts));
+        pagmo::stream(ss, "\n\tNumeric options: ", pagmo::detail::to_string(m_numeric_opts));
     }
-    stream(ss, "\n");
+    pagmo::stream(ss, "\n");
     return ss.str();
 }
 /// Object serialization
@@ -523,7 +523,7 @@ int snopt7::get_last_opt_result() const
 
 // This is the evolve which will be version dependent via the template argument (snProblem declaration is)
 template <typename snProblem>
-population snopt7::evolve_version(population &pop) const
+pagmo::population snopt7::evolve_version(pagmo::population &pop) const
 {
     // We store some useful properties
     const auto &prob = pop.get_problem(); // This is a const reference, so using set_seed, for example, will not work
@@ -682,8 +682,8 @@ We report the exact text of the original exception thrown:
     auto n = prob.get_nx();  // Decision vector dimension
 
     // ------- Setting the bounds. -----------------------------------------------------------------------------
-    vector_double xlow(n), xupp(n);
-    vector_double Flow(nF), Fupp(nF);
+    pagmo::vector_double xlow(n), xupp(n);
+    pagmo::vector_double Flow(nF), Fupp(nF);
     // decision vector.
     for (decltype(dim) i = 0u; i < dim; ++i) {
         xlow[i] = lb[i];
@@ -704,10 +704,10 @@ We report the exact text of the original exception thrown:
     // ------- Setting the initial point ---------------------------------------------------------------------
     // We init the starting point using the inherited methods from not_population_based
     auto sel_xf = select_individual(pop);
-    vector_double x0(std::move(sel_xf.first)), fit0(std::move(sel_xf.second));
+    pagmo::vector_double x0(std::move(sel_xf.first)), fit0(std::move(sel_xf.second));
     // Initialize states, x and multipliers
     std::vector<int> xstate(n), Fstate(nF);
-    vector_double x(n), xmul(n), F(nF), Fmul(nF);
+    pagmo::vector_double x(n), xmul(n), F(nF), Fmul(nF);
     for (decltype(x0.size()) i = 0u; i < x0.size(); i++) {
         xstate[i] = 0;
         x[i] = x0[i];
@@ -729,7 +729,7 @@ We report the exact text of the original exception thrown:
     detail::user_data info;
     info.m_prob = prob;
     info.m_verbosity = m_verbosity;
-    info.m_dv = vector_double(dim);
+    info.m_dv = pagmo::vector_double(dim);
     snopt7_problem.iu = reinterpret_cast<int *>(&info);
 
     // -------- Linear Part Of the Problem. As pagmo does not support linear problems we do not use this -------
@@ -737,7 +737,7 @@ We report the exact text of the original exception thrown:
     unsigned lenA = 1u; // Thats the minimum length allowed
     std::vector<int> iAfun(lenA);
     std::vector<int> jAvar(lenA);
-    vector_double A(lenA);
+    pagmo::vector_double A(lenA);
 
     // -------- Non Linear Part Of the Problem. ----------------------------------------------------------------
     auto sparsity = prob.gradient_sparsity();
@@ -759,16 +759,16 @@ We report the exact text of the original exception thrown:
 
     // ------- We call the snOptA interface.
     if (m_verbosity > 0u) {
-        print("SNOPT7 plugin for pagmo/pygmo: \n");
+        pagmo::print("SNOPT7 plugin for pagmo/pygmo: \n");
         if (prob.has_gradient_sparsity()) {
-            print("The gradient sparsity is provided by the user: ", neG, " components detected.\n");
+            pagmo::print("The gradient sparsity is provided by the user: ", neG, " components detected.\n");
         } else {
-            print("The gradient sparsity is assumed dense: ", neG, " components detected.\n");
+            pagmo::print("The gradient sparsity is assumed dense: ", neG, " components detected.\n");
         }
         if (prob.has_gradient()) {
-            print("The gradient is provided by the user.\n");
+            pagmo::print("The gradient is provided by the user.\n");
         } else {
-            print("The gradient is computed numerically by SNOPT7.\n");
+            pagmo::print("The gradient is computed numerically by SNOPT7.\n");
         }
     }
     m_last_opt_res = solveA(&snopt7_problem, Cold, static_cast<int>(nF), static_cast<int>(n), ObjAdd, ObjRow,
@@ -777,11 +777,11 @@ We report the exact text of the original exception thrown:
                             xmul.data(), F.data(), Fstate.data(), Fmul.data(), &nS, &nInf, &sInf);
 
     if (m_verbosity > 0u) {
-        print("\n", detail::results.at(m_last_opt_res), "\n");
+        pagmo::print("\n", detail::results.at(m_last_opt_res), "\n");
     }
     // ------- We reinsert the solution if better -----------------------------------------------------------
     // Store the new individual into the population, but only if it is improved.
-    if (compare_fc(F, fit0, prob.get_nec(), prob.get_c_tol())) {
+    if (pagmo::compare_fc(F, fit0, prob.get_nec(), prob.get_c_tol())) {
         replace_individual(pop, x, F);
     }
     // ------- Store the log --------------------------------------------------------------------------------
@@ -795,4 +795,4 @@ We report the exact text of the original exception thrown:
 
 } // namespace pagmo
 
-PAGMO_S11N_ALGORITHM_IMPLEMENT(pagmo::snopt7)
+PAGMO_S11N_ALGORITHM_IMPLEMENT(ppnf::snopt7)

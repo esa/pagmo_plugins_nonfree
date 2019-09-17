@@ -75,7 +75,7 @@ see https://www.gnu.org/licenses/. */
 #include <pagmo_plugins_nonfree/detail/visibility.hpp>
 #include "bogus_libs/worhp_lib/worhp_bogus.h"
 
-namespace pagmo
+namespace ppnf
 {
 
 /// WORHP - (We Optimize Really Huge Problems)
@@ -113,8 +113,8 @@ namespace pagmo
  * differences or quasi-Newton methods by WORHP.
  *
  * In order to support pagmo's population-based optimisation model, worhp::evolve() will select
- * a single individual from the input pagmo::population to be optimised.
- * If the optimisation produces an improved individual (as established by pagmo::compare_fc()),
+ * a single individual from the input ppnf::population to be optimised.
+ * If the optimisation produces an improved individual (as established by ppnf::compare_fc()),
  * the optimised individual will be inserted back into the population.
  * The selection and replacement strategies can be configured via set_selection(const std::string &),
  * set_selection(population::size_type), set_replacement(const std::string &) and
@@ -129,7 +129,7 @@ namespace pagmo
  *
  * .. warning::
  *
- *    A moved-from :cpp:class:`pagmo::worhp` is destructible and assignable. Any other operation will result
+ *    A moved-from :cpp:class:`ppnf::worhp` is destructible and assignable. Any other operation will result
  *    in undefined behaviour.
  *
  * .. seealso::
@@ -139,7 +139,7 @@ namespace pagmo
  *
  * \endverbatim
  */
-class PPNF_DLL_PUBLIC worhp : public not_population_based
+class PPNF_DLL_PUBLIC worhp : public pagmo::not_population_based
 {
 public:
     /// Single data line for the algorithm's log.
@@ -151,7 +151,7 @@ public:
      * - the constraints violation norm for the current decision vector,
      * - a boolean flag signalling the feasibility of the current decision vector.
      */
-    using log_line_type = std::tuple<unsigned long, double, vector_double::size_type, double, bool>;
+    using log_line_type = std::tuple<unsigned long, double, pagmo::vector_double::size_type, double, bool>;
     /// Log type.
     /**
      * The algorithm log is a collection of worhp::log_line_type data lines, stored in chronological order
@@ -172,7 +172,7 @@ public:
      *
      */
     worhp(bool screen_output = false, std::string worhp_library = "/usr/local/lib/libworhp.so");
-    population evolve(population pop) const;
+    pagmo::population evolve(pagmo::population pop) const;
     void set_verbosity(unsigned n);
     const log_type &get_log() const;
     unsigned int get_verbosity() const;
@@ -206,25 +206,25 @@ private:
         }
     };
     // Log update and print to screen
-    void update_log(const problem &prob, const vector_double &fit, long long unsigned fevals0) const;
+    void update_log(const pagmo::problem &prob, const pagmo::vector_double &fit, long long unsigned fevals0) const;
     // Objective function
-    void UserF(OptVar *opt, Workspace *wsp, Params *, Control *, const population &pop,
+    void UserF(OptVar *opt, Workspace *wsp, Params *, Control *, const pagmo::population &pop,
                long long unsigned fevals0) const;
     // Constraints
-    void UserG(OptVar *opt, Workspace *, Params *, Control *, const population &pop) const;
+    void UserG(OptVar *opt, Workspace *, Params *, Control *, const pagmo::population &pop) const;
     // Gradient for the objective function
-    void UserDF(OptVar *opt, Workspace *wsp, Params *, Control *, const population &pop) const;
+    void UserDF(OptVar *opt, Workspace *wsp, Params *, Control *, const pagmo::population &pop) const;
     // Gradient for the constraints
-    void UserDG(OptVar *opt, Workspace *wsp, Params *, Control *, const population &pop,
-                const std::vector<vector_double::size_type> &gs_idx_map) const;
+    void UserDG(OptVar *opt, Workspace *wsp, Params *, Control *, const pagmo::population &pop,
+                const std::vector<pagmo::vector_double::size_type> &gs_idx_map) const;
     // The Hessian of the Lagrangian L = f + mu * g
-    void UserHM(OptVar *opt, Workspace *wsp, Params *, Control *, const population &pop,
-                const std::vector<sparsity_pattern> &pagmo_hsp, const sparsity_pattern &pagmo_merged_hsp,
-                const std::vector<vector_double::size_type> &hs_idx_map) const;
+    void UserHM(OptVar *opt, Workspace *wsp, Params *, Control *, const pagmo::population &pop,
+                const std::vector<pagmo::sparsity_pattern> &pagmo_hsp, const pagmo::sparsity_pattern &pagmo_merged_hsp,
+                const std::vector<pagmo::vector_double::size_type> &hs_idx_map) const;
     // We cache the last call to fitness as it will be repeated by worhp
-    vector_double fitness_with_cache(const vector_double &x, const problem &prob) const;
+    pagmo::vector_double fitness_with_cache(const pagmo::vector_double &x, const pagmo::problem &prob) const;
     // We cache the last call to gradient as it will be repeated by worhp
-    vector_double gradient_with_cache(const vector_double &x, const problem &prob) const;
+    pagmo::vector_double gradient_with_cache(const pagmo::vector_double &x, const pagmo::problem &prob) const;
     // The absolute path to the worhp library
     std::string m_worhp_library;
     // Solver return status.
@@ -242,8 +242,8 @@ private:
     mutable log_type m_log;
 
     // The caches
-    mutable std::pair<vector_double, vector_double> m_f_cache = {{}, {}};
-    mutable std::pair<vector_double, vector_double> m_g_cache = {{}, {}};
+    mutable std::pair<pagmo::vector_double, pagmo::vector_double> m_f_cache = {{}, {}};
+    mutable std::pair<pagmo::vector_double, pagmo::vector_double> m_g_cache = {{}, {}};
 
     // Deleting the methods load save public in base as to avoid conflict with serialize
     template <typename Archive>
@@ -254,5 +254,5 @@ private:
 
 } // namespace pagmo
 
-PAGMO_S11N_ALGORITHM_EXPORT_KEY(pagmo::worhp)
+PAGMO_S11N_ALGORITHM_EXPORT_KEY(ppnf::worhp)
 #endif // PAGMO_WORHP

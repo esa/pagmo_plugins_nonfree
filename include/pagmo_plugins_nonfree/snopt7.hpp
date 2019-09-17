@@ -78,20 +78,20 @@ struct is_object<int(snProblem_77 *, int, int, int, double, int, snFunA, int, in
 };
 } // namespace boost
 
-namespace pagmo
+namespace ppnf
 {
 namespace detail
 {
 // Encapsulating struct for data that are used in the fitness wrapper.
 struct user_data {
     // Single entry of the log (objevals, objval, n of unsatisfied const, constr. violation, feasibility).
-    using log_line_type = std::tuple<unsigned long, double, vector_double::size_type, double, bool>;
+    using log_line_type = std::tuple<unsigned long, double, pagmo::vector_double::size_type, double, bool>;
     // The log.
     using log_type = std::vector<log_line_type>;
     // The problem stored in the evolve() population
-    problem m_prob;
+    pagmo::problem m_prob;
     // A preallocated decision vector
-    vector_double m_dv;
+    pagmo::vector_double m_dv;
     // The verbosity
     unsigned m_verbosity;
     // The log
@@ -124,7 +124,7 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
  * This class is a user-defined algorithm (UDA) that contains a plugin to the Sparse Nonlinear OPTimizer (SNOPT)
  * solver, a software package for large-scale nonlinear optimization. SNOPT is a powerful solver that is able to handle
  * robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. Since the wrapper
- * was developed around the version 7 of SNOPT the class is called pagmo::snopt7.
+ * was developed around the version 7 of SNOPT the class is called ppnf::snopt7.
  *
  * \verbatim embed:rst:leading-asterisk
  *
@@ -147,8 +147,8 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
  * direction to ensure convergence from any starting point.
  *
  * In order to support pagmo's population-based optimisation model, snopt7::evolve() will select
- * a single individual from the input pagmo::population to be optimised.
- * If the optimisation produces an improved individual (as established by pagmo::compare_fc()),
+ * a single individual from the input ppnf::population to be optimised.
+ * If the optimisation produces an improved individual (as established by ppnf::compare_fc()),
  * the optimised individual will be inserted back into the population.
  * The selection and replacement strategies can be configured via set_selection(const std::string &),
  * set_selection(population::size_type), set_replacement(const std::string &) and
@@ -167,7 +167,7 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
  *
  * .. warning::
  *
- *    A moved-from :cpp:class:`pagmo::snopt7` is destructible and assignable. Any other operation will result
+ *    A moved-from :cpp:class:`ppnf::snopt7` is destructible and assignable. Any other operation will result
  *    in undefined behaviour.
  *
  * .. warning::
@@ -185,7 +185,7 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
  *
  * \endverbatim
  */
-class PPNF_DLL_PUBLIC snopt7 : public not_population_based
+class PPNF_DLL_PUBLIC snopt7 : public pagmo::not_population_based
 {
 public:
     /// Single data line for the algorithm's log.
@@ -197,7 +197,7 @@ public:
      * - the constraints violation norm for the current decision vector,
      * - a boolean flag signalling the feasibility of the current decision vector.
      */
-    using log_line_type = std::tuple<unsigned long, double, vector_double::size_type, double, bool>;
+    using log_line_type = std::tuple<unsigned long, double, pagmo::vector_double::size_type, double, bool>;
     /// Log type.
     /**
      * The algorithm log is a collection of snopt7::log_line_type data lines, stored in chronological order
@@ -226,7 +226,7 @@ public:
      */
     snopt7(bool screen_output = false, std::string snopt7_c_library = "/usr/local/lib/libsnopt7_c.so",
            unsigned minor_version = 6u);
-    population evolve(population) const;
+    pagmo::population evolve(pagmo::population) const;
     void set_verbosity(unsigned);
     const log_type &get_log() const;
     unsigned int get_verbosity() const;
@@ -246,7 +246,7 @@ public:
 
 private:
     template <typename snProblem>
-    population evolve_version(population &) const;
+    pagmo::population evolve_version(pagmo::population &) const;
 
     // The absolute path to the snopt7 lib
     std::string m_snopt7_c_library;
@@ -272,6 +272,6 @@ private:
 
 } // namespace pagmo
 
-PAGMO_S11N_ALGORITHM_EXPORT_KEY(pagmo::snopt7)
+PAGMO_S11N_ALGORITHM_EXPORT_KEY(ppnf::snopt7)
 
 #endif // PAGMO_SNOPT7

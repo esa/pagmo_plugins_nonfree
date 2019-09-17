@@ -1,5 +1,5 @@
 C++: Sparse Nonlinear OPTimizer (SNOPT)
 =======================================
 
-.. doxygenclass:: pagmo::snopt7
+.. doxygenclass:: ppnf::snopt7
    :members:

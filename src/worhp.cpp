@@ -80,9 +80,10 @@ see https://www.gnu.org/licenses/. */
 #pragma GCC diagnostic ignored "-Wsuggest-attribute=const"
 #endif
 
-namespace pagmo
-{
+using namespace pagmo;
 
+namespace ppnf
+{
 namespace detail
 {
 // We use this to ensure WorhpFree is called also if exceptions occur.
@@ -114,17 +115,6 @@ std::mutex library_load_mutex;
 
 } // end of namespace detail
 
-///  Constructor.
-/**
- * The algorithm WORHP can be constructed in two different ways. According to the user
- * choice, only one among the original WORHP screen output and the pagmo logging system will
- * be activated.
- *
- * @param screen_output when ``true`` will activate the screen output from the WORHP library, otherwise
- * will let pagmo regulate logs and screen_output via its pagmo::algorithm::set_verbosity mechanism.
- * @param worhp_library The filename, including the absolute path, of the worhp library.
- *
- */
 worhp::worhp(bool screen_output, std::string worhp_library)
     : m_worhp_library(worhp_library), m_integer_opts(), m_numeric_opts(), m_bool_opts(), m_screen_output(screen_output),
       m_verbosity(0), m_log()
@@ -391,7 +381,7 @@ We report the exact text of the original exception thrown:
         }
     } else {
         // If the hessians sparsity is not user-provided, dense patterns are assumed.
-        merged_hs = detail::dense_hessian(prob.get_nx());
+        merged_hs = pagmo::detail::dense_hessian(prob.get_nx());
     }
     // -------------------------------------------------------------------------------------------------------------------------
     /*
@@ -772,7 +762,7 @@ We report the exact text of the original exception thrown:
  *
  *    WORHP supports its own logging format and protocol, including the ability to print to screen and write to
  *    file. WORHP's screen logging is disabled by default. On-screen logging can be enabled constructing the
- *    object pagmo::WORHP passing ``true`` as argument. In this case verbosity will not be allowed to be set.
+ *    object ppnf::WORHP passing ``true`` as argument. In this case verbosity will not be allowed to be set.
  *
  * \endverbatim
  *
@@ -842,13 +832,13 @@ std::string worhp::get_extra_info() const
         stream(ss, "policy: ", boost::any_cast<std::string>(m_replace));
     }
     if (m_integer_opts.size()) {
-        stream(ss, "\n\tInteger options: ", detail::to_string(m_integer_opts));
+        stream(ss, "\n\tInteger options: ", pagmo::detail::to_string(m_integer_opts));
     }
     if (m_numeric_opts.size()) {
-        stream(ss, "\n\tNumeric options: ", detail::to_string(m_numeric_opts));
+        stream(ss, "\n\tNumeric options: ", pagmo::detail::to_string(m_numeric_opts));
     }
     if (m_bool_opts.size()) {
-        stream(ss, "\n\\tBoolean options: ", detail::to_string(m_bool_opts));
+        stream(ss, "\n\\tBoolean options: ", pagmo::detail::to_string(m_bool_opts));
     }
     stream(ss, "\n");
     stream(ss, "\nLast optimisation result: \n", m_last_opt_res);
@@ -1013,8 +1003,8 @@ void worhp::update_log(const problem &prob, const vector_double &fit, long long 
     if (m_verbosity && !(fevals % m_verbosity)) {
         // Constraints bits.
         const auto ctol = prob.get_c_tol();
-        const auto c1eq = detail::test_eq_constraints(fit.data() + 1, fit.data() + 1 + prob.get_nec(), ctol.data());
-        const auto c1ineq = detail::test_ineq_constraints(fit.data() + 1 + prob.get_nec(), fit.data() + fit.size(),
+        const auto c1eq = pagmo::detail::test_eq_constraints(fit.data() + 1, fit.data() + 1 + prob.get_nec(), ctol.data());
+        const auto c1ineq = pagmo::detail::test_ineq_constraints(fit.data() + 1 + prob.get_nec(), fit.data() + fit.size(),
                                                           ctol.data() + prob.get_nec());
         // This will be the total number of violated constraints.
         const auto nv = prob.get_nc() - c1eq.first - c1ineq.first;
@@ -1150,4 +1140,4 @@ vector_double worhp::gradient_with_cache(const vector_double &x, const problem &
 
 } // namespace pagmo
 
-PAGMO_S11N_ALGORITHM_IMPLEMENT(pagmo::worhp)
+PAGMO_S11N_ALGORITHM_IMPLEMENT(ppnf::worhp)

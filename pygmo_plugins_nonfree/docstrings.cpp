@@ -61,7 +61,7 @@ Raises:
 
 .. warning::
 
-   A moved-from :cpp:class:`pagmo::snopt7` is destructible and assignable. Any other operation will result
+   A moved-from :cpp:class:`ppnf::snopt7` is destructible and assignable. Any other operation will result
    in undefined behaviour.
 
 .. warning::
@@ -78,7 +78,7 @@ Raises:
    https://web.stanford.edu/group/SOL/guides/sndoc7.pdf.
 
 
-See also the docs of the C++ class :cpp:class:`pagmo::snopt7`.
+See also the docs of the C++ class :cpp:class:`ppnf::snopt7`.
 
 )";
 }
@@ -371,7 +371,7 @@ Raises:
 
 .. warning::
 
-   A moved-from :cpp:class:`pagmo::worhp` is destructible and assignable. Any other operation will result
+   A moved-from :cpp:class:`ppnf::worhp` is destructible and assignable. Any other operation will result
    in undefined behaviour.
 
 .. seealso::

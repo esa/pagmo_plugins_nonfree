@@ -33,6 +33,7 @@
 #endif
 
 using namespace pagmo;
+using namespace ppnf;
 
 /*-----------------------------------------------------------------------
  *

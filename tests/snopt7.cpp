@@ -31,6 +31,7 @@
 #endif
 
 using namespace pagmo;
+using namespace ppnf;
 
 // a throwing problem. It throws every 50 evals
 struct throwing_udp {
