@@ -1,7 +1,10 @@
 #define BOOST_TEST_MODULE snopt7_test
+#define BOOST_TEST_DYN_LINK
+
+#include <boost/test/unit_test.hpp>
 #include <boost/lexical_cast.hpp>
-#include <boost/test/included/unit_test.hpp>
 #include <pagmo/algorithm.hpp>
+#include <pagmo/algorithms/null_algorithm.hpp>
 #include <pagmo/io.hpp>
 #include <pagmo/population.hpp>
 #include <pagmo/problem.hpp>
@@ -28,6 +31,7 @@
 #endif
 
 using namespace pagmo;
+using namespace ppnf;
 
 // a throwing problem. It throws every 50 evals
 struct throwing_udp {
@@ -178,14 +182,14 @@ BOOST_AUTO_TEST_CASE(serialization_test)
     auto before_log = algo.extract<snopt7>()->get_log();
     // Now serialize, deserialize and compare the result.
     {
-        cereal::JSONOutputArchive oarchive(ss);
-        oarchive(algo);
+        boost::archive::binary_oarchive oarchive(ss);
+        oarchive << algo;
     }
-    // Change the content of p before deserializing.
+    // Change the content of algo before deserializing.
     algo = algorithm{null_algorithm{}};
     {
-        cereal::JSONInputArchive iarchive(ss);
-        iarchive(algo);
+        boost::archive::binary_iarchive iarchive(ss);
+        iarchive >> algo;
     }
     auto after_text = boost::lexical_cast<std::string>(algo);
     BOOST_CHECK_EQUAL(before_text, after_text);

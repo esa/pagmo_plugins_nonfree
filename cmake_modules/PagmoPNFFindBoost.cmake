@@ -1,8 +1,31 @@
-set(_PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS)
-# The python library does not go here, it will be located in the py* folder
-list(APPEND _PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS system filesystem)
+# Run a first pass for finding the headers only,
+# and establishing the Boost version.
+set(_PAGMO_PLUGINS_NONFREE_BOOST_MINIMUM_VERSION 1.60.0)
+find_package(Boost ${_PAGMO_PLUGINS_NONFREE_BOOST_MINIMUM_VERSION} QUIET REQUIRED)
+
+set(_PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS serialization system filesystem)
+
+# Add the unit test framework, if needed.
+if(_PAGMO_PLUGINS_NONFREE_FIND_BOOST_UNIT_TEST_FRAMEWORK)
+    list(APPEND _PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS unit_test_framework)
+endif()
+
+if(_PAGMO_PLUGINS_NONFREE_FIND_BOOST_PYTHON)
+    # NOTE: since Boost 1.67, the naming of the Boost.Python library has changed to include the
+    # major and minor python version as a suffix. See the release notes:
+    # https://www.boost.org/users/history/version_1_67_0.html
+    if(${Boost_MAJOR_VERSION} GREATER 1 OR (${Boost_MAJOR_VERSION} EQUAL 1 AND ${Boost_MINOR_VERSION} GREATER 66))
+        list(APPEND _PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS "python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
+    else()
+        if(${PYTHON_VERSION_MAJOR} EQUAL 2)
+            list(APPEND _PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS python)
+        else()
+            list(APPEND _PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS python3)
+        endif()
+    endif()
+endif()
 message(STATUS "Required Boost libraries: ${_PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS}")
-find_package(Boost 1.55.0 REQUIRED COMPONENTS "${_PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS}")
+find_package(Boost ${_PAGMO_PLUGINS_NONFREE_BOOST_MINIMUM_VERSION} REQUIRED COMPONENTS "${_PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS}")
 if(NOT Boost_FOUND)
     message(FATAL_ERROR "Not all requested Boost components were found, exiting.")
 endif()
@@ -37,3 +60,6 @@ foreach(_PAGMO_PLUGINS_NONFREE_BOOST_COMPONENT ${_PAGMO_PLUGINS_NONFREE_REQUIRED
             IMPORTED_LOCATION "${Boost_${_PAGMO_PLUGINS_NONFREE_BOOST_UPPER_COMPONENT}_LIBRARY}")
     endif()
 endforeach()
+
+unset(_PAGMO_PLUGINS_NONFREE_BOOST_MINIMUM_VERSION)
+unset(_PAGMO_PLUGINS_NONFREE_REQUIRED_BOOST_LIBS)

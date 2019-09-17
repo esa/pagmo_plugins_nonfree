@@ -31,7 +31,7 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3'
 ]
 KEYWORDS = 'science math physics optimization ai evolutionary-computing parallel-computing metaheuristics'
-INSTALL_REQUIRES = ['numpy>=1.11', 'cloudpickle', 'pygmo>=2.9,<=2.9']
+INSTALL_REQUIRES = ['numpy>=1.11', 'cloudpickle', 'pygmo>=2.11.3,<=2.11.3']
 PLATFORMS = ['Unix', 'Windows', 'OSX']
 
 
@@ -44,8 +44,8 @@ class BinaryDistribution(Distribution):
 # Setup the list of external dlls.
 import os
 if os.name == 'nt':
-    mingw_wheel_libs = 'mingw_wheel_libs_python{}.txt'.format(
-        sys.version_info[0])
+    mingw_wheel_libs = 'mingw_wheel_libs_python{}{}.txt'.format(
+        sys.version_info[0], sys.version_info[1])
     l = open(mingw_wheel_libs, 'r').readlines()
     DLL_LIST = [os.path.basename(_[:-1]) for _ in l]
 

@@ -1,7 +1,7 @@
-#include <stdlib.h>
 #include <stdio.h>
-#include <time.h>
+#include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "worhp_bogus.h"
 
@@ -10,8 +10,8 @@ inline double closed_interval_rand(double x0, double x1)
     return x0 + (x1 - x0) * rand() / ((double)RAND_MAX);
 }
 
-void ReadParams(int *a, const char b[], Params *c){}
-void WorhpPreInit(OptVar *o, Workspace *w, Params *p, Control *c){}
+void ReadParams(int *a, const char b[], Params *c) {}
+void WorhpPreInit(OptVar *o, Workspace *w, Params *p, Control *c) {}
 void WorhpInit(OptVar *o, Workspace *w, Params *p, Control *c)
 {
     o->X = calloc(o->n, sizeof(double));
@@ -41,23 +41,25 @@ bool GetUserAction(const Control *c, int b)
 {
     return true;
 }
-void DoneUserAction(Control *a, int b){}
-void IterationOutput(OptVar *o, Workspace *w, Params *p, Control *c){}
+void DoneUserAction(Control *a, int b) {}
+void IterationOutput(OptVar *o, Workspace *w, Params *p, Control *c) {}
 void Worhp(OptVar *o, Workspace *w, Params *p, Control *c)
 {
-     c->status = c->status + 100; // this will make it so after ten calls it concludes.
+    c->status = c->status + 100; // this will make it so after ten calls it concludes.
     // Random vector
     int j;
     for (j = 0; j < o->n; ++j) {
         o->X[j] = closed_interval_rand(o->XL[j], o->XU[j]);
     }
 }
- 
-void StatusMsg(OptVar *o, Workspace *w, Params *p, Control *c){
+
+void StatusMsg(OptVar *o, Workspace *w, Params *p, Control *c)
+{
     printf("All went great!!!! What a glamorous Success!!\n");
 }
 
-void StatusMsgString(OptVar *o, Workspace *w, Params *p, Control *c, char message[]){
+void StatusMsgString(OptVar *o, Workspace *w, Params *p, Control *c, char message[])
+{
     strcpy(message, "All went great!!!! What a glamorous Success!!\n");
 }
 
@@ -80,7 +82,7 @@ void WorhpFree(OptVar *o, Workspace *w, Params *p, Control *c)
     free(w->HM.col);
     free(w->HM.val);
 }
-void WorhpFidif(OptVar *o, Workspace *w, Params *p, Control *c){}
+void WorhpFidif(OptVar *o, Workspace *w, Params *p, Control *c) {}
 bool WorhpSetBoolParam(Params *p, const char *stropt, bool b)
 {
     char *invalid;
@@ -111,11 +113,15 @@ bool WorhpSetDoubleParam(Params *p, const char *stropt, double b)
         return 1;
     }
 }
-void SetWorhpPrint(worhp_print_t l1){}
+void SetWorhpPrint(worhp_print_t l1) {}
 
 void WorhpVersion(int *major, int *minor, char patch[PATCH_STRING_LENGTH])
 {
+#ifdef __STDC_LIB_EXT1__ //Avoiding a warning in MSVC builds
+    strcpy_s(patch, sizeof(char) * PATCH_STRING_LENGTH, "1");
+#else
     strcpy(patch, "1");
+#endif
     *major = 1;
     *minor = 12;
 };
