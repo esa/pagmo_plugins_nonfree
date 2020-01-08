@@ -93,7 +93,7 @@ endif()
 # Boost setup (common to pagmo/pygmo . pluginsnonfree).
 include(PagmoPNFFindBoost)
 # Pagmo setup (common to pagmo/pygmo . pluginsnonfree).
-find_package(Pagmo 2.11.3 REQUIRED)
+find_package(Pagmo REQUIRED)
 
 if(PPNF_BUILD_CPP)
     # List of source files.
