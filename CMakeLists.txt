@@ -1,5 +1,8 @@
 # CMake version check.
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.3)
+
+# This is needed as FindNLOPT assumes the new behaviour of sucha  policy.
+cmake_policy(SET CMP0057 NEW)
 
 # Module path setup.
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules" "${CMAKE_SOURCE_DIR}/cmake_modules/yacma")
