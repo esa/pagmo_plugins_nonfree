@@ -17,14 +17,6 @@ matrix:
       sudo: required
       services:
       - docker
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="manylinux64Py27" DOCKER_IMAGE="pagmo2/manylinux1_x86_64_with_deps"
-      sudo: required
-      services:
-      - docker
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="manylinux64Py27mu" DOCKER_IMAGE="pagmo2/manylinux1_x86_64_with_deps"
-      sudo: required
-      services:
-      - docker
     - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugGCC"
       dist: bionic
       compiler: gcc
@@ -83,21 +75,11 @@ matrix:
         apt:
           sources:
           - ubuntu-toolchain-r-test
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="Python27"
-      compiler: gcc
-      os: linux
-      addons:
-        apt:
-          sources:
-          - ubuntu-toolchain-r-test
     - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXDebug"
       os: osx
     - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXRelease"
       os: osx
     - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXPython37"
-      os: osx
-      osx_image: xcode6.4
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXPython27"
       os: osx
       osx_image: xcode6.4
 script:
