@@ -94,10 +94,10 @@ os.environ['PATH'] = os.environ['PATH'] + r';c:\\local\\lib'
 
 ## ------------------------------ INSTALL C/C++ DEPENDENCIES -------------------------------------##
 # Get pagmo from git, install the headers and the library
-wget(r'https://github.com/esa/pagmo2/archive/v2.11.3.tar.gz', 'pagmo.tar.gz')
+wget(r'https://github.com/esa/pagmo2/archive/v2.12.0.tar.gz', 'pagmo.tar.gz')
 run_command(r'7z x -aoa -oC:\\projects pagmo.tar.gz', verbose=False)
 run_command(r'7z x -aoa -oC:\\projects C:\\projects\\pagmo.tar', verbose=False)
-os.chdir('c:\\projects\\pagmo2-2.11.3')
+os.chdir('c:\\projects\\pagmo2-2.12.0')
 os.makedirs('build_pagmo')
 os.chdir('build_pagmo')
 run_command(r'cmake -G "MinGW Makefiles" .. ' +
@@ -120,16 +120,6 @@ if is_python_build:
         python_version = '36'
         python_folder = r'Python36-x64'
         python_library = r'C:\\' + python_folder + r'\\python36.dll '
-    elif '64_Python27' in BUILD_TYPE:
-        python_version = r'27'
-        python_folder = r'Python27-x64'
-        python_library = r'C:\\' + python_folder + r'\\libs\\python27.dll '
-        # For py27 I could not get it to work with the appveyor python (I was close but got tired).
-        # Since this is anyway going to disappear (py27 really!!!), I am handling it as a one time workaround using the old py27 patched by bluescarni
-        rm_fr(r'c:\\Python27-x64')
-        wget(r'https://github.com/bluescarni/binary_deps/raw/master/python27_mingw_64.7z', 'python.7z')
-        run_command(r'7z x -aoa -oC:\\ python.7z', verbose=False)
-        run_command(r'mv C:\\Python27 C:\\Python27-x64', verbose=False)
     else:
         raise RuntimeError('Unsupported Python build: ' + BUILD_TYPE)
 

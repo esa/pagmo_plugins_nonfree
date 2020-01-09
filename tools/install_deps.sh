@@ -19,7 +19,7 @@ if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
     conda config --add channels conda-forge --force
 
     # All builds will need these
-    conda_pkgs="boost>=1.56 cmake>=3.2 pagmo>=2.0"
+    conda_pkgs="boost>=1.56 cmake>=3.2 pagmo-devel>=2.0"
 
     # Only Python builds will need these
     if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "Python37" || "${PAGMO_PLUGINS_NONFREE_BUILD}" == "OSXPython37" ]]; then

@@ -6,7 +6,7 @@ set -x
 # Exit on error.
 set -e
 
-PAGMO_VERSION="2.11.3"
+PAGMO_VERSION="2.12.0"
 
 if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *37 ]]; then
 	PYTHON_DIR="cp37-cp37m"
@@ -16,14 +16,6 @@ elif [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *36 ]]; then
 	PYTHON_DIR="cp36-cp36m"
 	BOOST_PYTHON_LIBRARY_NAME="libboost_python36.so"
 	PYTHON_VERSION="36"
-elif [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *27mu ]]; then
-	PYTHON_DIR="cp27-cp27mu"
-	BOOST_PYTHON_LIBRARY_NAME="libboost_python27mu.so"
-	PYTHON_VERSION="27"
-elif [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *27 ]]; then
-	PYTHON_DIR="cp27-cp27m"
-	BOOST_PYTHON_LIBRARY_NAME="libboost_python27.so"
-	PYTHON_VERSION="27"
 else
 	echo "Invalid build type: ${PAGMO_PLUGINS_NONFREE_BUILD}"
 	exit 1

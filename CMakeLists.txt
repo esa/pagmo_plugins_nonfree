@@ -1,5 +1,5 @@
 # CMake version check.
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.3)
 
 # Module path setup.
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules" "${CMAKE_SOURCE_DIR}/cmake_modules/yacma")
@@ -26,7 +26,7 @@ if((NOT PPNF_BUILD_CPP) AND (NOT PPNF_BUILD_PYTHON))
 endif()
 
 # Main ppnf project version.
-set(pagmo_plugins_nonfree_VERSION 0.10)
+set(pagmo_plugins_nonfree_VERSION 0.20)
 
 if(PPNF_BUILD_CPP)
     # Initial setup of a pagmo_plugins_nonfree build.
@@ -81,19 +81,18 @@ if(PPNF_BUILD_PYTHON)
     include(YACMAPythonSetup)
 
     # Python version check.
-    if(${PYTHON_VERSION_MAJOR} LESS 2 OR (${PYTHON_VERSION_MAJOR} EQUAL 2 AND ${PYTHON_VERSION_MINOR} LESS 7))
-        message(FATAL_ERROR "Minimum supported Python version is 2.7.")
+    if(${PYTHON_VERSION_MAJOR} LESS 3 )
+        message(FATAL_ERROR "Minimum supported Python version is 3")
     endif()
 
     # Internal variable that will be used to tell PagmoFindBoost to locate Boost.Python.
     set(_PAGMO_PLUGINS_NONFREE_FIND_BOOST_PYTHON TRUE)
 endif()
 
-
 # Boost setup (common to pagmo/pygmo . pluginsnonfree).
 include(PagmoPNFFindBoost)
 # Pagmo setup (common to pagmo/pygmo . pluginsnonfree).
-find_package(Pagmo 2.11.3 REQUIRED)
+find_package(Pagmo REQUIRED)
 
 if(PPNF_BUILD_CPP)
     # List of source files.
