@@ -207,6 +207,7 @@ if is_python_build:
                 r'-DCMAKE_CXX_FLAGS=-s ' +
                 r'-DBoost_SYSTEM_LIBRARY_RELEASE=c:\\local\\lib\\libboost_system-mgw81-mt-x64-1_70.dll ' +
                 r'-DBoost_FILESYSTEM_LIBRARY_RELEASE=c:\\local\\lib\\libboost_filesystem-mgw81-mt-x64-1_70.dll ' +
+                r'-DBoost_PYTHON' + python_version + r'_LIBRARY_RELEASE=c:\\local\\lib\\libboost_python' + python_version + r'-mgw81-mt-x64-1_70.dll ' +
                 r'-DPYTHON_INCLUDE_DIR=C:\\' + python_folder + r'\\include ' +
                 r'-DPYTHON_EXECUTABLE=C:\\' + python_folder + r'\\python.exe ' +
                 r'-DPYTHON_LIBRARY=' + python_library +
