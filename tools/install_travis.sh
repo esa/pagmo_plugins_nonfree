@@ -57,7 +57,7 @@ elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
     # Documentation.
     cd ../build
     # At the moment conda has these packages only for Python 3.4. Install via pip instead.
-    #pip install 'sphinx<1.6' 'breathe<4.12' requests[security] 'sphinx-bootstrap-theme<0.5';
+    pip install 'sphinx-bootstrap-theme';
     # Run doxygen and check the output.
     cd ../doc/doxygen;
     export DOXYGEN_OUTPUT=`doxygen 2>&1 >/dev/null`;
