@@ -97,7 +97,8 @@ os.environ['PATH'] = os.environ['PATH'] + r';c:\\local\\lib'
 wget(r'https://github.com/esa/pagmo2/archive/v2.13.0.tar.gz', 'pagmo.tar.gz')
 run_command(r'7z x -aoa -oC:\\projects pagmo.tar.gz', verbose=False)
 run_command(r'7z x -aoa -oC:\\projects C:\\projects\\pagmo.tar', verbose=False)
-os.chdir('c:\\projects\\pagmo2-2.13.0')
+pagmo_base_dir = 'c:\\projects\\pagmo2-2.13.0'
+os.chdir(pagmo_base_dir)
 os.makedirs('build_pagmo')
 os.chdir('build_pagmo')
 run_command(r'cmake -G "MinGW Makefiles" .. ' +
@@ -134,7 +135,7 @@ if is_python_build:
     run_command(pinterp + ' get-pip.py --force-reinstall')
     run_command(pip + ' install numpy cloudpickle dill')
 
-    # Download pybind11 https://github.com/pybind/pybind11/archive/v2.2.4.zip
+    # Download pybind11 https://github.com/pybind/pybind11/archive/v2.2.4.zipzz
     wget(r'https://github.com/pybind/pybind11/archive/v2.2.4.zip', 'pybind11_224.zip')
     run_command(r'unzip pybind11_224.zip', verbose=False)
     # Move to the directory created and make piranha install its headers
@@ -157,6 +158,7 @@ if is_python_build:
     if is_release_build:
         run_command(pip + ' install twine')
 
+    os.chdir(pagmo_base_dir)
     os.makedirs('build_pygmo')
     os.chdir('build_pygmo')
     run_command(r'cmake -G "MinGW Makefiles" .. ' +
