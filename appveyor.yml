@@ -5,7 +5,7 @@ environment:
     #- BUILD_TYPE: "MSVC_64_Debug"
     #  COMPILER: MSVC15
     #  PLATFORM: "x64"
-    - BUILD_TYPE: "MSVC_64_Python37"
+    #- BUILD_TYPE: "MSVC_64_Python37"
       COMPILER: MSVC15
       PLATFORM: "x64"
     #- BUILD_TYPE: "MinGW_64_Debug"
