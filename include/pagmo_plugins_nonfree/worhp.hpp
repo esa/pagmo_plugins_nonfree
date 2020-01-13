@@ -205,7 +205,7 @@ public:
         pagmo::detail::archive(ar, boost::serialization::base_object<not_population_based>(*this), m_worhp_library,
                                m_last_opt_res, m_integer_opts, m_numeric_opts, m_bool_opts, m_screen_output,
                                m_verbosity, m_f_cache, m_g_cache);
-    };
+    }
 
 private:
     struct pair_hash {

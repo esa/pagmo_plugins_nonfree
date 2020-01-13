@@ -23,9 +23,7 @@ if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
 
     # Only Python builds will need these
     if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "Python37" || "${PAGMO_PLUGINS_NONFREE_BUILD}" == "OSXPython37" ]]; then
-        conda_pkgs="$conda_pkgs python=3.7 pygmo>=2.0"
-    elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "Python27" || "${PAGMO_PLUGINS_NONFREE_BUILD}" == "OSXPython27" ]]; then
-        conda_pkgs="$conda_pkgs python=2.7 pygmo>=2.0"
+        conda_pkgs="$conda_pkgs python=3.7 pygmo>=2.0 pybind11" 
     fi
 
     if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == OSX* ]]; then

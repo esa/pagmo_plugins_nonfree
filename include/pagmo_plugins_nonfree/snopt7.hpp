@@ -248,7 +248,7 @@ public:
         pagmo::detail::archive(ar, boost::serialization::base_object<not_population_based>(*this), m_snopt7_c_library,
                                m_minor_version, m_integer_opts, m_numeric_opts, m_last_opt_res, m_screen_output,
                                m_verbosity, m_log);
-    };
+    }
     void set_integer_option(const std::string &, int);
     void set_integer_options(const std::map<std::string, int> &);
     std::map<std::string, int> get_integer_options() const;

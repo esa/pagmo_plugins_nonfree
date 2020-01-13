@@ -36,6 +36,17 @@ if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} != *27m ]]; then
 	#sleep 20
 fi
 
+
+# Install pybind11
+curl -L https://github.com/pybind/pybind11/archive/v2.4.3.tar.gz > v2.4.3
+tar xvf v2.4.3 > /dev/null 2>&1
+cd pybind11-2.4.3
+mkdir build
+cd build
+cmake ../ -DPYBIND11_TEST=OFF > /dev/null
+make install > /dev/null 2>&1
+cd ..
+
 # pagmo & pygmo
 curl -L  https://github.com/esa/pagmo2/archive/v${PAGMO_VERSION}.tar.gz > pagmo2.tar.gz
 tar xzf pagmo2.tar.gz

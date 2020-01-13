@@ -60,6 +60,7 @@ see https://www.gnu.org/licenses/. */
 #include <pagmo/io.hpp>
 #include <pagmo/population.hpp>
 #include <pagmo/problem.hpp>
+#include <pagmo/sn11.hpp>
 #include <pagmo/utils/constrained.hpp>
 #include <random>
 #include <stdexcept>
@@ -136,8 +137,8 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
                 const auto ctol = p.get_c_tol();
                 const auto c1eq
                     = pagmo::detail::test_eq_constraints(fit.data() + 1, fit.data() + 1 + p.get_nec(), ctol.data());
-                const auto c1ineq = pagmo::detail::test_ineq_constraints(fit.data() + 1 + p.get_nec(), fit.data() + fit.size(),
-                                                                  ctol.data() + p.get_nec());
+                const auto c1ineq = pagmo::detail::test_ineq_constraints(
+                    fit.data() + 1 + p.get_nec(), fit.data() + fit.size(), ctol.data() + p.get_nec());
                 // This will be the total number of violated constraints.
                 const auto nv = p.get_nc() - c1eq.first - c1ineq.first;
                 // This will be the norm of the violation.
@@ -148,11 +149,11 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
                 if (!(f_count / verb % 50u)) {
                     // Every 50 lines print the column names.
                     pagmo::print("\n", std::setw(10), "objevals:", std::setw(15), "objval:", std::setw(15),
-                          "violated:", std::setw(15), "viol. norm:", '\n');
+                                 "violated:", std::setw(15), "viol. norm:", '\n');
                 }
                 // Print to screen the log line.
                 pagmo::print(std::setw(10), f_count + 1u, std::setw(15), fit[0], std::setw(15), nv, std::setw(15), l,
-                      feas ? "" : " i", '\n');
+                             feas ? "" : " i", '\n');
                 // Record the log.
                 log.emplace_back(f_count + 1u, fit[0], nv, l, feas);
             }
@@ -777,5 +778,6 @@ We report the exact text of the original exception thrown:
     return pop;
 }
 
-} // namespace pagmo
+} // namespace ppnf
 
+PAGMO_S11N_ALGORITHM_IMPLEMENT(ppnf::snopt7)

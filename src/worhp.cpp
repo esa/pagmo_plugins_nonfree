@@ -60,6 +60,7 @@ see https://www.gnu.org/licenses/. */
 #include <pagmo/io.hpp>
 #include <pagmo/population.hpp>
 #include <pagmo/problem.hpp>
+#include <pagmo/sn11.hpp>
 #include <pagmo/utils/constrained.hpp>
 #include <random>
 #include <stdexcept>
@@ -107,7 +108,7 @@ struct worhp_raii {
 namespace
 {
 // Used to suppress screen output from worhp
-void no_screen_output(int, const char[]){}
+void no_screen_output(int, const char[]) {}
 // Mutex to protect the library loading.
 std::mutex library_load_mutex;
 } // namespace
@@ -986,9 +987,10 @@ void worhp::update_log(const problem &prob, const vector_double &fit, long long 
     if (m_verbosity && !(fevals % m_verbosity)) {
         // Constraints bits.
         const auto ctol = prob.get_c_tol();
-        const auto c1eq = pagmo::detail::test_eq_constraints(fit.data() + 1, fit.data() + 1 + prob.get_nec(), ctol.data());
-        const auto c1ineq = pagmo::detail::test_ineq_constraints(fit.data() + 1 + prob.get_nec(), fit.data() + fit.size(),
-                                                          ctol.data() + prob.get_nec());
+        const auto c1eq
+            = pagmo::detail::test_eq_constraints(fit.data() + 1, fit.data() + 1 + prob.get_nec(), ctol.data());
+        const auto c1ineq = pagmo::detail::test_ineq_constraints(fit.data() + 1 + prob.get_nec(),
+                                                                 fit.data() + fit.size(), ctol.data() + prob.get_nec());
         // This will be the total number of violated constraints.
         const auto nv = prob.get_nc() - c1eq.first - c1ineq.first;
         // This will be the norm of the violation.
@@ -1121,5 +1123,6 @@ vector_double worhp::gradient_with_cache(const vector_double &x, const problem &
     }
 }
 
-} // namespace pagmo
+} // namespace ppnf
 
+PAGMO_S11N_ALGORITHM_IMPLEMENT(ppnf::worhp)
