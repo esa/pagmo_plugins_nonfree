@@ -60,7 +60,6 @@ see https://www.gnu.org/licenses/. */
 #include <pagmo/io.hpp>
 #include <pagmo/population.hpp>
 #include <pagmo/problem.hpp>
-#include <pagmo/s11n.hpp>
 #include <pagmo/utils/constrained.hpp>
 #include <random>
 #include <stdexcept>
@@ -408,21 +407,6 @@ std::string snopt7::get_extra_info() const
     }
     pagmo::stream(ss, "\n");
     return ss.str();
-}
-/// Object serialization
-/**
- * This method will save/load \p this into the archive \p ar.
- *
- * @param ar target archive.
- *
- * @throws unspecified any exception thrown by the serialization of the UDA and of primitive types.
- */
-template <typename Archive>
-void snopt7::serialize(Archive &ar, unsigned)
-{
-    pagmo::detail::archive(ar, boost::serialization::base_object<not_population_based>(*this), m_snopt7_c_library,
-                           m_minor_version, m_integer_opts, m_numeric_opts, m_last_opt_res, m_screen_output,
-                           m_verbosity, m_log);
 }
 
 /// Set integer option.
@@ -795,4 +779,3 @@ We report the exact text of the original exception thrown:
 
 } // namespace pagmo
 
-PAGMO_S11N_ALGORITHM_IMPLEMENT(ppnf::snopt7)

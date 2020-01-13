@@ -72,8 +72,8 @@ see https://www.gnu.org/licenses/. */
 #include <unordered_map>
 #include <vector>
 
-#include <pagmo_plugins_nonfree/detail/visibility.hpp>
 #include "bogus_libs/worhp_lib/worhp_bogus.h"
+#include <pagmo_plugins_nonfree/detail/visibility.hpp>
 
 namespace ppnf
 {
@@ -191,8 +191,21 @@ public:
     void reset_numeric_options();
     void reset_bool_options();
     std::string get_last_opt_result() const;
+    /// Object serialization
+    /**
+     * This method will save/load \p this into the archive \p ar.
+     *
+     * @param ar target archive.
+     *
+     * @throws unspecified any exception thrown by the serialization of the UDA and of primitive types.
+     */
     template <typename Archive>
-    void serialize(Archive &ar, unsigned);
+    void serialize(Archive &ar, unsigned)
+    {
+        pagmo::detail::archive(ar, boost::serialization::base_object<not_population_based>(*this), m_worhp_library,
+                               m_last_opt_res, m_integer_opts, m_numeric_opts, m_bool_opts, m_screen_output,
+                               m_verbosity, m_f_cache, m_g_cache);
+    };
 
 private:
     struct pair_hash {
@@ -252,7 +265,7 @@ private:
     void save(Archive &ar) const = delete;
 };
 
-} // namespace pagmo
+} // namespace ppnf
 
 PAGMO_S11N_ALGORITHM_EXPORT_KEY(ppnf::worhp)
 #endif // PAGMO_WORHP

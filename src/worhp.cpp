@@ -60,7 +60,6 @@ see https://www.gnu.org/licenses/. */
 #include <pagmo/io.hpp>
 #include <pagmo/population.hpp>
 #include <pagmo/problem.hpp>
-#include <pagmo/s11n.hpp>
 #include <pagmo/utils/constrained.hpp>
 #include <random>
 #include <stdexcept>
@@ -980,22 +979,6 @@ std::string worhp::get_last_opt_result() const
     return m_last_opt_res;
 }
 
-/// Object serialization
-/**
- * This method will save/load \p this into the archive \p ar.
- *
- * @param ar target archive.
- *
- * @throws unspecified any exception thrown by the serialization of the UDA and of primitive types.
- */
-template <typename Archive>
-void worhp::serialize(Archive &ar, unsigned)
-{
-    pagmo::detail::archive(ar, boost::serialization::base_object<not_population_based>(*this), m_worhp_library,
-                           m_last_opt_res, m_integer_opts, m_numeric_opts, m_bool_opts, m_screen_output, m_verbosity,
-                           m_f_cache, m_g_cache);
-}
-
 // Log update and print to screen
 void worhp::update_log(const problem &prob, const vector_double &fit, long long unsigned fevals0) const
 {
@@ -1140,4 +1123,3 @@ vector_double worhp::gradient_with_cache(const vector_double &x, const problem &
 
 } // namespace pagmo
 
-PAGMO_S11N_ALGORITHM_IMPLEMENT(ppnf::worhp)

@@ -234,8 +234,21 @@ public:
     unsigned int get_verbosity() const;
     std::string get_name() const;
     std::string get_extra_info() const;
+    /// Object serialization
+    /**
+     * This method will save/load \p this into the archive \p ar.
+     *
+     * @param ar target archive.
+     *
+     * @throws unspecified any exception thrown by the serialization of the UDA and of primitive types.
+     */
     template <typename Archive>
-    void serialize(Archive &ar, unsigned);
+    void serialize(Archive &ar, unsigned)
+    {
+        pagmo::detail::archive(ar, boost::serialization::base_object<not_population_based>(*this), m_snopt7_c_library,
+                               m_minor_version, m_integer_opts, m_numeric_opts, m_last_opt_res, m_screen_output,
+                               m_verbosity, m_log);
+    };
     void set_integer_option(const std::string &, int);
     void set_integer_options(const std::map<std::string, int> &);
     std::map<std::string, int> get_integer_options() const;
