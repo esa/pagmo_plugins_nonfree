@@ -77,6 +77,9 @@ PYBIND11_MODULE(core, m)
     snopt7_.def(py::init<bool, std::string, unsigned>(), py::arg("screen_output") = false,
                 py::arg("library") = "/usr/local/lib/", py::arg("minor_version") = 6);
     snopt7_.def("evolve", &ppnf::snopt7::evolve);
+    snopt7_.def("set_verbosity", &ppnf::snopt7::set_verbosity);
+    snopt7_.def("get_name", &ppnf::snopt7::get_name);
+    snopt7_.def("get_extra_info", &ppnf::snopt7::get_extra_info);
     snopt7_.def("set_integer_option", &ppnf::snopt7::set_integer_option,
                 ppnf::snopt7_set_integer_option_docstring().c_str(), py::arg("name"), py::arg("value"));
     snopt7_.def("set_numeric_option", &ppnf::snopt7::set_numeric_option,
@@ -90,6 +93,9 @@ PYBIND11_MODULE(core, m)
     // We expose the additional constructor
     worhp_.def(py::init<bool, std::string>(), py::arg("screen_output") = false, py::arg("library") = "/usr/local/lib/");
     worhp_.def("evolve", &ppnf::worhp::evolve);
+    worhp_.def("set_verbosity", &ppnf::worhp::set_verbosity);
+    worhp_.def("get_name", &ppnf::worhp::get_name);
+    worhp_.def("get_extra_info", &ppnf::worhp::get_extra_info);
     worhp_.def("set_integer_option", &ppnf::worhp::set_integer_option, ppnf::worhp_set_integer_option_docstring().c_str(),
                py::arg("name"), py::arg("value"));
     worhp_.def("set_numeric_option", &ppnf::worhp::set_numeric_option, ppnf::worhp_set_numeric_option_docstring().c_str(),
