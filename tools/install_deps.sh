@@ -31,7 +31,7 @@ if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
     fi
 
     if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
-        conda_pkgs="$conda_pkgs graphviz doxygen"
+        conda_pkgs="$conda_pkgs graphviz doxygen sphinx breathe sphinx-bootstrap-theme"
     fi
 
     # We create the conda environment and activate it
