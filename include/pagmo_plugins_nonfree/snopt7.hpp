@@ -51,8 +51,10 @@ see https://www.gnu.org/licenses/. */
 #include <limits> // std::numeric_limits
 #include <map>
 #include <mutex>
+#include <pagmo/algorithm.hpp>
 #include <pagmo/algorithms/not_population_based.hpp>
 #include <pagmo/population.hpp>
+#include <pagmo/s11n.hpp>
 #include <string>
 #include <vector>
 
@@ -220,8 +222,8 @@ public:
      *        will let pagmo regulate logs and screen_output via its pagmo::algorithm::set_verbosity mechanism.
      * @param snopt7_c_library The path to the snopt7_c library.
      * @param minor_version The minor version of your Snopt7 library. Only two APIs are supported at the
-     *        moment: a) 7.2 - 7.6 and b) 7.7. You may try to use this plugin with different minor version numbers, but at your
-     *        own risk.
+     *        moment: a) 7.2 - 7.6 and b) 7.7. You may try to use this plugin with different minor version numbers, but
+     * at your own risk.
      *
      */
     snopt7(bool screen_output = false, std::string snopt7_c_library = "/usr/local/lib/libsnopt7_c.so",
@@ -270,7 +272,7 @@ private:
     void save(Archive &ar) const = delete;
 };
 
-} // namespace pagmo
+} // namespace ppnf
 
 PAGMO_S11N_ALGORITHM_EXPORT_KEY(ppnf::snopt7)
 

@@ -3,8 +3,12 @@
 
 #include <string>
 
-namespace pygmo
+namespace ppnf
 {
+// not_population_based.
+std::string bls_selection_docstring(const std::string &);
+std::string bls_replacement_docstring(const std::string &);
+std::string bls_set_random_sr_seed_docstring(const std::string &);
 // snopt7
 std::string snopt7_docstring();
 std::string snopt7_get_log_docstring();

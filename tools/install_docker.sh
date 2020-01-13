@@ -6,7 +6,7 @@ set -x
 # Exit on error.
 set -e
 
-PAGMO_VERSION="2.12.0"
+PAGMO_VERSION="2.13.0"
 
 if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *37 ]]; then
 	PYTHON_DIR="cp37-cp37m"
