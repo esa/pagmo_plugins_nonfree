@@ -19,6 +19,11 @@ class snopt7_test_case(_ut.TestCase):
         algo.extract(snopt7).set_integer_option("Major Iteration Limit", 1000)
         algo.extract(snopt7).set_numeric_option(
             "Major feasibility tolerance", 1E-10)
+        algo.set_verbosity(1)
+        name = algo.get_name()
+        extra_info = algo.get_extra_info()
+        pop = pg.population(pg.ackley(10),1)
+        pop = algo.evolve(pop)
 
 class worhp_test_case(_ut.TestCase):
     """Test case for the worhp uda class.
@@ -36,6 +41,11 @@ class worhp_test_case(_ut.TestCase):
         algo.extract(worhp).set_integer_option("MaxIter", 1000)
         algo.extract(worhp).set_numeric_option("TolFeas", 1E-10)
         algo.extract(worhp).set_bool_option("CheckStructureDF", True)
+        algo.set_verbosity(1)
+        name = algo.get_name()
+        extra_info = algo.get_extra_info()
+        pop = pg.population(pg.ackley(10),1)
+        pop = algo.evolve(pop)
 
 
 def run_test_suite(level=0):
