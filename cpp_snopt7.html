@@ -1,45 +1,24 @@
  <!DOCTYPE html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>C++: Sparse Nonlinear OPTimizer (SNOPT) &#8212; pagmo_plugins_nonfree 0.9 documentation</title>
-    
-    <link rel="stylesheet" href="_static/basic.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pagmo_plugins_nonfree.css" type="text/css" />
-    <link rel="stylesheet" href="_static/bootswatch-3.3.6/yeti/bootstrap.min.css" type="text/css" />
+    <meta charset="utf-8" />
+    <title>C++: Sparse Nonlinear OPTimizer (SNOPT) &#8212; pagmo_plugins_nonfree 0.20 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pagmo_plugins_nonfree.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.9',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/pagmo_plugins_nonfree.css" />
+    <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="_static/js/jquery-1.11.0.min.js"></script>
-    <script type="text/javascript" src="_static/js/jquery-fix.js"></script>
-    <script type="text/javascript" src="_static/bootstrap-3.3.6/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="_static/bootstrap-sphinx.js"></script>
+    <script type="text/javascript" src="_static/language_data.js"></script>
     <link rel="shortcut icon" href="_static/logo_favico.ico"/>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="C++: We Optimize Really Huge Problems (WORHP)" href="cpp_worhp.html" />
     <link rel="prev" title="Quick start" href="quickstart.html" />
 <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto|Comfortaa|Space+Mono"> 
-  </head>
-  <body role="document">
+  </head><body>
 
   <div id="navbar" class="navbar navbar-inverse navbar-default navbar-fixed-top">
     <div class="container">
@@ -52,7 +31,7 @@
         </button>
         <a class="navbar-brand" href="index.html"><span><img src="_static/logo_small_html.png"></span>
            </a>
-        <span class="navbar-text navbar-version pull-left"><b>0.9</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.20</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -117,19 +96,19 @@
 
 <div class="container">
   <div class="row">
-    <div class="col-md-12 content">
+    <div class="body col-md-12 content" role="main">
       
   <div class="section" id="c-sparse-nonlinear-optimizer-snopt">
 <h1>C++: Sparse Nonlinear OPTimizer (SNOPT)<a class="headerlink" href="#c-sparse-nonlinear-optimizer-snopt" title="Permalink to this headline">¶</a></h1>
 <dl class="class">
-<dt id="_CPPv2N5pagmo6snopt7E">
-<span id="pagmo::snopt7"></span><span class="target" id="classpagmo_1_1snopt7"></span><em class="property">class </em><code class="descname">snopt7</code> : <em class="property">public</em> not_population_based<a class="headerlink" href="#_CPPv2N5pagmo6snopt7E" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4ppnf6snopt7E">
+<span id="_CPPv3N4ppnf6snopt7E"></span><span id="_CPPv2N4ppnf6snopt7E"></span><span id="ppnf::snopt7"></span><span class="target" id="classppnf_1_1snopt7"></span><em class="property">class </em><code class="sig-name descname">snopt7</code> : <em class="property">public</em> not_population_based<a class="headerlink" href="#_CPPv4N4ppnf6snopt7E" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>SNOPT 7 - (Sparse Nonlinear OPTimizer, Version 7) </p>
 <p><img alt="_images/sol.png" src="_images/sol.png" /></p>
-<p>This class is a user-defined algorithm (UDA) that contains a plugin to the Sparse Nonlinear OPTimizer (SNOPT) solver, a software package for large-scale nonlinear optimization. SNOPT is a powerful solver that is able to handle robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. Since the wrapper was developed around the version 7 of SNOPT the class is called <a class="reference internal" href="#classpagmo_1_1snopt7"><span class="std std-ref">pagmo::snopt7</span></a>.</p>
+<p>This class is a user-defined algorithm (UDA) that contains a plugin to the Sparse Nonlinear OPTimizer (SNOPT) solver, a software package for large-scale nonlinear optimization. SNOPT is a powerful solver that is able to handle robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. Since the wrapper was developed around the version 7 of SNOPT the class is called <a class="reference internal" href="#classppnf_1_1snopt7"><span class="std std-ref">ppnf::snopt7</span></a>.</p>
 <p><div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">SNOPT7 fortran code is only available acquiring a licence.
+<p class="admonition-title">Note</p>
+<p>SNOPT7 fortran code is only available acquiring a licence.
 If you do have such a licence, then you will also have the fortran files and can build them into the library
 snopt7 (one single library). The library snopt7_c will then need to be built,
 compiling the correct release of the project <a class="reference external" href="https://github.com/snopt/snopt-interface">https://github.com/snopt/snopt-interface</a>. The library thus created
@@ -139,72 +118,71 @@ evaluation).</p>
 </div>
 </p>
 <p>SNOPT7 supports only single-objective minimisation, using a sequential quadratic programming (SQP) algorithm. Search directions are obtained from QP subproblems that minimize a quadratic model of the Lagrangian function subject to linearized constraints. An augmented Lagrangian merit function is reduced along each search direction to ensure convergence from any starting point.</p>
-<p>In order to support pagmo&#8217;s population-based optimisation model, <a class="reference internal" href="#classpagmo_1_1snopt7_1a155932af8634e03a1c43ab2dbdb240ad"><span class="std std-ref">snopt7::evolve()</span></a> will select a single individual from the input pagmo::population to be optimised. If the optimisation produces an improved individual (as established by pagmo::compare_fc()), the optimised individual will be inserted back into the population. The selection and replacement strategies can be configured via set_selection(const std::string &amp;), set_selection(population::size_type), set_replacement(const std::string &amp;) and set_replacement(population::size_type).</p>
+<p>In order to support pagmo’s population-based optimisation model, <a class="reference internal" href="#classppnf_1_1snopt7_1a49f1159a46415ef999973fb0f79a1c44"><span class="std std-ref">snopt7::evolve()</span></a> will select a single individual from the input ppnf::population to be optimised. If the optimisation produces an improved individual (as established by ppnf::compare_fc()), the optimised individual will be inserted back into the population. The selection and replacement strategies can be configured via set_selection(const std::string &amp;), set_selection(population::size_type), set_replacement(const std::string &amp;) and set_replacement(population::size_type).</p>
 <p><div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This plugin was tested with snopt version 7.2 as well as with the compiled evaluation libraries (7.7)
+<p class="admonition-title">Note</p>
+<p>This plugin was tested with snopt version 7.2 as well as with the compiled evaluation libraries (7.7)
 made available via the snopt7 official web site (C/Fortran library).</p>
 </div>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">Constructing this class with an inconsistent p minor_version parameter results in undefined behaviour.</p>
+<p class="admonition-title">Warning</p>
+<p>Constructing this class with an inconsistent p minor_version parameter results in undefined behaviour.</p>
 </div>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">A moved-from <a class="reference internal" href="#_CPPv2N5pagmo6snopt7E" title="pagmo::snopt7"><code class="xref cpp cpp-class docutils literal"><span class="pre">pagmo::snopt7</span></code></a> is destructible and assignable. Any other operation will result
+<p class="admonition-title">Warning</p>
+<p>A moved-from <a class="reference internal" href="#_CPPv4N4ppnf6snopt7E" title="ppnf::snopt7"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">ppnf::snopt7</span></code></a> is destructible and assignable. Any other operation will result
 in undefined behaviour.</p>
 </div>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">The possibility to exploit the linear part of the problem fitness, part of the original SNOPT7 library,
+<p class="admonition-title">Warning</p>
+<p>The possibility to exploit the linear part of the problem fitness, part of the original SNOPT7 library,
 is deactivated in this plugin for pagmo.</p>
 </div>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference external" href="https://web.stanford.edu/group/SOL/snopt.htm">https://web.stanford.edu/group/SOL/snopt.htm</a>.</p>
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://web.stanford.edu/group/SOL/snopt.htm">https://web.stanford.edu/group/SOL/snopt.htm</a>.</p>
 </div>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference external" href="https://web.stanford.edu/group/SOL/guides/sndoc7.pdf">https://web.stanford.edu/group/SOL/guides/sndoc7.pdf</a>.</p>
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://web.stanford.edu/group/SOL/guides/sndoc7.pdf">https://web.stanford.edu/group/SOL/guides/sndoc7.pdf</a>.</p>
 </div>
  </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Types</p>
 <dl class="type">
-<dt id="_CPPv2N5pagmo6snopt713log_line_typeE">
-<span class="target" id="classpagmo_1_1snopt7_1a84de215a6fde551532bb768e33cc116e"></span><em class="property">using </em><code class="descname">log_line_type</code> = std::tuple&lt;unsigned long, double, vector_double::size_type, double, bool&gt;<a class="headerlink" href="#_CPPv2N5pagmo6snopt713log_line_typeE" title="Permalink to this definition">¶</a><br /></dt>
-<dd><p>Single data line for the algorithm&#8217;s log. </p>
+<dt id="_CPPv4N4ppnf6snopt713log_line_typeE">
+<span id="_CPPv3N4ppnf6snopt713log_line_typeE"></span><span id="_CPPv2N4ppnf6snopt713log_line_typeE"></span><span class="target" id="classppnf_1_1snopt7_1a8b2682e05a96de907523cbb445ad1b8f"></span><em class="property">using </em><code class="sig-name descname">log_line_type</code> = std::tuple&lt;unsigned long, double, pagmo::vector_double::size_type, double, bool&gt;<a class="headerlink" href="#_CPPv4N4ppnf6snopt713log_line_typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Single data line for the algorithm’s log. </p>
 <p>A log data line is a tuple consisting of:<ul class="simple">
-<li>the number of objective function evaluations made so far,</li>
-<li>the objective function value for the current decision vector,</li>
-<li>the number of constraints violated by the current decision vector,</li>
-<li>the constraints violation norm for the current decision vector,</li>
-<li>a boolean flag signalling the feasibility of the current decision vector. </li>
+<li><p>the number of objective function evaluations made so far,</p></li>
+<li><p>the objective function value for the current decision vector,</p></li>
+<li><p>the number of constraints violated by the current decision vector,</p></li>
+<li><p>the constraints violation norm for the current decision vector,</p></li>
+<li><p>a boolean flag signalling the feasibility of the current decision vector. </p></li>
 </ul>
 </p>
 </dd></dl>
 
 <dl class="type">
-<dt id="_CPPv2N5pagmo6snopt78log_typeE">
-<span class="target" id="classpagmo_1_1snopt7_1abf11a74f7482e3eab6145d766f2c3a6e"></span><em class="property">using </em><code class="descname">log_type</code> = std::vector&lt;<a class="reference internal" href="#_CPPv2N5pagmo6snopt713log_line_typeE" title="pagmo::snopt7::log_line_type">log_line_type</a>&gt;<a class="headerlink" href="#_CPPv2N5pagmo6snopt78log_typeE" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4ppnf6snopt78log_typeE">
+<span id="_CPPv3N4ppnf6snopt78log_typeE"></span><span id="_CPPv2N4ppnf6snopt78log_typeE"></span><span class="target" id="classppnf_1_1snopt7_1a884d935ebf52f8a8f3b75ed7631757b5"></span><em class="property">using </em><code class="sig-name descname">log_type</code> = std::vector&lt;<a class="reference internal" href="#_CPPv4N4ppnf6snopt713log_line_typeE" title="ppnf::snopt7::log_line_type">log_line_type</a>&gt;<a class="headerlink" href="#_CPPv4N4ppnf6snopt78log_typeE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Log type. </p>
-<p>The algorithm log is a collection of <a class="reference internal" href="#classpagmo_1_1snopt7_1a84de215a6fde551532bb768e33cc116e"><span class="std std-ref">snopt7::log_line_type</span></a> data lines, stored in chronological order during the optimisation if the verbosity of the algorithm is set to a nonzero value (see <a class="reference internal" href="#classpagmo_1_1snopt7_1a91f63966dbc4d37a1c5d014937338031"><span class="std std-ref">snopt7::set_verbosity()</span></a>). </p>
+<p>The algorithm log is a collection of <a class="reference internal" href="#classppnf_1_1snopt7_1a8b2682e05a96de907523cbb445ad1b8f"><span class="std std-ref">snopt7::log_line_type</span></a> data lines, stored in chronological order during the optimisation if the verbosity of the algorithm is set to a nonzero value (see <a class="reference internal" href="#classppnf_1_1snopt7_1a82315116105e32bb115ee440ad76887c"><span class="std std-ref">snopt7::set_verbosity()</span></a>). </p>
 </dd></dl>
 
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
 <dl class="function">
-<dt id="_CPPv2N5pagmo6snopt76snopt7EbNSt6stringEj">
-<span id="pagmo::snopt7::snopt7__b.ss.unsigned"></span><span class="target" id="classpagmo_1_1snopt7_1a5ab7ba6d71ffd6fb5188e228cd048f9f"></span><code class="descname">snopt7</code><span class="sig-paren">(</span>bool <em>screen_output</em> = false, std::string <em>snopt7_c_library</em> = &quot;/usr/local/lib/libsnopt7_c.so&quot;, unsigned <em>minor_version</em> = 6u<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo6snopt76snopt7EbNSt6stringEj" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4ppnf6snopt76snopt7EbNSt6stringEj">
+<span id="_CPPv3N4ppnf6snopt76snopt7EbNSt6stringEj"></span><span id="_CPPv2N4ppnf6snopt76snopt7EbNSt6stringEj"></span><span id="ppnf::snopt7::snopt7__b.ss.unsigned"></span><span class="target" id="classppnf_1_1snopt7_1aa635af24c75d56becf6ae0e6e50bd153"></span><code class="sig-name descname">snopt7</code><span class="sig-paren">(</span>bool <em>screen_output</em> = false, std::string <em>snopt7_c_library</em> = &quot;/usr/local/lib/libsnopt7_c.so&quot;, unsigned <em>minor_version</em> = 6u<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf6snopt76snopt7EbNSt6stringEj" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Constructor. </p>
 <p>The algorithm SNOPT7 can be constructed in two different ways, according to the user chioce, only one among the original SNOPT7 screen output and the pagmo logging system will be activated.</p>
-<p><dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">screen_output</span></code>: when <code class="docutils literal"><span class="pre">true</span></code> will activate the screen output from the SNOPT7 library, otherwise will let pagmo regulate logs and screen_output via its pagmo::algorithm::set_verbosity mechanism. </li>
-<li><code class="docutils literal"><span class="pre">snopt7_c_library</span></code>: The path to the snopt7_c library. </li>
-<li><code class="docutils literal"><span class="pre">minor_version</span></code>: The minor version of your Snopt7 library. Only two APIs are supported at the moment: a) 7.2 - 7.6 and b) 7.7. You may try to use this plugin with different minor version numbers, but at your own risk. </li>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">screen_output</span></code>: when <code class="docutils literal notranslate"><span class="pre">true</span></code> will activate the screen output from the SNOPT7 library, otherwise will let pagmo regulate logs and screen_output via its pagmo::algorithm::set_verbosity mechanism. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">snopt7_c_library</span></code>: The path to the snopt7_c library. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">minor_version</span></code>: The minor version of your Snopt7 library. Only two APIs are supported at the moment: a) 7.2 - 7.6 and b) 7.7. You may try to use this plugin with different minor version numbers, but at your own risk. </p></li>
 </ul>
 </dd>
 </dl>
@@ -212,46 +190,45 @@ is deactivated in this plugin for pagmo.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv2NK5pagmo6snopt76evolveE10population">
-<span id="pagmo::snopt7::evolve__populationC"></span><span class="target" id="classpagmo_1_1snopt7_1a155932af8634e03a1c43ab2dbdb240ad"></span>population <code class="descname">evolve</code><span class="sig-paren">(</span>population <em>pop</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv2NK5pagmo6snopt76evolveE10population" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4NK4ppnf6snopt76evolveEN5pagmo10populationE">
+<span id="_CPPv3NK4ppnf6snopt76evolveEN5pagmo10populationE"></span><span id="_CPPv2NK4ppnf6snopt76evolveEN5pagmo10populationE"></span><span id="ppnf::snopt7::evolve__pagmo::populationC"></span><span class="target" id="classppnf_1_1snopt7_1a49f1159a46415ef999973fb0f79a1c44"></span>pagmo::population <code class="sig-name descname">evolve</code><span class="sig-paren">(</span>pagmo::population <em>pop</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf6snopt76evolveEN5pagmo10populationE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Evolve population. </p>
-<p>This method will select an individual from <code class="docutils literal"><span class="pre">pop</span></code>, optimise it using snOptA interface, replace an individual in <code class="docutils literal"><span class="pre">pop</span></code> with the optimised individual, and finally return <code class="docutils literal"><span class="pre">pop</span></code>. The individual selection and replacement criteria can be set via set_selection(const std::string &amp;), set_selection(population::size_type), set_replacement(const std::string &amp;) and set_replacement(population::size_type). The SNOPT7 solver will then run until one of the stopping criteria is satisfied, and the return status of the SNOPT7 solver will be recorded (it can be fetched with <a class="reference internal" href="#classpagmo_1_1snopt7_1a231aac139d1d4feadf75d28a50712c4f"><span class="std std-ref">get_last_opt_result()</span></a>).</p>
+<p>This method will select an individual from <code class="docutils literal notranslate"><span class="pre">pop</span></code>, optimise it using snOptA interface, replace an individual in <code class="docutils literal notranslate"><span class="pre">pop</span></code> with the optimised individual, and finally return <code class="docutils literal notranslate"><span class="pre">pop</span></code>. The individual selection and replacement criteria can be set via set_selection(const std::string &amp;), set_selection(population::size_type), set_replacement(const std::string &amp;) and set_replacement(population::size_type). The SNOPT7 solver will then run until one of the stopping criteria is satisfied, and the return status of the SNOPT7 solver will be recorded (it can be fetched with <a class="reference internal" href="#classppnf_1_1snopt7_1a5f051d1aaf543509770719c91d78243c"><span class="std std-ref">get_last_opt_result()</span></a>).</p>
 <p><div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">All options passed to the snOptA interface are those set by the user via the pagmo::snopt7 interface, or
+<p class="admonition-title">Warning</p>
+<p>All options passed to the snOptA interface are those set by the user via the ppnf::snopt7 interface, or
 where no user specifications are available, to the default detailed on the User Manual available online but
-with the following exception: &#8220;Major feasibility tolerance&#8221; is set to the default value 1E-6 or to the minimum
+with the following exception: “Major feasibility tolerance” is set to the default value 1E-6 or to the minimum
 among the values returned by pagmo::problem::get_c_tol() if not zero.</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The definitions of feasibility are different for SNOPT7 and pagmo. SNOPT7 requires that <em>max(c_viol)/||x|| &lt;= eps_r</em>
-where <em>||x||</em> is the Euclidean norm of <em>x</em>, a candidate solution vector, and <em>eps_r</em> is the &#8220;Major feasibility tolerance&#8221; option in SNOPT7. 
-In contrast, pagmo requires that <em>c_viol &lt;= c_tol</em> where <em>c_viol</em> 
-is the vector of absolute values of the nonlinear constraint violations and <em>c_tol</em> is the vector of constraint tolerances in pagmo::problem. To guarantee
-feasibility with respect to pagmo when SNOPT7 reports feasibility, try setting <em>eps_r &lt;= min(c_tol)/||x||_ub</em>, where
-<em>||x||_ub</em> is an upper bound on the value of <em>||x||</em>. Care must be taken with this approach to ensure <em>eps_r</em> is not too small.</p>
+<p class="admonition-title">Note</p>
+<p>The definitions of feasibility are different for SNOPT7 and pagmo. SNOPT7 requires that <em>max(c_viol)/||x|| &lt;=
+eps_r</em> where <em>||x||</em> is the Euclidean norm of <em>x</em>, a candidate solution vector, and <em>eps_r</em> is the “Major
+feasibility tolerance” option in SNOPT7. In contrast, pagmo requires that <em>c_viol &lt;= c_tol</em> where <em>c_viol</em> is the
+vector of absolute values of the nonlinear constraint violations and <em>c_tol</em> is the vector of constraint
+tolerances in pagmo::problem. To guarantee feasibility with respect to pagmo when SNOPT7 reports feasibility, try
+setting <em>eps_r &lt;= min(c_tol)/||x||_ub</em>, where <em>||x||_ub</em> is an upper bound on the value of <em>||x||</em>. Care must be
+taken with this approach to ensure <em>eps_r</em> is not too small.</p>
 </div>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference external" href="https://www-leland.stanford.edu/group/SOL/guides/sndoc7.pdf">https://www-leland.stanford.edu/group/SOL/guides/sndoc7.pdf</a></p>
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://www-leland.stanford.edu/group/SOL/guides/sndoc7.pdf">https://www-leland.stanford.edu/group/SOL/guides/sndoc7.pdf</a></p>
 </div>
 </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>the optimised population.</dd>
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">pop</span></code>: the population to be optimised.</li>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>the optimised population.</p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">pop</span></code>: the population to be optimised.</p></li>
 </ul>
 </dd>
-<dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">std::invalid_argument</span></code>: in the following cases:<ul>
-<li>the population&#8217;s problem is multi-objective or stochastic </li>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">std::invalid_argument</span></code>: in the following cases:<ul>
+<li><p>the population’s problem is multi-objective or stochastic </p></li>
 </ul>
-</li>
-<li><code class="docutils literal"><span class="pre">unspecified</span></code>: any exception thrown by the public interface of pagmo::problem or pagmo::not_population_based. </li>
+</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">unspecified</span></code>: any exception thrown by the public interface of pagmo::problem or pagmo::not_population_based. </p></li>
 </ul>
 </dd>
 </dl>
@@ -259,12 +236,12 @@ feasibility with respect to pagmo when SNOPT7 reports feasibility, try setting <
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv2N5pagmo6snopt713set_verbosityEj">
-<span id="pagmo::snopt7::set_verbosity__unsigned"></span><span class="target" id="classpagmo_1_1snopt7_1a91f63966dbc4d37a1c5d014937338031"></span>void <code class="descname">set_verbosity</code><span class="sig-paren">(</span>unsigned <em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo6snopt713set_verbosityEj" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4ppnf6snopt713set_verbosityEj">
+<span id="_CPPv3N4ppnf6snopt713set_verbosityEj"></span><span id="_CPPv2N4ppnf6snopt713set_verbosityEj"></span><span id="ppnf::snopt7::set_verbosity__unsigned"></span><span class="target" id="classppnf_1_1snopt7_1a82315116105e32bb115ee440ad76887c"></span>void <code class="sig-name descname">set_verbosity</code><span class="sig-paren">(</span>unsigned <em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf6snopt713set_verbosityEj" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set verbosity. </p>
-<p>This method will set the algorithm&#8217;s verbosity. If <code class="docutils literal"><span class="pre">n</span></code> is zero, no output is produced during the optimisation and no logging is performed. If <code class="docutils literal"><span class="pre">n</span></code> is nonzero, then every <code class="docutils literal"><span class="pre">n</span></code> objective function evaluations the status of the optimisation will be both printed to screen and recorded internally. See <a class="reference internal" href="#classpagmo_1_1snopt7_1a84de215a6fde551532bb768e33cc116e"><span class="std std-ref">snopt7::log_line_type</span></a> and <a class="reference internal" href="#classpagmo_1_1snopt7_1abf11a74f7482e3eab6145d766f2c3a6e"><span class="std std-ref">snopt7::log_type</span></a> for information on the logging format. The internal log can be fetched via <a class="reference internal" href="#classpagmo_1_1snopt7_1a0dc70b9c53d2e2b84fc53bbcc65255a3"><span class="std std-ref">get_log()</span></a>.</p>
+<p>This method will set the algorithm’s verbosity. If <code class="docutils literal notranslate"><span class="pre">n</span></code> is zero, no output is produced during the optimisation and no logging is performed. If <code class="docutils literal notranslate"><span class="pre">n</span></code> is nonzero, then every <code class="docutils literal notranslate"><span class="pre">n</span></code> objective function evaluations the status of the optimisation will be both printed to screen and recorded internally. See <a class="reference internal" href="#classppnf_1_1snopt7_1a8b2682e05a96de907523cbb445ad1b8f"><span class="std std-ref">snopt7::log_line_type</span></a> and <a class="reference internal" href="#classppnf_1_1snopt7_1a884d935ebf52f8a8f3b75ed7631757b5"><span class="std std-ref">snopt7::log_type</span></a> for information on the logging format. The internal log can be fetched via <a class="reference internal" href="#classppnf_1_1snopt7_1a55d29163872b8f4ca2f560358b99e9d6"><span class="std std-ref">get_log()</span></a>.</p>
 <p><p>Example (verbosity 1): </p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">objevals</span><span class="p">:</span>        <span class="n">objval</span><span class="p">:</span>      <span class="n">violated</span><span class="p">:</span>    <span class="n">viol</span><span class="o">.</span> <span class="n">norm</span><span class="p">:</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">objevals</span><span class="p">:</span>        <span class="n">objval</span><span class="p">:</span>      <span class="n">violated</span><span class="p">:</span>    <span class="n">viol</span><span class="o">.</span> <span class="n">norm</span><span class="p">:</span>
         <span class="mi">1</span>        <span class="mf">48.9451</span>              <span class="mi">1</span>        <span class="mf">1.25272</span> <span class="n">i</span>
         <span class="mi">2</span>         <span class="mf">30.153</span>              <span class="mi">1</span>       <span class="mf">0.716591</span> <span class="n">i</span>
         <span class="mi">3</span>        <span class="mf">26.2884</span>              <span class="mi">1</span>        <span class="mf">1.04269</span> <span class="n">i</span>
@@ -279,90 +256,87 @@ feasibility with respect to pagmo when SNOPT7 reports feasibility, try setting <
        <span class="mi">12</span>         <span class="mf">17.014</span>              <span class="mi">0</span>              <span class="mi">0</span>
 </pre></div>
 </div>
- The <code class="docutils literal"><span class="pre">i</span></code> at the end of some rows indicates that the decision vector is infeasible. Feasibility is checked against the problem&#8217;s tolerance.<dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">n</span></code>: the desired verbosity level.</li>
+ The <code class="docutils literal notranslate"><span class="pre">i</span></code> at the end of some rows indicates that the decision vector is infeasible. Feasibility is checked against the problem’s tolerance.<dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">n</span></code>: the desired verbosity level.</p></li>
 </ul>
 </dd>
 </dl>
 </p>
 <p>By default, the verbosity level is zero.</p>
 <p><div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">The number of constraints violated, the constraints violation norm and the feasibility flag stored in the
-log are all determined via the facilities and the tolerances specified within <code class="xref cpp cpp-class docutils literal"><span class="pre">pagmo::problem</span></code>.
-That is, they might not necessarily be consistent with Snopt7&#8217;s notion of feasibility.</p>
+<p class="admonition-title">Warning</p>
+<p>The number of constraints violated, the constraints violation norm and the feasibility flag stored in the
+log are all determined via the facilities and the tolerances specified within <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">pagmo::problem</span></code>.
+That is, they might not necessarily be consistent with Snopt7’s notion of feasibility.</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Snopt7 supports its own logging format and protocol, including the ability to print to screen and write to
-file. Snopt7&#8217;s screen logging is disabled by default. On-screen logging can be enabled constructing the
-object pagmo::snopt7 passing <code class="docutils literal"><span class="pre">True</span></code> as argument. In this case verbosity will not be allowed to be set.</p>
+<p class="admonition-title">Note</p>
+<p>Snopt7 supports its own logging format and protocol, including the ability to print to screen and write to
+file. Snopt7’s screen logging is disabled by default. On-screen logging can be enabled constructing the
+object ppnf::snopt7 passing <code class="docutils literal notranslate"><span class="pre">True</span></code> as argument. In this case verbosity will not be allowed to be set.</p>
 </div>
  </p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv2NK5pagmo6snopt77get_logEv">
-<span id="pagmo::snopt7::get_logC"></span><span class="target" id="classpagmo_1_1snopt7_1a0dc70b9c53d2e2b84fc53bbcc65255a3"></span><em class="property">const</em> <a class="reference internal" href="#_CPPv2N5pagmo6snopt78log_typeE" title="pagmo::snopt7::log_type">log_type</a> &amp;<code class="descname">get_log</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv2NK5pagmo6snopt77get_logEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4NK4ppnf6snopt77get_logEv">
+<span id="_CPPv3NK4ppnf6snopt77get_logEv"></span><span id="_CPPv2NK4ppnf6snopt77get_logEv"></span><span id="ppnf::snopt7::get_logC"></span><span class="target" id="classppnf_1_1snopt7_1a55d29163872b8f4ca2f560358b99e9d6"></span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N4ppnf6snopt7E" title="ppnf::snopt7">snopt7</a>::<a class="reference internal" href="#_CPPv4N4ppnf6snopt78log_typeE" title="ppnf::snopt7::log_type">log_type</a> &amp;<code class="sig-name descname">get_log</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf6snopt77get_logEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the optimisation log. </p>
-<p>See <a class="reference internal" href="#classpagmo_1_1snopt7_1abf11a74f7482e3eab6145d766f2c3a6e"><span class="std std-ref">snopt7::log_type</span></a> for a description of the optimisation log. Logging is turned on/off via <a class="reference internal" href="#classpagmo_1_1snopt7_1a91f63966dbc4d37a1c5d014937338031"><span class="std std-ref">set_verbosity()</span></a>.</p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>a const reference to the log. </dd>
+<p>See <a class="reference internal" href="#classppnf_1_1snopt7_1a884d935ebf52f8a8f3b75ed7631757b5"><span class="std std-ref">snopt7::log_type</span></a> for a description of the optimisation log. Logging is turned on/off via <a class="reference internal" href="#classppnf_1_1snopt7_1a82315116105e32bb115ee440ad76887c"><span class="std std-ref">set_verbosity()</span></a>.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>a const reference to the log. </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv2NK5pagmo6snopt713get_verbosityEv">
-<span id="pagmo::snopt7::get_verbosityC"></span><span class="target" id="classpagmo_1_1snopt7_1a4cac954df88e90de18f5bba622d22880"></span>unsigned int <code class="descname">get_verbosity</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv2NK5pagmo6snopt713get_verbosityEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4NK4ppnf6snopt713get_verbosityEv">
+<span id="_CPPv3NK4ppnf6snopt713get_verbosityEv"></span><span id="_CPPv2NK4ppnf6snopt713get_verbosityEv"></span><span id="ppnf::snopt7::get_verbosityC"></span><span class="target" id="classppnf_1_1snopt7_1ad849aa3be232d7da88d7bee925b0eb46"></span>unsigned int <code class="sig-name descname">get_verbosity</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf6snopt713get_verbosityEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Gets the verbosity level. </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>the verbosity level </dd>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>the verbosity level </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv2NK5pagmo6snopt78get_nameEv">
-<span id="pagmo::snopt7::get_nameC"></span><span class="target" id="classpagmo_1_1snopt7_1abc95871986bf697f52d02f8510c2a574"></span>std::string <code class="descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv2NK5pagmo6snopt78get_nameEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4NK4ppnf6snopt78get_nameEv">
+<span id="_CPPv3NK4ppnf6snopt78get_nameEv"></span><span id="_CPPv2NK4ppnf6snopt78get_nameEv"></span><span id="ppnf::snopt7::get_nameC"></span><span class="target" id="classppnf_1_1snopt7_1af938f6096972a37df56873e387d8c625"></span>std::string <code class="sig-name descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf6snopt78get_nameEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Algorithm name. </p>
 <p>One of the optional methods of any user-defined algorithm (UDA).</p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>a string containing the algorithm name </dd>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>a string containing the algorithm name </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv2NK5pagmo6snopt714get_extra_infoEv">
-<span id="pagmo::snopt7::get_extra_infoC"></span><span class="target" id="classpagmo_1_1snopt7_1a5989c3af35d29dbbf770e05a0f66f446"></span>std::string <code class="descname">get_extra_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv2NK5pagmo6snopt714get_extra_infoEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4NK4ppnf6snopt714get_extra_infoEv">
+<span id="_CPPv3NK4ppnf6snopt714get_extra_infoEv"></span><span id="_CPPv2NK4ppnf6snopt714get_extra_infoEv"></span><span id="ppnf::snopt7::get_extra_infoC"></span><span class="target" id="classppnf_1_1snopt7_1a0a081a2468121b27a03ad678b4b7f54f"></span>std::string <code class="sig-name descname">get_extra_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf6snopt714get_extra_infoEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get extra information about the algorithm. </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>a human-readable string containing useful information about the algorithm&#8217;s properties (e.g., the SNOPT7 user-set options, the selection/replacement policies, etc.), the snopt7_c library path </dd>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>a human-readable string containing useful information about the algorithm’s properties (e.g., the SNOPT7 user-set options, the selection/replacement policies, etc.), the snopt7_c library path </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv2N5pagmo6snopt79serializeER7Archive">
-<span id="pagmo::snopt7::serialize__ArchiveR"></span><em class="property">template </em>&lt;<em class="property">typename</em> Archive&gt;<br /><span class="target" id="classpagmo_1_1snopt7_1aa4e69f6d3026eae838ff24825dcf4888"></span>void <code class="descname">serialize</code><span class="sig-paren">(</span>Archive &amp;<em>ar</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo6snopt79serializeER7Archive" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4I0EN4ppnf6snopt79serializeEvR7Archivej">
+<span id="_CPPv3I0EN4ppnf6snopt79serializeER7Archivej"></span><span id="_CPPv2I0EN4ppnf6snopt79serializeER7Archivej"></span><span class="target" id="classppnf_1_1snopt7_1aba7e549719acdd7f8d943c7573c81761"></span>template&lt;typename <code class="sig-name descname">Archive</code>&gt;<br />void <code class="sig-name descname">serialize</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN4ppnf6snopt79serializeEvR7Archivej" title="ppnf::snopt7::serialize::Archive">Archive</a> &amp;<em>ar</em>, unsigned<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4ppnf6snopt79serializeEvR7Archivej" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Object serialization. </p>
-<p>This method will save/load <code class="docutils literal"><span class="pre">this</span></code> into the archive <code class="docutils literal"><span class="pre">ar</span></code>.</p>
-<p><dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">ar</span></code>: target archive.</li>
+<p>This method will save/load <code class="docutils literal notranslate"><span class="pre">this</span></code> into the archive <code class="docutils literal notranslate"><span class="pre">ar</span></code>.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">ar</span></code>: target archive.</p></li>
 </ul>
 </dd>
-<dt><strong>Exceptions</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">unspecified</span></code>: any exception thrown by the serialization of the UDA and of primitive types. </li>
+<dt><strong>Exceptions</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">unspecified</span></code>: any exception thrown by the serialization of the UDA and of primitive types. </p></li>
 </ul>
 </dd>
 </dl>
@@ -370,15 +344,14 @@ object pagmo::snopt7 passing <code class="docutils literal"><span class="pre">Tr
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv2N5pagmo6snopt718set_integer_optionERKNSt6stringEi">
-<span id="pagmo::snopt7::set_integer_option__ssCR.i"></span><span class="target" id="classpagmo_1_1snopt7_1a9b613be9bb95d705a45e34b92fdf0a7f"></span>void <code class="descname">set_integer_option</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>name</em>, int <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo6snopt718set_integer_optionERKNSt6stringEi" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4ppnf6snopt718set_integer_optionERKNSt6stringEi">
+<span id="_CPPv3N4ppnf6snopt718set_integer_optionERKNSt6stringEi"></span><span id="_CPPv2N4ppnf6snopt718set_integer_optionERKNSt6stringEi"></span><span id="ppnf::snopt7::set_integer_option__ssCR.i"></span><span class="target" id="classppnf_1_1snopt7_1a6a6b0861eb86de7bb62e319462f05d84"></span>void <code class="sig-name descname">set_integer_option</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>name</em>, int <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf6snopt718set_integer_optionERKNSt6stringEi" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set integer option. </p>
-<p>This method will set the optimisation integer option <code class="docutils literal"><span class="pre">name</span></code> to <code class="docutils literal"><span class="pre">value</span></code>. The optimisation options are passed to the snOptA API when calling <a class="reference internal" href="#classpagmo_1_1snopt7_1a155932af8634e03a1c43ab2dbdb240ad"><span class="std std-ref">evolve()</span></a>.</p>
-<p><dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">name</span></code>: of the option. </li>
-<li><code class="docutils literal"><span class="pre">value</span></code>: of the option. </li>
+<p>This method will set the optimisation integer option <code class="docutils literal notranslate"><span class="pre">name</span></code> to <code class="docutils literal notranslate"><span class="pre">value</span></code>. The optimisation options are passed to the snOptA API when calling <a class="reference internal" href="#classppnf_1_1snopt7_1a49f1159a46415ef999973fb0f79a1c44"><span class="std std-ref">evolve()</span></a>.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: of the option. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code>: of the option. </p></li>
 </ul>
 </dd>
 </dl>
@@ -386,14 +359,13 @@ object pagmo::snopt7 passing <code class="docutils literal"><span class="pre">Tr
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv2N5pagmo6snopt719set_integer_optionsERKNSt3mapINSt6stringEiEE">
-<span id="pagmo::snopt7::set_integer_options__std::map:ss.i:CR"></span><span class="target" id="classpagmo_1_1snopt7_1a78df3d5742318ec08fc2a60f8bc19d6a"></span>void <code class="descname">set_integer_options</code><span class="sig-paren">(</span><em class="property">const</em> std::map&lt;std::string, int&gt; &amp;<em>m</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo6snopt719set_integer_optionsERKNSt3mapINSt6stringEiEE" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4ppnf6snopt719set_integer_optionsERKNSt3mapINSt6stringEiEE">
+<span id="_CPPv3N4ppnf6snopt719set_integer_optionsERKNSt3mapINSt6stringEiEE"></span><span id="_CPPv2N4ppnf6snopt719set_integer_optionsERKNSt3mapINSt6stringEiEE"></span><span id="ppnf::snopt7::set_integer_options__std::map:ss.i:CR"></span><span class="target" id="classppnf_1_1snopt7_1a0b5361adc2c9992c4c2e141b16e671a5"></span>void <code class="sig-name descname">set_integer_options</code><span class="sig-paren">(</span><em class="property">const</em> std::map&lt;std::string, int&gt; &amp;<em>m</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf6snopt719set_integer_optionsERKNSt3mapINSt6stringEiEE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set integer options. </p>
-<p>This method will set the optimisation integer options contained in <code class="docutils literal"><span class="pre">m</span></code>. It is equivalent to calling <a class="reference internal" href="#classpagmo_1_1snopt7_1a9b613be9bb95d705a45e34b92fdf0a7f"><span class="std std-ref">set_integer_option()</span></a> passing all the name-value pairs in <code class="docutils literal"><span class="pre">m</span></code> as arguments.</p>
-<p><dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">m</span></code>: the name-value map that will be used to set the options. </li>
+<p>This method will set the optimisation integer options contained in <code class="docutils literal notranslate"><span class="pre">m</span></code>. It is equivalent to calling <a class="reference internal" href="#classppnf_1_1snopt7_1a6a6b0861eb86de7bb62e319462f05d84"><span class="std std-ref">set_integer_option()</span></a> passing all the name-value pairs in <code class="docutils literal notranslate"><span class="pre">m</span></code> as arguments.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">m</span></code>: the name-value map that will be used to set the options. </p></li>
 </ul>
 </dd>
 </dl>
@@ -401,26 +373,25 @@ object pagmo::snopt7 passing <code class="docutils literal"><span class="pre">Tr
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv2NK5pagmo6snopt719get_integer_optionsEv">
-<span id="pagmo::snopt7::get_integer_optionsC"></span><span class="target" id="classpagmo_1_1snopt7_1af384db865e3072165a43a6a0c91dbcbc"></span>std::map&lt;std::string, int&gt; <code class="descname">get_integer_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv2NK5pagmo6snopt719get_integer_optionsEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4NK4ppnf6snopt719get_integer_optionsEv">
+<span id="_CPPv3NK4ppnf6snopt719get_integer_optionsEv"></span><span id="_CPPv2NK4ppnf6snopt719get_integer_optionsEv"></span><span id="ppnf::snopt7::get_integer_optionsC"></span><span class="target" id="classppnf_1_1snopt7_1aa58ff6bfea814e1090478c7b1f398a88"></span>std::map&lt;std::string, int&gt; <code class="sig-name descname">get_integer_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf6snopt719get_integer_optionsEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get integer options. </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>the name-value map of optimisation integer options. </dd>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>the name-value map of optimisation integer options. </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv2N5pagmo6snopt718set_numeric_optionERKNSt6stringEd">
-<span id="pagmo::snopt7::set_numeric_option__ssCR.double"></span><span class="target" id="classpagmo_1_1snopt7_1ad49cf9e20c625702e41d3d70be585f4f"></span>void <code class="descname">set_numeric_option</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>name</em>, double <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo6snopt718set_numeric_optionERKNSt6stringEd" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4ppnf6snopt718set_numeric_optionERKNSt6stringEd">
+<span id="_CPPv3N4ppnf6snopt718set_numeric_optionERKNSt6stringEd"></span><span id="_CPPv2N4ppnf6snopt718set_numeric_optionERKNSt6stringEd"></span><span id="ppnf::snopt7::set_numeric_option__ssCR.double"></span><span class="target" id="classppnf_1_1snopt7_1a7a2aad42fff12fbce873149a1c8ff580"></span>void <code class="sig-name descname">set_numeric_option</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>name</em>, double <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf6snopt718set_numeric_optionERKNSt6stringEd" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set numeric option. </p>
-<p>This method will set the optimisation numeric option <code class="docutils literal"><span class="pre">name</span></code> to <code class="docutils literal"><span class="pre">value</span></code>. The optimisation options are passed to the snOptA API when calling <a class="reference internal" href="#classpagmo_1_1snopt7_1a155932af8634e03a1c43ab2dbdb240ad"><span class="std std-ref">evolve()</span></a>.</p>
-<p><dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">name</span></code>: of the option. </li>
-<li><code class="docutils literal"><span class="pre">value</span></code>: of the option. </li>
+<p>This method will set the optimisation numeric option <code class="docutils literal notranslate"><span class="pre">name</span></code> to <code class="docutils literal notranslate"><span class="pre">value</span></code>. The optimisation options are passed to the snOptA API when calling <a class="reference internal" href="#classppnf_1_1snopt7_1a49f1159a46415ef999973fb0f79a1c44"><span class="std std-ref">evolve()</span></a>.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">name</span></code>: of the option. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">value</span></code>: of the option. </p></li>
 </ul>
 </dd>
 </dl>
@@ -428,14 +399,13 @@ object pagmo::snopt7 passing <code class="docutils literal"><span class="pre">Tr
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv2N5pagmo6snopt719set_numeric_optionsERKNSt3mapINSt6stringEdEE">
-<span id="pagmo::snopt7::set_numeric_options__std::map:ss.double:CR"></span><span class="target" id="classpagmo_1_1snopt7_1af5f74ba54fbd41c9bfd7df209030f533"></span>void <code class="descname">set_numeric_options</code><span class="sig-paren">(</span><em class="property">const</em> std::map&lt;std::string, double&gt; &amp;<em>m</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo6snopt719set_numeric_optionsERKNSt3mapINSt6stringEdEE" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4ppnf6snopt719set_numeric_optionsERKNSt3mapINSt6stringEdEE">
+<span id="_CPPv3N4ppnf6snopt719set_numeric_optionsERKNSt3mapINSt6stringEdEE"></span><span id="_CPPv2N4ppnf6snopt719set_numeric_optionsERKNSt3mapINSt6stringEdEE"></span><span id="ppnf::snopt7::set_numeric_options__std::map:ss.double:CR"></span><span class="target" id="classppnf_1_1snopt7_1a89bd3a5e7059bd0c3dc29141079bb028"></span>void <code class="sig-name descname">set_numeric_options</code><span class="sig-paren">(</span><em class="property">const</em> std::map&lt;std::string, double&gt; &amp;<em>m</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf6snopt719set_numeric_optionsERKNSt3mapINSt6stringEdEE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set numeric options. </p>
-<p>This method will set the optimisation numeric options contained in <code class="docutils literal"><span class="pre">m</span></code>. It is equivalent to calling <a class="reference internal" href="#classpagmo_1_1snopt7_1ad49cf9e20c625702e41d3d70be585f4f"><span class="std std-ref">set_numeric_option()</span></a> passing all the name-value pairs in <code class="docutils literal"><span class="pre">m</span></code> as arguments.</p>
-<p><dl class="docutils">
-<dt><strong>Parameters</strong></dt>
-<dd><ul class="breatheparameterlist first last simple">
-<li><code class="docutils literal"><span class="pre">m</span></code>: the name-value map that will be used to set the options. </li>
+<p>This method will set the optimisation numeric options contained in <code class="docutils literal notranslate"><span class="pre">m</span></code>. It is equivalent to calling <a class="reference internal" href="#classppnf_1_1snopt7_1a7a2aad42fff12fbce873149a1c8ff580"><span class="std std-ref">set_numeric_option()</span></a> passing all the name-value pairs in <code class="docutils literal notranslate"><span class="pre">m</span></code> as arguments.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">m</span></code>: the name-value map that will be used to set the options. </p></li>
 </ul>
 </dd>
 </dl>
@@ -443,39 +413,39 @@ object pagmo::snopt7 passing <code class="docutils literal"><span class="pre">Tr
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv2NK5pagmo6snopt719get_numeric_optionsEv">
-<span id="pagmo::snopt7::get_numeric_optionsC"></span><span class="target" id="classpagmo_1_1snopt7_1ab5465aafc4a5f49d750a4b801d4432fe"></span>std::map&lt;std::string, double&gt; <code class="descname">get_numeric_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv2NK5pagmo6snopt719get_numeric_optionsEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4NK4ppnf6snopt719get_numeric_optionsEv">
+<span id="_CPPv3NK4ppnf6snopt719get_numeric_optionsEv"></span><span id="_CPPv2NK4ppnf6snopt719get_numeric_optionsEv"></span><span id="ppnf::snopt7::get_numeric_optionsC"></span><span class="target" id="classppnf_1_1snopt7_1a4b2fbe9fc66ea134aaa670967aa517e5"></span>std::map&lt;std::string, double&gt; <code class="sig-name descname">get_numeric_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf6snopt719get_numeric_optionsEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get numeric options. </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>the name-value map of optimisation numeric options. </dd>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>the name-value map of optimisation numeric options. </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv2N5pagmo6snopt721reset_integer_optionsEv">
-<span id="pagmo::snopt7::reset_integer_options"></span><span class="target" id="classpagmo_1_1snopt7_1aca50991bdb0d98b29ad234033c0d7b36"></span>void <code class="descname">reset_integer_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo6snopt721reset_integer_optionsEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4ppnf6snopt721reset_integer_optionsEv">
+<span id="_CPPv3N4ppnf6snopt721reset_integer_optionsEv"></span><span id="_CPPv2N4ppnf6snopt721reset_integer_optionsEv"></span><span id="ppnf::snopt7::reset_integer_options"></span><span class="target" id="classppnf_1_1snopt7_1afd6c833d04385efcba37362c3e1b5ad1"></span>void <code class="sig-name descname">reset_integer_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf6snopt721reset_integer_optionsEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Clear all integer options. </p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv2N5pagmo6snopt721reset_numeric_optionsEv">
-<span id="pagmo::snopt7::reset_numeric_options"></span><span class="target" id="classpagmo_1_1snopt7_1ac2f7b69b3e4d53ff0a8eee26812939f7"></span>void <code class="descname">reset_numeric_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv2N5pagmo6snopt721reset_numeric_optionsEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4N4ppnf6snopt721reset_numeric_optionsEv">
+<span id="_CPPv3N4ppnf6snopt721reset_numeric_optionsEv"></span><span id="_CPPv2N4ppnf6snopt721reset_numeric_optionsEv"></span><span id="ppnf::snopt7::reset_numeric_options"></span><span class="target" id="classppnf_1_1snopt7_1aadeb371408f7ef6934336258dd825756"></span>void <code class="sig-name descname">reset_numeric_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf6snopt721reset_numeric_optionsEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Clear all numeric options. </p>
 </dd></dl>
 
 <dl class="function">
-<dt id="_CPPv2NK5pagmo6snopt719get_last_opt_resultEv">
-<span id="pagmo::snopt7::get_last_opt_resultC"></span><span class="target" id="classpagmo_1_1snopt7_1a231aac139d1d4feadf75d28a50712c4f"></span>int <code class="descname">get_last_opt_result</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv2NK5pagmo6snopt719get_last_opt_resultEv" title="Permalink to this definition">¶</a><br /></dt>
+<dt id="_CPPv4NK4ppnf6snopt719get_last_opt_resultEv">
+<span id="_CPPv3NK4ppnf6snopt719get_last_opt_resultEv"></span><span id="_CPPv2NK4ppnf6snopt719get_last_opt_resultEv"></span><span id="ppnf::snopt7::get_last_opt_resultC"></span><span class="target" id="classppnf_1_1snopt7_1a5f051d1aaf543509770719c91d78243c"></span>int <code class="sig-name descname">get_last_opt_result</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf6snopt719get_last_opt_resultEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the result of the last optimisation. </p>
-<p><dl class="docutils">
-<dt><strong>Return</strong></dt>
-<dd>the result of the last call to snOptA, or 0 if no optimisations have been run yet. The meaning of the code returned is detailed in the Snopt7 User Manual available on line. <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference external" href="https://www-leland.stanford.edu/group/SOL/guides/sndoc7.pdf">https://www-leland.stanford.edu/group/SOL/guides/sndoc7.pdf</a></p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>the result of the last call to snOptA, or 0 if no optimisations have been run yet. The meaning of the code returned is detailed in the Snopt7 User Manual available on line. <div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://www-leland.stanford.edu/group/SOL/guides/sndoc7.pdf">https://www-leland.stanford.edu/group/SOL/guides/sndoc7.pdf</a></p>
 </div>
- </dd>
+ </p>
+</dd>
 </dl>
 </p>
 </dd></dl>
@@ -498,7 +468,7 @@ object pagmo::snopt7 passing <code class="docutils literal"><span class="pre">Tr
     </p>
     <p>
         &copy; Copyright 2018, pagmo development team.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.6.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.3.1.<br/>
     </p>
   </div>
 </footer>
