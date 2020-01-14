@@ -6,7 +6,7 @@ set -x
 # Exit on error.
 set -e
 
-PAGMO_VERSION="2.12.0"
+PAGMO_VERSION="2.13.0"
 
 if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *37 ]]; then
 	PYTHON_DIR="cp37-cp37m"
@@ -35,6 +35,17 @@ if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} != *27m ]]; then
 	#/opt/python/${PYTHON_DIR}/bin/ipcluster start --daemonize=True
 	#sleep 20
 fi
+
+
+# Install pybind11
+curl -L https://github.com/pybind/pybind11/archive/v2.4.3.tar.gz > v2.4.3
+tar xvf v2.4.3 > /dev/null 2>&1
+cd pybind11-2.4.3
+mkdir build
+cd build
+cmake ../ -DPYBIND11_TEST=OFF > /dev/null
+make install > /dev/null 2>&1
+cd ..
 
 # pagmo & pygmo
 curl -L  https://github.com/esa/pagmo2/archive/v${PAGMO_VERSION}.tar.gz > pagmo2.tar.gz

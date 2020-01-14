@@ -94,10 +94,11 @@ os.environ['PATH'] = os.environ['PATH'] + r';c:\\local\\lib'
 
 ## ------------------------------ INSTALL C/C++ DEPENDENCIES -------------------------------------##
 # Get pagmo from git, install the headers and the library
-wget(r'https://github.com/esa/pagmo2/archive/v2.12.0.tar.gz', 'pagmo.tar.gz')
+wget(r'https://github.com/esa/pagmo2/archive/v2.13.0.tar.gz', 'pagmo.tar.gz')
 run_command(r'7z x -aoa -oC:\\projects pagmo.tar.gz', verbose=False)
 run_command(r'7z x -aoa -oC:\\projects C:\\projects\\pagmo.tar', verbose=False)
-os.chdir('c:\\projects\\pagmo2-2.12.0')
+pagmo_base_dir = 'c:\\projects\\pagmo2-2.13.0'
+os.chdir(pagmo_base_dir)
 os.makedirs('build_pagmo')
 os.chdir('build_pagmo')
 run_command(r'cmake -G "MinGW Makefiles" .. ' +
@@ -122,6 +123,7 @@ if is_python_build:
         python_library = r'C:\\' + python_folder + r'\\python36.dll '
     else:
         raise RuntimeError('Unsupported Python build: ' + BUILD_TYPE)
+    python_path = r'c:\\' + python_folder
 
     # Set paths.
     pinterp = r"C:\\" + python_folder + r'\\python.exe'
@@ -131,13 +133,32 @@ if is_python_build:
     # Install pip and deps.
     wget(r'https://bootstrap.pypa.io/get-pip.py', 'get-pip.py')
     run_command(pinterp + ' get-pip.py --force-reinstall')
-    # NOTE: at the moment we have troubles installing ipyparallel.
-    # Just skip it.
-    # run_command(pip + ' install numpy cloudpickle ipyparallel')
     run_command(pip + ' install numpy cloudpickle dill')
+
+    # Download pybind11 https://github.com/pybind/pybind11/archive/v2.2.4.zipzz
+    wget(r'https://github.com/pybind/pybind11/archive/v2.2.4.zip', 'pybind11_224.zip')
+    run_command(r'unzip pybind11_224.zip', verbose=False)
+    # Move to the directory created and make piranha install its headers
+    os.chdir('pybind11-2.2.4') 
+    os.makedirs('build')
+    os.chdir('build')
+    print("Installing pybind11")
+    run_command(
+       r'cmake -G "MinGW Makefiles" ..' + r' ' +
+       r'-DPYBIND11_TEST=OFF' + r' ' +
+       r'-DPYTHON_PREFIX=' + python_path + r' ' +
+       r'-DPYTHON_EXECUTABLE=' + pinterp + r' ' +
+       r'-DPYTHON_INCLUDE_DIR=' + python_path + r'\\include' + r' ' +
+       r'-DPYTHON_LIBRARY=' + python_library
+       , verbose=True)
+    run_command(r'mingw32-make install VERBOSE=1', verbose=True)
+    os.chdir('../../')
+    print("pybind11 sucessfully installed .. continuing")
+
     if is_release_build:
         run_command(pip + ' install twine')
 
+    os.chdir(pagmo_base_dir)
     os.makedirs('build_pygmo')
     os.chdir('build_pygmo')
     run_command(r'cmake -G "MinGW Makefiles" .. ' +
@@ -146,10 +167,10 @@ if is_python_build:
                 r'-DPAGMO_BUILD_PAGMO=no ' +
                 r'-DCMAKE_BUILD_TYPE=Release ' +
                 r'-DCMAKE_CXX_FLAGS=-s ' +
-                r'-DBoost_PYTHON' + python_version + r'_LIBRARY_RELEASE=c:\\local\\lib\\libboost_python' + python_version + r'-mgw81-mt-x64-1_70.dll ' +
                 r'-DPYTHON_INCLUDE_DIR=C:\\' + python_folder + r'\\include ' +
                 r'-DPYTHON_EXECUTABLE=C:\\' + python_folder + r'\\python.exe ' +
                 r'-DPYTHON_LIBRARY=' + python_library +
+                r'-DBoost_PYTHON' + python_version + r'_LIBRARY_RELEASE=c:\\local\\lib\\libboost_python' + python_version + r'-mgw81-mt-x64-1_70.dll ' +
                 r'-DCMAKE_CXX_FLAGS="-D_hypot=hypot"')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
     os.chdir('..')
@@ -184,9 +205,9 @@ if is_python_build:
                 r'-DPPNF_BUILD_CPP=no ' +
                 r'-DPPNF_BUILD_PYTHON=yes ' +
                 r'-DCMAKE_CXX_FLAGS=-s ' +
-                r'-DBoost_PYTHON' + python_version + r'_LIBRARY_RELEASE=c:\\local\\lib\\libboost_python' + python_version + r'-mgw81-mt-x64-1_70.dll ' +
                 r'-DBoost_SYSTEM_LIBRARY_RELEASE=c:\\local\\lib\\libboost_system-mgw81-mt-x64-1_70.dll ' +
                 r'-DBoost_FILESYSTEM_LIBRARY_RELEASE=c:\\local\\lib\\libboost_filesystem-mgw81-mt-x64-1_70.dll ' +
+                r'-DBoost_PYTHON' + python_version + r'_LIBRARY_RELEASE=c:\\local\\lib\\libboost_python' + python_version + r'-mgw81-mt-x64-1_70.dll ' +
                 r'-DPYTHON_INCLUDE_DIR=C:\\' + python_folder + r'\\include ' +
                 r'-DPYTHON_EXECUTABLE=C:\\' + python_folder + r'\\python.exe ' +
                 r'-DPYTHON_LIBRARY=' + python_library +

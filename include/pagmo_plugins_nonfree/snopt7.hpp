@@ -51,8 +51,10 @@ see https://www.gnu.org/licenses/. */
 #include <limits> // std::numeric_limits
 #include <map>
 #include <mutex>
+#include <pagmo/algorithm.hpp>
 #include <pagmo/algorithms/not_population_based.hpp>
 #include <pagmo/population.hpp>
+#include <pagmo/s11n.hpp>
 #include <string>
 #include <vector>
 
@@ -220,8 +222,8 @@ public:
      *        will let pagmo regulate logs and screen_output via its pagmo::algorithm::set_verbosity mechanism.
      * @param snopt7_c_library The path to the snopt7_c library.
      * @param minor_version The minor version of your Snopt7 library. Only two APIs are supported at the
-     *        moment: a) 7.2 - 7.6 and b) 7.7. You may try to use this plugin with different minor version numbers, but at your
-     *        own risk.
+     *        moment: a) 7.2 - 7.6 and b) 7.7. You may try to use this plugin with different minor version numbers, but
+     * at your own risk.
      *
      */
     snopt7(bool screen_output = false, std::string snopt7_c_library = "/usr/local/lib/libsnopt7_c.so",
@@ -232,8 +234,21 @@ public:
     unsigned int get_verbosity() const;
     std::string get_name() const;
     std::string get_extra_info() const;
+    /// Object serialization
+    /**
+     * This method will save/load \p this into the archive \p ar.
+     *
+     * @param ar target archive.
+     *
+     * @throws unspecified any exception thrown by the serialization of the UDA and of primitive types.
+     */
     template <typename Archive>
-    void serialize(Archive &ar, unsigned);
+    void serialize(Archive &ar, unsigned)
+    {
+        pagmo::detail::archive(ar, boost::serialization::base_object<not_population_based>(*this), m_snopt7_c_library,
+                               m_minor_version, m_integer_opts, m_numeric_opts, m_last_opt_res, m_screen_output,
+                               m_verbosity, m_log);
+    }
     void set_integer_option(const std::string &, int);
     void set_integer_options(const std::map<std::string, int> &);
     std::map<std::string, int> get_integer_options() const;
@@ -270,7 +285,7 @@ private:
     void save(Archive &ar) const = delete;
 };
 
-} // namespace pagmo
+} // namespace ppnf
 
 PAGMO_S11N_ALGORITHM_EXPORT_KEY(ppnf::snopt7)
 

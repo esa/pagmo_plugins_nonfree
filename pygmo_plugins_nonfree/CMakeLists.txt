@@ -3,9 +3,6 @@ if(${PYTHON_VERSION_MAJOR} LESS 2 OR (${PYTHON_VERSION_MAJOR} EQUAL 2 AND ${PYTH
     message(FATAL_ERROR "Minimum supported Python version is 2.7.")
 endif()
 
-# Finding pygmo
-find_package(Pygmo REQUIRED)
-
 # Setting the rpath
 if(UNIX)
     # On unix platforms, we set the rpath of the pygmo libraries
@@ -15,26 +12,19 @@ if(UNIX)
     set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 endif()
 
-# The name of the BP target to link to depends on the Boost and Python versions.
-# NOTE: since Boost 1.67, the naming of the Boost.Python library has changed to include the
-# major and minor python version as a suffix. See the release notes:
-# https://www.boost.org/users/history/version_1_67_0.html
-if(${Boost_MAJOR_VERSION} GREATER 1 OR (${Boost_MAJOR_VERSION} EQUAL 1 AND ${Boost_MINOR_VERSION} GREATER 66))
-    set(PYGMO_PLUGINS_NONFREE_BP_TARGET "Boost::python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR}")
-else()
-    if(${PYTHON_VERSION_MAJOR} EQUAL 2)
-        set(PYGMO_PLUGINS_NONFREE_BP_TARGET "Boost::python")
-    else()
-        set(PYGMO_PLUGINS_NONFREE_BP_TARGET "Boost::python3")
-    endif()
-endif()
-
 # Create the module
 YACMA_PYTHON_MODULE(core core.cpp docstrings.cpp)
-find_package(pagmo_plugins_nonfree REQUIRED)
-find_package(pygmo REQUIRED)
 
-target_link_libraries(core PRIVATE Pagmo_plugins_nonfree::pagmo_plugins_nonfree ${PYGMO_PLUGINS_NONFREE_BP_TARGET} Boost::disable_autolinking Pygmo::pygmo)
+# Finding pagmo_plugins_nonfree
+find_package(pagmo_plugins_nonfree REQUIRED)
+
+# Finding pybind11
+find_package(pybind11 REQUIRED)
+
+target_link_libraries(core PRIVATE Pagmo_plugins_nonfree::pagmo_plugins_nonfree ${PYGMO_PLUGINS_NONFREE_BP_TARGET} Boost::disable_autolinking)
+target_include_directories(core SYSTEM PRIVATE "${pybind11_INCLUDE_DIR}")
+target_compile_definitions(core PRIVATE "${pybind11_DEFINITIONS}")
+
 set_property(TARGET core PROPERTY CXX_STANDARD 11)
 set_property(TARGET core PROPERTY CXX_STANDARD_REQUIRED YES)
 set_property(TARGET core PROPERTY CXX_EXTENSIONS NO)

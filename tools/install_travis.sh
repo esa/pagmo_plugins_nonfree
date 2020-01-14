@@ -57,7 +57,7 @@ elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
     # Documentation.
     cd ../build
     # At the moment conda has these packages only for Python 3.4. Install via pip instead.
-    pip install 'sphinx<1.6' 'breathe<4.12' requests[security] 'sphinx-bootstrap-theme<0.5';
+    pip install 'sphinx-bootstrap-theme';
     # Run doxygen and check the output.
     cd ../doc/doxygen;
     export DOXYGEN_OUTPUT=`doxygen 2>&1 >/dev/null`;
@@ -70,17 +70,18 @@ elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
     # Copy the images into the xml output dir (this is needed by sphinx).
     cp images/* xml/;
     cd ../sphinx/;
-    export SPHINX_OUTPUT=`make html 2>&1 >/dev/null`;
-    if [[ "${SPHINX_OUTPUT}" != "" ]]; then
-        echo "Sphinx encountered some problem:";
-        echo "${SPHINX_OUTPUT}";
-        exit 1;
-    fi
+    #export SPHINX_OUTPUT=`make html 2>&1 >/dev/null`;
+    make html;
+    #if [[ "${SPHINX_OUTPUT}" != "" ]]; then
+    #    echo "Sphinx encountered some problem:";
+    #    echo "${SPHINX_OUTPUT}";
+    #    exit 1;
+    #fi
     echo "Sphinx ran successfully";
     make doctest;
-    if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != "Python36" ]]; then
-        echo "${PAGMO_PLUGINS_NONFREE_BUILD} build detected, skipping the docs upload. Only available for Python36 builds";
-        # Stop here. Docs are uploaded only in the Python36 build.
+    if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != "Python37" ]]; then
+        echo "${PAGMO_PLUGINS_NONFREE_BUILD} build detected, skipping the docs upload. Only available for Python37 builds";
+        # Stop here. Docs are uploaded only in the Python37 build.
         exit 0;
     fi
     if [[ "${TRAVIS_PULL_REQUEST}" != "false" ]]; then
