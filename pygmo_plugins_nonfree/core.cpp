@@ -1,7 +1,9 @@
+#include <boost/numeric/conversion/cast.hpp>
+#include <pagmo/s11n.hpp>
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
-#include <boost/archive/text_oarchive.hpp>
-#include <boost/numeric/conversion/cast.hpp> 
+#include <sstream>
+#include <string>
 
 #include <iostream>
 
@@ -13,8 +15,8 @@
 
 namespace py = pybind11;
 
-// Serialization support 
-template<typename UDA>
+// Serialization support
+template <typename UDA>
 py::tuple uda_pickle_getstate(const UDA &uda)
 {
     // The idea here is that first we extract a char array
@@ -29,7 +31,7 @@ py::tuple uda_pickle_getstate(const UDA &uda)
     return py::make_tuple(py::bytes(s.data(), boost::numeric_cast<py::size_t>(s.size())));
 }
 
-template<typename UDA>
+template <typename UDA>
 UDA uda_pickle_setstate(py::tuple state)
 {
     // Similarly, first we extract a bytes object from the Python state,
@@ -37,9 +39,9 @@ UDA uda_pickle_setstate(py::tuple state)
     // to deserialized the object.
     if (py::len(state) != 1) {
         py_throw(PyExc_ValueError, ("the state tuple passed for uda deserialization "
-                                           "must have 1 element, but instead it has "
-                                           + std::to_string(py::len(state)) + " element(s)")
-                                              .c_str());
+                                    "must have 1 element, but instead it has "
+                                    + std::to_string(py::len(state)) + " element(s)")
+                                       .c_str());
     }
 
     auto ptr = PyBytes_AsString(state[0].ptr());
@@ -96,10 +98,10 @@ PYBIND11_MODULE(core, m)
     worhp_.def("set_verbosity", &ppnf::worhp::set_verbosity);
     worhp_.def("get_name", &ppnf::worhp::get_name);
     worhp_.def("get_extra_info", &ppnf::worhp::get_extra_info);
-    worhp_.def("set_integer_option", &ppnf::worhp::set_integer_option, ppnf::worhp_set_integer_option_docstring().c_str(),
-               py::arg("name"), py::arg("value"));
-    worhp_.def("set_numeric_option", &ppnf::worhp::set_numeric_option, ppnf::worhp_set_numeric_option_docstring().c_str(),
-               py::arg("name"), py::arg("value"));
+    worhp_.def("set_integer_option", &ppnf::worhp::set_integer_option,
+               ppnf::worhp_set_integer_option_docstring().c_str(), py::arg("name"), py::arg("value"));
+    worhp_.def("set_numeric_option", &ppnf::worhp::set_numeric_option,
+               ppnf::worhp_set_numeric_option_docstring().c_str(), py::arg("name"), py::arg("value"));
     worhp_.def("set_bool_option", &ppnf::worhp::set_bool_option, ppnf::worhp_set_bool_option_docstring().c_str(),
                py::arg("name"), py::arg("value"));
     worhp_.def(py::pickle(&uda_pickle_getstate<ppnf::worhp>, &uda_pickle_setstate<ppnf::worhp>));
