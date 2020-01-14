@@ -1,11 +1,10 @@
 #include <boost/numeric/conversion/cast.hpp>
+#include <iostream>
 #include <pagmo/s11n.hpp>
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
 #include <sstream>
 #include <string>
-
-#include <iostream>
 
 #include <pagmo_plugins_nonfree/snopt7.hpp>
 #include <pagmo_plugins_nonfree/worhp.hpp>
