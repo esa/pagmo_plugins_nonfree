@@ -6,7 +6,9 @@ set -x
 # Exit on error.
 set -e
 
-PAGMO_VERSION="2.13.0"
+PAGMO_VERSION="2.14.0"
+PYGMO_VERSION="2.14.0"
+
 
 if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *37 ]]; then
 	PYTHON_DIR="cp37-cp37m"
@@ -47,12 +49,12 @@ cmake ../ -DPYBIND11_TEST=OFF > /dev/null
 make install > /dev/null 2>&1
 cd ..
 
-# pagmo & pygmo
+# pagmo
 curl -L  https://github.com/esa/pagmo2/archive/v${PAGMO_VERSION}.tar.gz > pagmo2.tar.gz
 tar xzf pagmo2.tar.gz
 cd pagmo2-${PAGMO_VERSION}
-mkdir build_pagmo
-cd build_pagmo
+mkdir build
+cd build
 cmake -DBoost_NO_BOOST_CMAKE=ON \
 	-DPAGMO_WITH_EIGEN3=yes \
 	-DPAGMO_WITH_NLOPT=yes \
@@ -60,8 +62,13 @@ cmake -DBoost_NO_BOOST_CMAKE=ON \
 	-DCMAKE_BUILD_TYPE=Release ../;
 make -j2 install
 cd ../
-mkdir build_pygmo
-cd build_pygmo
+
+# pygmo
+curl -L  https://github.com/esa/pygmo2/archive/v${PYGMO_VERSION}.tar.gz > pygmo2.tar.gz
+tar xzf pygmo2.tar.gz
+cd pygmo2-${PYGMO_VERSION}
+mkdir build
+cd build
 cmake -DBoost_NO_BOOST_CMAKE=ON \
 	-DCMAKE_BUILD_TYPE=Release \
 	-DPAGMO_BUILD_PYGMO=yes \
