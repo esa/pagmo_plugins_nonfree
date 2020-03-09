@@ -26,7 +26,7 @@ class snopt7_test_case(_ut.TestCase):
         
         # We test the intermodule operability
         pop2 = _test_intermodule(pop)
-        self.assertEqual(pop.get_f[0], pop2.get_f[0])
+        self.assertEqual(pop.get_f()[0], pop2.get_f()[0])
 
 
 class worhp_test_case(_ut.TestCase):
@@ -38,7 +38,7 @@ class worhp_test_case(_ut.TestCase):
 
     def run_test_interface(self):
         import pygmo as pg
-        from .core import worhp
+        from .core import worhp, _test_intermodule
         uda = worhp(screen_output=False,
                      library="/usr/local/lib/libworhp.so")
         algo = pg.algorithm(uda)
@@ -49,10 +49,10 @@ class worhp_test_case(_ut.TestCase):
         name = algo.get_name()
         extra_info = algo.get_extra_info()
         pop = pg.population(pg.ackley(10),1)
-        
+
         # We test the intermodule operability
         pop2 = _test_intermodule(pop)
-        self.assertEqual(pop.get_f[0], pop2.get_f[0])
+        self.assertEqual(pop.get_f()[0], pop2.get_f()[0])
 
 
 def run_test_suite(level=0):
