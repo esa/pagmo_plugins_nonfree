@@ -242,7 +242,7 @@ if is_python_build:
     import shutil
     os.chdir('wheel')
     shutil.move(pygmo_plugins_nonfree_install_path, r'.')
-    wheel_libs = 'mingw_wheel_libs_python{}.txt'.format(python_version)
+    wheel_libs = 'mingw_wheel_libs.txt'
     DLL_LIST = [_[:-1] for _ in open(wheel_libs, 'r').readlines()]
     for _ in DLL_LIST:
         shutil.copy(_, 'pygmo_plugins_nonfree')
