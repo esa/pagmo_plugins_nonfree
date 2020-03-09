@@ -1,4 +1,3 @@
-c:\local\lib\libboost_python37-mgw81-mt-x64-1_70.dll
 c:\local\lib\libboost_serialization-mgw81-mt-x64-1_70.dll
 c:\local\lib\libboost_system-mgw81-mt-x64-1_70.dll
 c:\local\lib\libboost_filesystem-mgw81-mt-x64-1_70.dll
