@@ -59,6 +59,10 @@ UDA uda_pickle_setstate(py::tuple state)
     return uda;
 }
 
+pagmo::population test_intermodule(const pagmo::population &pop) {
+    return pop;
+}
+
 PYBIND11_MODULE(core, m)
 {
     // This function needs to be called before doing anything with threads.
@@ -70,6 +74,9 @@ PYBIND11_MODULE(core, m)
     // throughout the whole definition of the module.
     py::options options;
     options.disable_function_signatures();
+
+    // expose a trivial function to test the intermodule operability
+    m.def("_test_intermodule", &test_intermodule);
 
     // snopt7
     py::class_<ppnf::snopt7> snopt7_(m, "snopt7", ppnf::snopt7_docstring().c_str());

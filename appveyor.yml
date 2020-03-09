@@ -8,9 +8,6 @@ environment:
     - BUILD_TYPE: "MSVC_64_Python37"
       COMPILER: MSVC15
       PLATFORM: "x64"
-    - BUILD_TYPE: "MinGW_64_Debug"
-    - BUILD_TYPE: "MinGW_64_Python37"
-    - BUILD_TYPE: "MinGW_64_Python36"
   global:
     PLATFORMTOOLSET: "v140"
 
@@ -27,11 +24,6 @@ install:
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] conda update --all -y
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] conda create -y --name ppnf python=3.7 cmake pagmo-devel pygmo pybind11
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] call activate ppnf
-
-# Rename sh.exe as sh.exe in PATH interferes with MinGW.
-- if [%BUILD_TYPE%]==[MinGW_64_Debug] rename "C:\Program Files\Git\usr\bin\sh.exe" "sh2.exe"
-- if [%BUILD_TYPE%]==[MinGW_64_Python36] rename "C:\Program Files\Git\usr\bin\sh.exe" "sh2.exe"
-- if [%BUILD_TYPE%]==[MinGW_64_Python37] rename "C:\Program Files\Git\usr\bin\sh.exe" "sh2.exe"
 
 build_script:
 - if [%BUILD_TYPE%]==[MSVC_64_Debug] mkdir build
@@ -50,12 +42,6 @@ build_script:
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] cd build_pygmo_plugins_nonfree
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] cmake -G "Visual Studio 14 2015 Win64" -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_INSTALL_PREFIX=%CONDA_PREFIX%/Library -DPPNF_BUILD_CPP=NO -DPPNF_BUILD_PYTHON=YES -DPPNF_BUILD_TESTS=NO ..
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] cmake --build . --config Release --target install
-
-- if [%BUILD_TYPE%]==[MinGW_64_Debug] C:\Python36-x64\python.exe tools\install_appveyor_mingw.py
-
-- if [%BUILD_TYPE%]==[MinGW_64_Python36] C:\Python36-x64\python.exe tools\install_appveyor_mingw.py
-
-- if [%BUILD_TYPE%]==[MinGW_64_Python37] C:\Python36-x64\python.exe tools\install_appveyor_mingw.py
 
 test_script:
 - if [%BUILD_TYPE%]==[MSVC_64_Debug] ctest --output-on-failure
