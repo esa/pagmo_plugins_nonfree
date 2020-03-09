@@ -9,11 +9,11 @@ env:
 
 matrix:
   include:
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="manylinux64Py37" DOCKER_IMAGE="pagmo2/manylinux1_x86_64_with_deps"
+    - env: PAGMO_PLUGINS_NONFREE_BUILD="manylinux64Py37" DOCKER_IMAGE="pagmo2/manylinux2000_x86_64_with_deps"
       sudo: required
       services:
       - docker
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="manylinux64Py36" DOCKER_IMAGE="pagmo2/manylinux1_x86_64_with_deps"
+    - env: PAGMO_PLUGINS_NONFREE_BUILD="manylinux64Py36" DOCKER_IMAGE="pagmo2/manylinux2000_x86_64_with_deps"
       sudo: required
       services:
       - docker
