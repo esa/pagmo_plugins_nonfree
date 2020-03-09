@@ -12,7 +12,7 @@ class snopt7_test_case(_ut.TestCase):
 
     def run_test_interface(self):
         import pygmo as pg
-        from .core import snopt7
+        from .core import snopt7, _test_intermodule
         uda = snopt7(screen_output=False,
                      library="/usr/local/lib/libsnopt7.so")
         algo = pg.algorithm(uda)
@@ -23,8 +23,11 @@ class snopt7_test_case(_ut.TestCase):
         name = algo.get_name()
         extra_info = algo.get_extra_info()
         pop = pg.population(pg.ackley(10),1)
-        # We cannot test the evolve as the library is not there in the CI
-        # pop = algo.evolve(pop)
+        
+        # We test the intermodule operability
+        pop2 = _test_intermodule(pop)
+        self.assertEqual(pop.get_f[0], pop2.get_f[0])
+
 
 class worhp_test_case(_ut.TestCase):
     """Test case for the worhp uda class.
@@ -46,8 +49,10 @@ class worhp_test_case(_ut.TestCase):
         name = algo.get_name()
         extra_info = algo.get_extra_info()
         pop = pg.population(pg.ackley(10),1)
-        # We cannot test the evolve as the library is not there in the CI
-        # pop = algo.evolve(pop)
+        
+        # We test the intermodule operability
+        pop2 = _test_intermodule(pop)
+        self.assertEqual(pop.get_f[0], pop2.get_f[0])
 
 
 def run_test_suite(level=0):
