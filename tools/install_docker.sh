@@ -12,11 +12,9 @@ PYGMO_VERSION="2.14.0"
 
 if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *37 ]]; then
 	PYTHON_DIR="cp37-cp37m"
-	BOOST_PYTHON_LIBRARY_NAME="libboost_python37.so"
 	PYTHON_VERSION="37"
 elif [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *36 ]]; then
 	PYTHON_DIR="cp36-cp36m"
-	BOOST_PYTHON_LIBRARY_NAME="libboost_python36.so"
 	PYTHON_VERSION="36"
 else
 	echo "Invalid build type: ${PAGMO_PLUGINS_NONFREE_BUILD}"
@@ -27,17 +25,7 @@ cd
 cd install
 
 # Python mandatory deps.
-/opt/python/${PYTHON_DIR}/bin/pip install cloudpickle numpy
-# Python optional deps.
-if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} != *27m ]]; then
-	# NOTE: do not install the optional deps for the py27m build: some of the deps
-	# don't have binary wheels available for py27m, which makes pip try to
-	# install them from source (which fails).
-	/opt/python/${PYTHON_DIR}/bin/pip install dill ipyparallel
-	#/opt/python/${PYTHON_DIR}/bin/ipcluster start --daemonize=True
-	#sleep 20
-fi
-
+/opt/python/${PYTHON_DIR}/bin/pip install cloudpickle numpy dill ipyparallel
 
 # Install pybind11
 curl -L https://github.com/pybind/pybind11/archive/v2.4.3.tar.gz > v2.4.3
@@ -61,7 +49,7 @@ cmake -DBoost_NO_BOOST_CMAKE=ON \
 	-DPAGMO_WITH_IPOPT=yes \
 	-DCMAKE_BUILD_TYPE=Release ../;
 make -j2 install
-cd ../
+cd ../..
 
 # pygmo
 curl -L  https://github.com/esa/pygmo2/archive/v${PYGMO_VERSION}.tar.gz > pygmo2.tar.gz

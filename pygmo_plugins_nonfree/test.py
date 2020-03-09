@@ -23,7 +23,8 @@ class snopt7_test_case(_ut.TestCase):
         name = algo.get_name()
         extra_info = algo.get_extra_info()
         pop = pg.population(pg.ackley(10),1)
-        pop = algo.evolve(pop)
+        # We cannot test the evolve as the library is not there in the CI
+        # pop = algo.evolve(pop)
 
 class worhp_test_case(_ut.TestCase):
     """Test case for the worhp uda class.
@@ -45,7 +46,8 @@ class worhp_test_case(_ut.TestCase):
         name = algo.get_name()
         extra_info = algo.get_extra_info()
         pop = pg.population(pg.ackley(10),1)
-        pop = algo.evolve(pop)
+        # We cannot test the evolve as the library is not there in the CI
+        # pop = algo.evolve(pop)
 
 
 def run_test_suite(level=0):
