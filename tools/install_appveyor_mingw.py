@@ -94,10 +94,10 @@ os.environ['PATH'] = os.environ['PATH'] + r';c:\\local\\lib'
 
 ## ------------------------------ INSTALL C/C++ DEPENDENCIES -------------------------------------##
 # Get pagmo from git, install the headers and the library
-wget(r'https://github.com/esa/pagmo2/archive/v2.13.0.tar.gz', 'pagmo.tar.gz')
+wget(r'https://github.com/esa/pagmo2/archive/v2.14.0.tar.gz', 'pagmo.tar.gz')
 run_command(r'7z x -aoa -oC:\\projects pagmo.tar.gz', verbose=False)
 run_command(r'7z x -aoa -oC:\\projects C:\\projects\\pagmo.tar', verbose=False)
-pagmo_base_dir = 'c:\\projects\\pagmo2-2.13.0'
+pagmo_base_dir = 'c:\\projects\\pagmo2-2.14.0'
 os.chdir(pagmo_base_dir)
 os.makedirs('build_pagmo')
 os.chdir('build_pagmo')
@@ -158,23 +158,23 @@ if is_python_build:
     if is_release_build:
         run_command(pip + ' install twine')
 
-    os.chdir(pagmo_base_dir)
+    # Get pygmo from git, install the headers and the library
+    wget(r'https://github.com/esa/pygmo2/archive/v2.14.0.tar.gz', 'pygmo.tar.gz')
+    run_command(r'7z x -aoa -oC:\\projects pygmo.tar.gz', verbose=False)
+    run_command(r'7z x -aoa -oC:\\projects C:\\projects\\pygmo.tar', verbose=False)
+    pygmo_base_dir = 'c:\\projects\\pygmo2-2.14.0'
+    os.chdir(pygmo_base_dir)
     os.makedirs('build_pygmo')
     os.chdir('build_pygmo')
     run_command(r'cmake -G "MinGW Makefiles" .. ' +
                 common_cmake_opts +
-                r'-DPAGMO_BUILD_PYGMO=yes ' +
-                r'-DPAGMO_BUILD_PAGMO=no ' +
                 r'-DCMAKE_BUILD_TYPE=Release ' +
-                r'-DCMAKE_CXX_FLAGS=-s ' +
                 r'-DPYTHON_INCLUDE_DIR=C:\\' + python_folder + r'\\include ' +
                 r'-DPYTHON_EXECUTABLE=C:\\' + python_folder + r'\\python.exe ' +
                 r'-DPYTHON_LIBRARY=' + python_library +
-                r'-DBoost_PYTHON' + python_version + r'_LIBRARY_RELEASE=c:\\local\\lib\\libboost_python' + python_version + r'-mgw81-mt-x64-1_70.dll ' +
                 r'-DCMAKE_CXX_FLAGS="-D_hypot=hypot"')
     run_command(r'mingw32-make install VERBOSE=1 -j2')
     os.chdir('..')
-
 
 ## Proceed to the build of ppnf-----------------------------------------------------------------------------------------------
 ## NOTE: at the moment boost 1.70 seems to have problem to autodetect
