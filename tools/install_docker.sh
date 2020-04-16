@@ -6,8 +6,8 @@ set -x
 # Exit on error.
 set -e
 
-PAGMO_VERSION="2.14.0"
-PYGMO_VERSION="2.14.0"
+PAGMO_VERSION="2.15.0"
+PYGMO_VERSION="2.15.0"
 
 
 if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *38 ]]; then

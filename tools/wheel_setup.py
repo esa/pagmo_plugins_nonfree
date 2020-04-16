@@ -31,7 +31,7 @@ CLASSIFIERS = [
     'Programming Language :: Python :: 3'
 ]
 KEYWORDS = 'science math physics optimization ai evolutionary-computing parallel-computing metaheuristics'
-INSTALL_REQUIRES = ['numpy>=1.11', 'cloudpickle', 'pygmo>=2.14']
+INSTALL_REQUIRES = ['numpy>=1.11', 'cloudpickle', 'pygmo>=2.15']
 PLATFORMS = ['Unix', 'Windows', 'OSX']
 
 
