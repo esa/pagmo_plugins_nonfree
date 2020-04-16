@@ -60,7 +60,11 @@ void StatusMsg(OptVar *o, Workspace *w, Params *p, Control *c)
 
 void StatusMsgString(OptVar *o, Workspace *w, Params *p, Control *c, char message[])
 {
+#ifdef _MSC_VER //Avoiding a warning in MSVC builds
+    strcpy_s(message, sizeof(char) * 47, "All went great!!!! What a glamorous Success!!\n");
+#else
     strcpy(message, "All went great!!!! What a glamorous Success!!\n");
+#endif
 }
 
 void WorhpFree(OptVar *o, Workspace *w, Params *p, Control *c)
@@ -117,7 +121,7 @@ void SetWorhpPrint(worhp_print_t l1) {}
 
 void WorhpVersion(int *major, int *minor, char patch[PATCH_STRING_LENGTH])
 {
-#ifdef __STDC_LIB_EXT1__ //Avoiding a warning in MSVC builds
+#ifdef _MSC_VER //Avoiding a warning in MSVC builds
     strcpy_s(patch, sizeof(char) * PATCH_STRING_LENGTH, "1");
 #else
     strcpy(patch, "1");
