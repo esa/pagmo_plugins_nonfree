@@ -1,15 +1,6 @@
 # Python version check.
-if(${PYTHON_VERSION_MAJOR} LESS 2 OR (${PYTHON_VERSION_MAJOR} EQUAL 2 AND ${PYTHON_VERSION_MINOR} LESS 7))
-    message(FATAL_ERROR "Minimum supported Python version is 2.7.")
-endif()
-
-# Setting the rpath
-if(UNIX)
-    # On unix platforms, we set the rpath of the pygmo libraries
-    # to the lib subdirectory of the install prefix. This allows
-    # to install pygmo in nonstandard locations (e.g., ~/.local)
-    # without having to muck around with library search paths.
-    set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+if(${PYTHON_VERSION_MAJOR} LESS 3 )
+    message(FATAL_ERROR "Minimum supported Python version is 3.x")
 endif()
 
 # Create the module

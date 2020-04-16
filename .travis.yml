@@ -9,83 +9,83 @@ env:
 
 matrix:
   include:
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="manylinux64Py38" DOCKER_IMAGE="pagmo2/manylinux2010_x86_64_with_deps"
-      sudo: required
-      services:
-      - docker
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="manylinux64Py37" DOCKER_IMAGE="pagmo2/manylinux2010_x86_64_with_deps"
-      sudo: required
-      services:
-      - docker
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="manylinux64Py36" DOCKER_IMAGE="pagmo2/manylinux2010_x86_64_with_deps"
-      sudo: required
-      services:
-      - docker
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugGCC"
-      dist: bionic
-      compiler: gcc
-      os: linux
-      addons:
-        apt:
-          sources:
-          - ubuntu-toolchain-r-test
-          packages:
-          - binutils-gold
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseGCC"
-      dist: bionic
-      compiler: gcc
-      os: linux
-      addons:
-        apt:
-          sources:
-          - ubuntu-toolchain-r-test
-          packages:
-          - binutils-gold
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="CoverageGCC"
-      dist: bionic
-      compiler: gcc
-      os: linux
-      addons:
-        apt:
-          sources:
-          - ubuntu-toolchain-r-test
-          packages:
-          - binutils-gold
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseClang"
-      dist: bionic
-      compiler: clang
-      os: linux
-      addons:
-        apt:
-          sources:
-          - ubuntu-toolchain-r-test
-          packages:
-          - clang-7
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="DebugClang"
-      dist: bionic
-      compiler: clang
-      os: linux
-      addons:
-        apt:
-          sources:
-          - ubuntu-toolchain-r-test
-          packages:
-          - clang-7
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="Python37"
-      dist: bionic
-      compiler: gcc
-      os: linux
-      addons:
-        apt:
-          sources:
-          - ubuntu-toolchain-r-test
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXDebug"
+    #- env: PAGMO_PLUGINS_NONFREE_BUILD="manylinux64Py38" DOCKER_IMAGE="pagmo2/manylinux2010_x86_64_with_deps"
+    #  sudo: required
+    #  services:
+    #  - docker
+    #- env: PAGMO_PLUGINS_NONFREE_BUILD="manylinux64Py37" DOCKER_IMAGE="pagmo2/manylinux2010_x86_64_with_deps"
+    #  sudo: required
+    #  services:
+    #  - docker
+    #- env: PAGMO_PLUGINS_NONFREE_BUILD="manylinux64Py36" DOCKER_IMAGE="pagmo2/manylinux2010_x86_64_with_deps"
+    #  sudo: required
+    #  services:
+    #  - docker
+    #- env: PAGMO_PLUGINS_NONFREE_BUILD="DebugGCC"
+    #  dist: bionic
+    #  compiler: gcc
+    #  os: linux
+    #  addons:
+    #    apt:
+    #      sources:
+    #      - ubuntu-toolchain-r-test
+    #      packages:
+    #      - binutils-gold
+    #- env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseGCC"
+    #  dist: bionic
+    #  compiler: gcc
+    #  os: linux
+    #  addons:
+    #    apt:
+    #      sources:
+    #      - ubuntu-toolchain-r-test
+    #      packages:
+    #      - binutils-gold
+    #- env: PAGMO_PLUGINS_NONFREE_BUILD="CoverageGCC"
+    #  dist: bionic
+    #  compiler: gcc
+    #  os: linux
+    #  addons:
+    #    apt:
+    #      sources:
+    #      - ubuntu-toolchain-r-test
+    #      packages:
+    #      - binutils-gold
+    #- env: PAGMO_PLUGINS_NONFREE_BUILD="ReleaseClang"
+    #  dist: bionic
+    #  compiler: clang
+    #  os: linux
+    #  addons:
+    #    apt:
+    #      sources:
+    #      - ubuntu-toolchain-r-test
+    #      packages:
+    #      - clang-7
+    #- env: PAGMO_PLUGINS_NONFREE_BUILD="DebugClang"
+    #  dist: bionic
+    #  compiler: clang
+    #  os: linux
+    #  addons:
+    #    apt:
+    #      sources:
+    #      - ubuntu-toolchain-r-test
+    #      packages:
+    #      - clang-7
+    #- env: PAGMO_PLUGINS_NONFREE_BUILD="Python37"
+    #  dist: bionic
+    #  compiler: gcc
+    #  os: linux
+    #  addons:
+    #    apt:
+    #      sources:
+    #      - ubuntu-toolchain-r-test
+    - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXDebug" PAGMO_PLUGINS_NONFREE_BUILD_TYPE="Debug"
       os: osx
       osx_image: xcode10.3
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXRelease"
+    - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXRelease" PAGMO_PLUGINS_NONFREE_BUILD_TYPE="Release"
       os: osx
       osx_image: xcode10.3
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXPython37"
+    - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXPython37" PAGMO_PLUGINS_NONFREE_BUILD_TYPE="Release"
       os: osx
       osx_image: xcode10.3
 script:
@@ -96,4 +96,5 @@ script:
     # command, so that if install_deps.sh fails the whole build fails immediately
     # rather than executing install_travis.sh as well. See
     # https://github.com/travis-ci/travis-ci/issues/1066
-    - ../tools/install_deps.sh && ../tools/install_travis.sh
+    - if [[ "${DCGP_BUILD}" == OSX* ]]; then bash ../tools/travis_osx.sh; fi
+    - if [[ "${DCGP_BUILD}" != OSX* ]]; then bash ../tools/install_deps.sh && ../tools/install_travis.sh; fi

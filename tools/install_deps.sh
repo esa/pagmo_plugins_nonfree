@@ -22,13 +22,9 @@ if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
     conda_pkgs="boost cmake pagmo-devel cxx-compiler"
 
     # Only Python builds will need these
-    if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "Python37" || "${PAGMO_PLUGINS_NONFREE_BUILD}" == "OSXPython37" ]]; then
+    if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "Python37" ]]; then
         conda_pkgs="$conda_pkgs python=3.7 pygmo pybind11" 
     fi
-
-    #if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == OSX* ]]; then
-    #    conda_pkgs="$conda_pkgs clangdev<10"
-    #fi
 
     if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
         conda_pkgs="$conda_pkgs graphviz doxygen sphinx breathe"
@@ -37,7 +33,7 @@ if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
     # We create the conda environment and activate it
     conda create -q -p $deps_dir -y
     source activate $deps_dir
-    conda install $conda_pkgs -y
+    conda install -c conda-forge/label/cf201901 $conda_pkgs -y
 fi
 
 set +e
