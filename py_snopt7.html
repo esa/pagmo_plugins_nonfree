@@ -1,9 +1,9 @@
  <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>Py: Sparse Nonlinear OPTimizer (SNOPT) &#8212; pagmo_plugins_nonfree 0.20 documentation</title>
+    <title>Py: Sparse Nonlinear OPTimizer (SNOPT) &#8212; pagmo_plugins_nonfree 0.21 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pagmo_plugins_nonfree.css" />
@@ -31,7 +31,7 @@
         </button>
         <a class="navbar-brand" href="index.html"><span><img src="_static/logo_small_html.png"></span>
            </a>
-        <span class="navbar-text navbar-version pull-left"><b>0.20</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.21</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -100,9 +100,9 @@
       
   <div class="section" id="py-sparse-nonlinear-optimizer-snopt">
 <h1>Py: Sparse Nonlinear OPTimizer (SNOPT)<a class="headerlink" href="#py-sparse-nonlinear-optimizer-snopt" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="pygmo_plugins_nonfree.snopt7">
-<em class="property">class </em><code class="sig-prename descclassname">pygmo_plugins_nonfree.</code><code class="sig-name descname">snopt7</code><span class="sig-paren">(</span><em class="sig-param">screen_output = False</em>, <em class="sig-param">library = &quot;/usr/local/lib/libsnopt7.so&quot;</em>, <em class="sig-param">minor_version=6</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.snopt7" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmo_plugins_nonfree.</code><code class="sig-name descname">snopt7</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">screen_output</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">library</span><span class="o">=</span><span class="default_value">'/usr/local/lib/libsnopt7.so'</span></em>, <em class="sig-param"><span class="n">minor_version</span><span class="o">=</span><span class="default_value">6</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.snopt7" title="Permalink to this definition">¶</a></dt>
 <dd><p>SNOPT 7 - (Sparse Nonlinear OPTimizer, Version 7)</p>
 <p>This class is a user-defined algorithm (UDA) that contains a plugin to the Sparse Nonlinear OPTimizer (SNOPT, V7)
 solver, a software package for large-scale nonlinear optimization. SNOPT7 is a powerful solver that is able to handle
@@ -175,7 +175,7 @@ is deactivated in this plugin for pagmo.</p>
 <p><a class="reference external" href="https://web.stanford.edu/group/SOL/guides/sndoc7.pdf">https://web.stanford.edu/group/SOL/guides/sndoc7.pdf</a>.</p>
 </div>
 <p>See also the docs of the C++ class <a class="reference internal" href="cpp_snopt7.html#_CPPv4N4ppnf6snopt7E" title="ppnf::snopt7"><code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">ppnf::snopt7</span></code></a>.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pygmo_plugins_nonfree.snopt7.get_log">
 <code class="sig-name descname">get_log</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.snopt7.get_log" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
@@ -259,7 +259,7 @@ Snopt7’s screen logging is disabled by default. It can be activated upon const
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmo_plugins_nonfree.snopt7.replacement">
 <em class="property">property </em><code class="sig-name descname">replacement</code><a class="headerlink" href="#pygmo_plugins_nonfree.snopt7.replacement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Individual replacement policy.</p>
@@ -294,7 +294,7 @@ replaced by the optimised individual.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmo_plugins_nonfree.snopt7.selection">
 <em class="property">property </em><code class="sig-name descname">selection</code><a class="headerlink" href="#pygmo_plugins_nonfree.snopt7.selection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Individual selection policy.</p>
@@ -329,9 +329,9 @@ for optimisation.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmo_plugins_nonfree.snopt7.set_integer_option">
-<code class="sig-name descname">set_integer_option</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.snopt7.set_integer_option" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_integer_option</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.snopt7.set_integer_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set integer option.</p>
 <p>This method will set the optimisation integer option p name to p value.
 The optimisation options are passed to the snOptA API when calling evolve().</p>
@@ -532,9 +532,9 @@ The optimisation options are passed to the snOptA API when calling evolve().</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmo_plugins_nonfree.snopt7.set_numeric_option">
-<code class="sig-name descname">set_numeric_option</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.snopt7.set_numeric_option" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_numeric_option</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.snopt7.set_numeric_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set numeric option.</p>
 <p>This method will set the optimisation numeric option p name to p value.
 The optimisation options are passed to the snOptA API when calling evolve().</p>
@@ -670,9 +670,9 @@ The optimisation options are passed to the snOptA API when calling evolve().</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmo_plugins_nonfree.snopt7.set_random_sr_seed">
-<code class="sig-name descname">set_random_sr_seed</code><span class="sig-paren">(</span><em class="sig-param">seed</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.snopt7.set_random_sr_seed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_random_sr_seed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seed</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.snopt7.set_random_sr_seed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the seed for the <code class="docutils literal notranslate"><span class="pre">&quot;random&quot;</span></code> selection/replacement policies.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -707,7 +707,7 @@ election/replacement policies (see <code class="xref py py-attr docutils literal
     </p>
     <p>
         &copy; Copyright 2018, pagmo development team.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.1.<br/>
     </p>
   </div>
 </footer>

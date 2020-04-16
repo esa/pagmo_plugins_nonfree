@@ -1,9 +1,9 @@
  <!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
     <meta charset="utf-8" />
-    <title>Py: We Optimize Really Huge Problems (WORHP) &#8212; pagmo_plugins_nonfree 0.20 documentation</title>
+    <title>Py: We Optimize Really Huge Problems (WORHP) &#8212; pagmo_plugins_nonfree 0.21 documentation</title>
     <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pagmo_plugins_nonfree.css" />
@@ -30,7 +30,7 @@
         </button>
         <a class="navbar-brand" href="index.html"><span><img src="_static/logo_small_html.png"></span>
            </a>
-        <span class="navbar-text navbar-version pull-left"><b>0.20</b></span>
+        <span class="navbar-text navbar-version pull-left"><b>0.21</b></span>
       </div>
 
         <div class="collapse navbar-collapse nav-collapse">
@@ -99,9 +99,9 @@
       
   <div class="section" id="py-we-optimize-really-huge-problems-worhp">
 <h1>Py: We Optimize Really Huge Problems (WORHP)<a class="headerlink" href="#py-we-optimize-really-huge-problems-worhp" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="py class">
 <dt id="pygmo_plugins_nonfree.worhp">
-<em class="property">class </em><code class="sig-prename descclassname">pygmo_plugins_nonfree.</code><code class="sig-name descname">worhp</code><span class="sig-paren">(</span><em class="sig-param">screen_output = false</em>, <em class="sig-param">library = 'usrlocalliblibworhp.so'</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.worhp" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="sig-prename descclassname">pygmo_plugins_nonfree.</code><code class="sig-name descname">worhp</code><span class="sig-paren">(</span><em class="sig-param">screen_output = false</em>, <em class="sig-param">library = '\usr\local\lib\libworhp.so'</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.worhp" title="Permalink to this definition">¶</a></dt>
 <dd><p>WORHP - (We Optimize Really Huge Problems)</p>
 <p>This class is a user-defined algorithm (UDA) that contains a plugin to the WORHP (We Optimize Really Huge Problems)
 solver, a software package for large-scale nonlinear optimization. WORHP is a powerful solver that is able to handle
@@ -164,7 +164,7 @@ in undefined behaviour.</p>
 <p><a class="reference external" href="https://worhp.de/">https://worhp.de/</a></p>
 </div>
 <p>See also the docs of the C++ class <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">worhp::worhp</span></code>.</p>
-<dl class="method">
+<dl class="py method">
 <dt id="pygmo_plugins_nonfree.worhp.get_log">
 <code class="sig-name descname">get_log</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.worhp.get_log" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="field-list simple">
@@ -260,7 +260,7 @@ is, they might not necessarily be consistent with worhp’s notion of feasibilit
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmo_plugins_nonfree.worhp.replacement">
 <em class="property">property </em><code class="sig-name descname">replacement</code><a class="headerlink" href="#pygmo_plugins_nonfree.worhp.replacement" title="Permalink to this definition">¶</a></dt>
 <dd><p>Individual replacement policy.</p>
@@ -295,7 +295,7 @@ replaced by the optimised individual.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmo_plugins_nonfree.worhp.selection">
 <em class="property">property </em><code class="sig-name descname">selection</code><a class="headerlink" href="#pygmo_plugins_nonfree.worhp.selection" title="Permalink to this definition">¶</a></dt>
 <dd><p>Individual selection policy.</p>
@@ -330,9 +330,9 @@ for optimisation.</p>
 </dl>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmo_plugins_nonfree.worhp.set_bool_option">
-<code class="sig-name descname">set_bool_option</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.worhp.set_bool_option" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_bool_option</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.worhp.set_bool_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set bool option.</p>
 <p>This method will set the optimisation boolean option p name to p value.
 The optimisation options are passed to the worhp API when calling evolve().</p>
@@ -350,9 +350,9 @@ The optimisation options are passed to the worhp API when calling evolve().</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmo_plugins_nonfree.worhp.set_integer_option">
-<code class="sig-name descname">set_integer_option</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.worhp.set_integer_option" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_integer_option</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.worhp.set_integer_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set integer option.</p>
 <p>This method will set the optimisation integer option p name to p value.
 The optimisation options are passed to the worhp API when calling evolve().</p>
@@ -370,9 +370,9 @@ The optimisation options are passed to the worhp API when calling evolve().</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmo_plugins_nonfree.worhp.set_numeric_option">
-<code class="sig-name descname">set_numeric_option</code><span class="sig-paren">(</span><em class="sig-param">name</em>, <em class="sig-param">value</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.worhp.set_numeric_option" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_numeric_option</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">name</span></em>, <em class="sig-param"><span class="n">value</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.worhp.set_numeric_option" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set numeric option.</p>
 <p>This method will set the optimisation numeric option p name to p value.
 The optimisation options are passed to the worhp API when calling evolve().</p>
@@ -390,9 +390,9 @@ The optimisation options are passed to the worhp API when calling evolve().</p>
 </div>
 </dd></dl>
 
-<dl class="method">
+<dl class="py method">
 <dt id="pygmo_plugins_nonfree.worhp.set_random_sr_seed">
-<code class="sig-name descname">set_random_sr_seed</code><span class="sig-paren">(</span><em class="sig-param">seed</em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.worhp.set_random_sr_seed" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">set_random_sr_seed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">seed</span></em><span class="sig-paren">)</span><a class="headerlink" href="#pygmo_plugins_nonfree.worhp.set_random_sr_seed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Set the seed for the <code class="docutils literal notranslate"><span class="pre">&quot;random&quot;</span></code> selection/replacement policies.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
@@ -427,7 +427,7 @@ election/replacement policies (see <code class="xref py py-attr docutils literal
     </p>
     <p>
         &copy; Copyright 2018, pagmo development team.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 2.4.4.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.1.<br/>
     </p>
   </div>
 </footer>
