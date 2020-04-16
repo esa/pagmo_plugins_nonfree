@@ -6,8 +6,8 @@ set -x
 # Exit on error.
 set -e
 
-PAGMO_VERSION="2.15.0"
-PYGMO_VERSION="2.15.0"
+PAGMO_LATEST="2.14.0"
+PYBIND11_VERSION="2.4.3"
 
 
 if [[ ${PAGMO_PLUGINS_NONFREE_BUILD} == *38 ]]; then
@@ -31,20 +31,20 @@ cd install
 /opt/python/${PYTHON_DIR}/bin/pip install cloudpickle numpy dill ipyparallel
 
 # Install pybind11
-git clone https://github.com/pybind/pybind11.git
-cd pybind11
-git checkout 4f72ef846fe8453596230ac285eeaa0ce3278bb4
+curl -L https://github.com/pybind/pybind11/archive/v${PYBIND11_VERSION}.tar.gz > v${PYBIND11_VERSION}
+tar xvf v${PYBIND11_VERSION} > /dev/null 2>&1
+cd pybind11-${PYBIND11_VERSION}
 mkdir build
 cd build
-pwd
-cmake ../ -DPYBIND11_TEST=NO > /dev/null
+cmake ../ -DPYBIND11_TEST=OFF > /dev/null
 make install > /dev/null 2>&1
+cd ..
 cd ..
 
 # pagmo
-curl -L  https://github.com/esa/pagmo2/archive/v${PAGMO_VERSION}.tar.gz > pagmo2.tar.gz
+curl -L  https://github.com/esa/pagmo2/archive/v${PAGMO_LATEST}.tar.gz > pagmo2.tar.gz
 tar xzf pagmo2.tar.gz
-cd pagmo2-${PAGMO_VERSION}
+cd pagmo2-${PAGMO_LATEST}
 mkdir build
 cd build
 cmake -DBoost_NO_BOOST_CMAKE=ON \
@@ -56,9 +56,9 @@ make -j2 install
 cd ../..
 
 # pygmo
-curl -L  https://github.com/esa/pygmo2/archive/v${PYGMO_VERSION}.tar.gz > pygmo2.tar.gz
+curl -L  https://github.com/esa/pygmo2/archive/v${PAGMO_LATEST}.tar.gz > pygmo2.tar.gz
 tar xzf pygmo2.tar.gz
-cd pygmo2-${PYGMO_VERSION}
+cd pygmo2-${PAGMO_LATEST}
 mkdir build
 cd build
 cmake -DBoost_NO_BOOST_CMAKE=ON \
