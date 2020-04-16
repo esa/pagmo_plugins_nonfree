@@ -85,6 +85,7 @@ matrix:
     #  os: osx
     - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXPython37"
       os: osx
+      osx_image: xcode11.3
 script:
 - mkdir build
 - cd build
