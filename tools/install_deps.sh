@@ -15,6 +15,8 @@ if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
     fi
     export deps_dir=$HOME/local
     export PATH="$HOME/miniconda/bin:$PATH"
+    export PATH="$deps_dir/bin:$PATH"
+
     bash miniconda.sh -b -p $HOME/miniconda
     conda config --add channels conda-forge --force
 
@@ -31,9 +33,8 @@ if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
     fi
 
     # We create the conda environment and activate it
-    conda create -q -p $deps_dir -y
+    conda create -q -p $deps_dir -y $conda_pkgs
     source activate $deps_dir
-    conda install -c conda-forge/label/cf201901 $conda_pkgs -y
 
     # For python builds, we install pybind11 from the specific commit
     # needed to guarantee interoperability with pyaudi/pygmo

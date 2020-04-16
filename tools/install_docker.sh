@@ -30,11 +30,10 @@ cd install
 # Python mandatory deps.
 /opt/python/${PYTHON_DIR}/bin/pip install cloudpickle numpy dill ipyparallel
 
-# Install pybind11
+# Install pybind11 (needs to be compatible with pagmo version)
 curl -L https://github.com/pybind/pybind11/archive/v2.4.3.tar.gz > v2.4.3
 tar xvf v2.4.3 > /dev/null 2>&1
 cd pybind11-2.4.3
-git checkout 4f72ef846fe8453596230ac285eeaa0ce3278bb4
 mkdir build
 cd build
 cmake ../ -DPYBIND11_TEST=OFF > /dev/null
