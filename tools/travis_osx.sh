@@ -32,11 +32,11 @@ export CXX=clang++
 export CC=clang
 
 cmake \
+    -DCMAKE_INSTALL_PREFIX=$deps_dir \
     -DCMAKE_PREFIX_PATH=$deps_dir \
     -DBoost_NO_BOOST_CMAKE=ON \
     -DCMAKE_BUILD_TYPE=${PAGMO_PLUGINS_NONFREE_BUILD_TYPE} \
     -DPPNF_BUILD_TESTS=$build_cpp_tests \
-    -DCMAKE_CXX_FLAGS="-g0 -O2" \
     ..
 
 make -j2 VERBOSE=1;
