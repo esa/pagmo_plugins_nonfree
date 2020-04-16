@@ -14,7 +14,7 @@ conda config --add channels conda-forge --force
 
 conda_pkgs="boost-cpp cmake pagmo-devel cxx-compiler"
 
-if [[ "${DCGP_BUILD}" == *Python37* ]]; then
+if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == *Python37* ]]; then
     build_cpp_tests="no"
     conda_pkgs="$conda_pkgs python=3.7 pygmo pybind11"
 else 
