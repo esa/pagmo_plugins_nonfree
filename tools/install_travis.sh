@@ -6,7 +6,6 @@ set -x
 # Exit on error.
 set -e
 
-# If needed we make sure conda stuff is found
 if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
     export deps_dir=$HOME/local
     export PATH="$HOME/miniconda/bin:$PATH"
@@ -26,33 +25,36 @@ elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "CoverageGCC" ]]; then
     make -j2 VERBOSE=1;
     ctest -VV;
     bash <(curl -s https://codecov.io/bash) -x gcov-5;
-elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "DebugClang" ]]; then
-    CXX=clang++-7 CC=clang-7 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Debug -DPPNF_BUILD_TESTS=yes ../;
-    make -j2 VERBOSE=1;
-    ctest -VV;
-elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "ReleaseClang" ]]; then
-    CXX=clang++-7 CC=clang-7 cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=yes ../;
-    make -j2 VERBOSE=1;
-    ctest -VV;
-elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "OSXDebug" ]]; then
-    CXX=clang++ CC=clang cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Debug -DPPNF_BUILD_TESTS=yes -DCMAKE_CXX_FLAGS="-g0 -O2" ../;
-    make -j2 VERBOSE=1;
-    ctest -VV;
-elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == "OSXRelease" ]]; then
-    CXX=clang++ CC=clang cmake -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=yes ../;
-    make -j2 VERBOSE=1;
-    ctest -VV;
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
+    # We need this to be the directory where pybind11 was installed 
+    # in the script install_deps.sh
+    export PPNF_BUILD_DIR=`pwd`
     # Install pagmo_plugins_nonfree
-    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=no -DPPNF_BUILD_CPP=yes -DPPNF_BUILD_PYTHON=no ../;
+    cmake \
+        -DCMAKE_INSTALL_PREFIX=$deps_dir \
+        -DCMAKE_PREFIX_PATH=$deps_dir \
+        -DBoost_NO_BOOST_CMAKE=ON \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DPPNF_BUILD_TESTS=no \
+        -DPPNF_BUILD_CPP=yes \
+        -DPPNF_BUILD_PYTHON=no \
+        ..
     make install VERBOSE=1;
     # Install pygmo_plugins_nonfree.
-    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=no -DPPNF_BUILD_CPP=no -DPPNF_BUILD_PYTHON=yes ../;
+    cmake \
+        -DCMAKE_INSTALL_PREFIX=$deps_dir \
+        -DCMAKE_PREFIX_PATH=$deps_dir \
+        -DCMAKE_BUILD_TYPE=Release \
+        -DPPNF_BUILD_TESTS=no \
+        -DPPNF_BUILD_CPP=no \
+        -DPPNF_BUILD_PYTHON=yes \
+        -Dpybind11_DIR=$PPNF_BUILD_DIR/share/cmake/pybind11/ \
+        ..
     make install VERBOSE=1;
     # Move out of the build dir.
     cd ../tools
     # Run the test suite
-    python -c "import pygmo_plugins_nonfree as ppnf; ppnf.test.run_test_suite(1)";
+    python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()";
 
     # Documentation.
     cd ../build
@@ -120,22 +122,6 @@ elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
             exit 1;
         fi
     done
-elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == OSXPython* ]]; then
-    export CXX=clang++
-    export CC=clang
-    # Install pagmo_plugins_nonfree first
-    cd ..;
-    mkdir build_pagmo_plugins_nonfree;
-    cd build_pagmo_plugins_nonfree;
-    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=no -DPPNF_BUILD_CPP=yes -DPPNF_BUILD_PYTHON=no ../;
-    make install VERBOSE=1;
-    # Install pygmo_plugins_nonfree.
-    cd ../build;
-    cmake -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_TESTS=no -DPPNF_BUILD_CPP=no -DPPNF_BUILD_PYTHON=yes ../;
-    make install VERBOSE=1;
-    # Move out of the build dir.
-    cd ../tools
-    python -c "import pygmo_plugins_nonfree as ppnf; ppnf.test.run_test_suite(1)";
 elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == manylinux* ]]; then
     cd ..;
     docker pull ${DOCKER_IMAGE};

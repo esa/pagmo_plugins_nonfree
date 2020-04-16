@@ -79,15 +79,22 @@ matrix:
         apt:
           sources:
           - ubuntu-toolchain-r-test
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXDebug"
+    - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXDebug" PAGMO_PLUGINS_NONFREE_BUILD_TYPE="Debug"
       os: osx
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXRelease"
+      osx_image: xcode10.3
+    - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXRelease" PAGMO_PLUGINS_NONFREE_BUILD_TYPE="Release"
       os: osx
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXPython37"
+      osx_image: xcode10.3
+    - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXPython37" PAGMO_PLUGINS_NONFREE_BUILD_TYPE="Release"
       os: osx
-      osx_image: xcode6.4
+      osx_image: xcode10.3
 script:
-- mkdir build
-- cd build
-- source ../tools/install_deps.sh
-- source ../tools/install_travis.sh
+    - mkdir build
+    - cd build
+    # NOTE: currently, travis does not stop automatically if one of these
+    # 2 scripts returns an error code. Thus, we run them together as a single
+    # command, so that if install_deps.sh fails the whole build fails immediately
+    # rather than executing install_travis.sh as well. See
+    # https://github.com/travis-ci/travis-ci/issues/1066
+    - if [[ "${DCGP_BUILD}" == OSX* ]]; then bash ../tools/travis_osx.sh; fi
+    - if [[ "${DCGP_BUILD}" != OSX* ]]; then bash ../tools/install_deps.sh && ../tools/install_travis.sh; fi
