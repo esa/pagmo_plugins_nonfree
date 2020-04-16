@@ -34,6 +34,7 @@ cd install
 curl -L https://github.com/pybind/pybind11/archive/v2.4.3.tar.gz > v2.4.3
 tar xvf v2.4.3 > /dev/null 2>&1
 cd pybind11-2.4.3
+git checkout 4f72ef846fe8453596230ac285eeaa0ce3278bb4
 mkdir build
 cd build
 cmake ../ -DPYBIND11_TEST=OFF > /dev/null
@@ -94,7 +95,8 @@ auditwheel repair dist/pygmo_plugins_nonfree* -w ./dist2
 # Try to install it and run the tests.
 cd /
 /opt/python/${PYTHON_DIR}/bin/pip install /pagmo_plugins_nonfree/build/wheel/dist2/pygmo_plugins_nonfree*
-/opt/python/${PYTHON_DIR}/bin/python -c "import pygmo_plugins_nonfree; pygmo_plugins_nonfree.test.run_test_suite(1)"
+/opt/python/${PYTHON_DIR}/bin/python -c "import pygmo_plugins_nonfree; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()";
+
 
 # Upload to pypi. This variable will contain something if this is a tagged build (vx.y.z), otherwise it will be empty.
 export PAGMO_PLUGINS_NONFREE_RELEASE_VERSION=`echo "${TRAVIS_TAG}"|grep -E 'v[0-9]+\.[0-9]+.*'|cut -c 2-`
