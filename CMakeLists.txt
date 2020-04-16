@@ -26,7 +26,7 @@ if((NOT PPNF_BUILD_CPP) AND (NOT PPNF_BUILD_PYTHON))
 endif()
 
 # Main ppnf project version.
-set(pagmo_plugins_nonfree_VERSION 0.20)
+set(pagmo_plugins_nonfree_VERSION 0.21)
 
 if(PPNF_BUILD_CPP)
     # Initial setup of a pagmo_plugins_nonfree build.
