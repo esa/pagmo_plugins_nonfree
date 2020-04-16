@@ -59,6 +59,8 @@ if(YACMA_COMPILER_IS_MSVC)
   # and enable the bigobj option.
   list(APPEND PAGMO_PLUGINS_NONFREECXX_FLAGS_DEBUG "-DNOMINMAX" "/wd4459" "/wd4127" "/wd4702" "/wd4251" "/bigobj")
   list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE "-DNOMINMAX" "/wd4459" "/wd4127" "/wd4702" "/wd4251" "/bigobj")
+  # On Windows systems and pybind11 this may be needed to avoid this issue (https://github.com/boostorg/system/issues/32)
+  add_definitions(-DHAVE_SNPRINTF)
 endif()
 if(MINGW)
 	# Flag needed to deal with big binaries in MinGW.
