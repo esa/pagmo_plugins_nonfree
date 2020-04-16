@@ -30,13 +30,14 @@ cd install
 # Python mandatory deps.
 /opt/python/${PYTHON_DIR}/bin/pip install cloudpickle numpy dill ipyparallel
 
-# Install pybind11 (needs to be compatible with pagmo version)
-curl -L https://github.com/pybind/pybind11/archive/v2.4.3.tar.gz > v2.4.3
-tar xvf v2.4.3 > /dev/null 2>&1
-cd pybind11-2.4.3
+# Install pybind11
+git clone https://github.com/pybind/pybind11.git
+cd pybind11
+git checkout 4f72ef846fe8453596230ac285eeaa0ce3278bb4
 mkdir build
 cd build
-cmake ../ -DPYBIND11_TEST=OFF > /dev/null
+pwd
+cmake ../ -DPYBIND11_TEST=NO > /dev/null
 make install > /dev/null 2>&1
 cd ..
 
@@ -94,7 +95,7 @@ auditwheel repair dist/pygmo_plugins_nonfree* -w ./dist2
 # Try to install it and run the tests.
 cd /
 /opt/python/${PYTHON_DIR}/bin/pip install /pagmo_plugins_nonfree/build/wheel/dist2/pygmo_plugins_nonfree*
-/opt/python/${PYTHON_DIR}/bin/python -c "import pygmo_plugins_nonfree; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()";
+/opt/python/${PYTHON_DIR}/bin/python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()";
 
 
 # Upload to pypi. This variable will contain something if this is a tagged build (vx.y.z), otherwise it will be empty.

@@ -78,7 +78,7 @@ else
 
     # Move out of the build dir.
     cd ../tools
-    python -c "import pygmo_plugins_nonfree; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()";
+    python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()";
 fi
 
 set +e
