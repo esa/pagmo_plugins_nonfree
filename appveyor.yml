@@ -2,12 +2,10 @@ environment:
   TWINE_PASSWORD:
     secure: fqy2DKVE2zM+97vNPB8xgw3ae3SDPkL/T8RvC6s4ncY=
   matrix:
-    - BUILD_TYPE: "MSVC_64_Debug"
-      COMPILER: MSVC15
-      PLATFORM: "x64"
-    - BUILD_TYPE: "MSVC_64_Python37"
-      COMPILER: MSVC15
-      PLATFORM: "x64"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      BUILD_TYPE: "MSVC_64_Debug"
+    - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
+      BUILD_TYPE: "MSVC_64_Python37"
   global:
     PLATFORMTOOLSET: "v140"
 
@@ -40,7 +38,7 @@ build_script:
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] cd ..
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] mkdir build_pygmo_plugins_nonfree
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] cd build_pygmo_plugins_nonfree
-- if [%BUILD_TYPE%]==[MSVC_64_Python37] cmake -G "Visual Studio 15 2017 Win64" -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_INSTALL_PREFIX=%CONDA_PREFIX%/Library -DPPNF_BUILD_CPP=NO -DPPNF_BUILD_PYTHON=YES -DPPNF_BUILD_TESTS=NO ..
+- if [%BUILD_TYPE%]==[MSVC_64_Python37] cmake -G "Visual Studio 15 2017 Win64" -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_INSTALL_PREFIX=%CONDA_PREFIX%/Library -DPPNF_BUILD_CPP=NO -DPPNF_BUILD_PYTHON=YES -DPPNF_BUILD_TESTS=NO -DPYBIND11_CPP_STANDARD=-std=c++17 ..
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] cmake --build . --config Release --target install
 
 test_script:
