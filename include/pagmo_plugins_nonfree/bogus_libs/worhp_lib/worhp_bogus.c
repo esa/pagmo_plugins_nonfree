@@ -53,11 +53,6 @@ void Worhp(OptVar *o, Workspace *w, Params *p, Control *c)
     }
 }
 
-void WorhpDiag(OptVar *o, Workspace *w, Params *p, Control *c)
-{
-    printf("Many Diagnostics!!!! So helpful!!\n");
-}
-
 void StatusMsg(OptVar *o, Workspace *w, Params *p, Control *c)
 {
     printf("All went great!!!! What a glamorous Success!!\n");
