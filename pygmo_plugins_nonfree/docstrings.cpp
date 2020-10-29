@@ -324,7 +324,7 @@ WORHP - (We Optimize Really Huge Problems)
 This class is a user-defined algorithm (UDA) that contains a plugin to the WORHP (We Optimize Really Huge Problems)
 solver, a software package for large-scale nonlinear optimization. WORHP is a powerful solver that is able to handle
 robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. The wrapper
-was developed around the version 1.12 of WORHP and the Full Feature Interface (FFI) using the Unified Solver
+was developed around the version 1.14 of WORHP and the Full Feature Interface (FFI) using the Unified Solver
 Interface and the Reverse Communication paradigm (see worhp user manual).
 
 Intended use::
@@ -351,14 +351,14 @@ or L1 merit function.
 Worhp needs first and second order derivatives, which can be supplied by the user, or approximated by finite
 differences or quasi-Newton methods.
 
-In order to support pagmo's population-based optimisation model, *snopt7* selects
+In order to support pagmo's population-based optimisation model, *worhp* selects
 a single individual from the input *population* to be optimised.
 If the optimisation produces an improved individual (as established by pagmo comparison criteria),
 the optimised individual will be inserted back into the population.
 
 Args:
-   screen_output (``bool``): when True will activate the original screen output from SNOPT7 and deactivate the logging system based on
-     :class:`~pygmo_snopt7.set_verbosity()`.
+   screen_output (``bool``): when True will activate the original screen output from WORHP and deactivate the logging system based on
+     :class:`~pygmo_worhp.set_verbosity()`.
    library (``str``): the worhp library filename in your system (absolute path included)
 
 Raises:
@@ -421,8 +421,8 @@ Examples:
     >>> pop = algo.evolve(pop) # doctest: +SKIP
      Error (Read_XML_File): Could not open file param.xml.
      WorhpFromXML: Could not open parameter file, using default values.
-    WORHP version is (library): 1.12.1
-    WORHP version is (plugin headers): 1.12.1
+    WORHP version is (library): 1.14.0
+    WORHP version is (plugin headers): 1.14.0
     <BLANKLINE>
     WORHP plugin for pagmo/pygmo: 
         The gradient sparsity is assumed dense: 130 components detected.
