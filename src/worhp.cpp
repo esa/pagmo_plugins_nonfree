@@ -182,6 +182,7 @@ population worhp::evolve(population pop) const
     std::function<void(int *, const char *, Params *)> ReadParams;
     std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpPreInit;
     std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpInit;
+    std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpDiag;
     std::function<bool(const Control *, int)> GetUserAction;
     std::function<void(Control *, int)> DoneUserAction;
     std::function<void(OptVar *, Workspace *, Params *, Control *)> IterationOutput;
@@ -217,6 +218,11 @@ population worhp::evolve(population pop) const
                                             Control *)>( // type of the function to import
             libworhp,                                    // the library
             "WorhpInit"                                  // name of the function to import
+        );
+        WorhpDiag = boost::dll::import<void(OptVar *, Workspace *, Params *,
+                                            Control *)>( // type of the function to import
+            libworhp,                                    // the library
+            "WorhpDiag"                                  // name of the function to import
         );
         ReadParams = boost::dll::import<void(int *, const char *, Params *)>( // type of the function to import
             libworhp,                                                   // the library
