@@ -29,7 +29,7 @@ build_script:
 - if [%BUILD_TYPE%]==[MSVC_64_Debug] cmake -G "Visual Studio 15 2017 Win64" -DBoost_NO_BOOST_CMAKE=ON -DCMAKE_INSTALL_PREFIX=%CONDA_PREFIX%/Library -DPPNF_BUILD_CPP=YES -DPPNF_BUILD_PYTHON=NO -DPPNF_BUILD_TESTS=YES ..
 - if [%BUILD_TYPE%]==[MSVC_64_Debug] cmake --build . --config Release --target install
 - if [%BUILD_TYPE%]==[MSVC_64_Debug] cp tests\Release\snopt7_c.dll tests\
-- if [%BUILD_TYPE%]==[MSVC_64_Debug] cp tests\Release\worhp_c.dll tests\
+#- if [%BUILD_TYPE%]==[MSVC_64_Debug] cp tests\Release\worhp_c.dll tests\
 
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] mkdir build_pagmo_plugins_nonfree
 - if [%BUILD_TYPE%]==[MSVC_64_Python37] cd build_pagmo_plugins_nonfree
