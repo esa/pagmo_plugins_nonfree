@@ -5,13 +5,13 @@
 # define WORHP_MAJOR 1
 #endif
 #ifndef WORHP_MINOR
-# define WORHP_MINOR 12
+# define WORHP_MINOR 14
 #endif
 #ifndef WORHP_PATCH
-# define WORHP_PATCH "1"
+# define WORHP_PATCH "0"
 #endif
 #ifndef WORHP_VERSION
-# define WORHP_VERSION "1.12.1"
+# define WORHP_VERSION "1.14.0"
 #endif
 
 #endif

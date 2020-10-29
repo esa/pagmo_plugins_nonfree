@@ -95,8 +95,8 @@ typedef struct WorhpMatrix {
 } WorhpMatrix;
 
 DLL_PUBLIC void PrintWorhpMatrix(const WorhpMatrix *const WM);
-DLL_PUBLIC int  InitWorhpMatrix(WorhpMatrix *WM, char name[], int extend,
-                     bool CCwithRow, bool CCwithCol);
+DLL_PUBLIC int InitWorhpMatrix(WorhpMatrix* WM, const char* name, int extend, bool CCwithRow,
+                               bool CCwithCol);
 DLL_PUBLIC void FreeWorhpMatrix(WorhpMatrix *WM);
 DLL_PUBLIC void ZeroWorhpMatrix(WorhpMatrix *WM);
 DLL_PUBLIC void CopyWorhpMatrix(WorhpMatrix *const to, const WorhpMatrix *const from);

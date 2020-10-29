@@ -113,7 +113,7 @@ if(PPNF_BUILD_CPP)
     set_target_properties(pagmo_plugins_nonfree PROPERTIES VISIBILITY_INLINES_HIDDEN TRUE)
     # Let's setup the target C++ standard, but only if the user did not provide it manually.
     if(NOT CMAKE_CXX_STANDARD)
-        set_property(TARGET pagmo_plugins_nonfree PROPERTY CXX_STANDARD 11)
+        set_property(TARGET pagmo_plugins_nonfree PROPERTY CXX_STANDARD 17)
     endif()
     set_property(TARGET pagmo_plugins_nonfree PROPERTY CXX_STANDARD_REQUIRED YES)
     set_property(TARGET pagmo_plugins_nonfree PROPERTY CXX_EXTENSIONS NO)

@@ -11,7 +11,7 @@
 # define DLL_PUBLIC  __attribute__ ((visibility("default")))
 # define DLL_PRIVATE __attribute__ ((visibility("hidden")))
 #else
-# define DLL_PUBLIC __declspec(dllexport)
+# define DLL_PUBLIC
 # define DLL_PRIVATE
 #endif
 
