@@ -7,6 +7,9 @@ add_library(snopt7_c SHARED ../include/pagmo_plugins_nonfree/bogus_libs/snopt7_c
 # and that does nothing useful.
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/pagmo_plugins_nonfree/bogus_libs/worhp_lib)
 add_library(worhp_c SHARED ../include/pagmo_plugins_nonfree/bogus_libs/worhp_lib/worhp_bogus.c)
+set_property(TARGET worhp_c PROPERTY CXX_STANDARD 17)
+set_property(TARGET worhp_c PROPERTY CXX_STANDARD_REQUIRED YES)
+set_property(TARGET worhp_c PROPERTY CXX_EXTENSIONS NO)
 
 function(ADD_PAGMO_PLUGINS_TESTCASE arg1)
     add_executable(${arg1} ${arg1}.cpp)
