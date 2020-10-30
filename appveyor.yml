@@ -3,15 +3,11 @@ environment:
     secure: fqy2DKVE2zM+97vNPB8xgw3ae3SDPkL/T8RvC6s4ncY=
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
-      APPVEYOR_SSH_KEY: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCrlb62nRi7m42ZsLjX+Y9OCc8YQcvl5/ZTgbXp4In44v6b8QtU3rQ0vlcIpd4r6rUJ84tosT2XDRZbe89zLAl+ftl00QvNwYiCYWe7YM9HA9Esw+KUK4GnUAcEfpoW5k6bnfZQbWP1wp6k1KXrUCWA62bPNu510MqJnYPMQj/4kF/kycvfbl86mhlP7HsUDHjQhvRjp+zuPPyZLIogzxhSz6X//yvOt3BmIfkntVqatEbfiuTvJlLF/mO5f8MHK21j+NxXUWEO76dPckRhTV9bvsgnQ1jB9SeTQNMnKm81cXkuYs7iwvS/jrPa394MRixnovWHdIMcJk9BMuWyyuh4OOejaA3+QxtAigiea9GEP7aH9euhw3M/W2DQuLTUb73Bi/lFm+vh/MTtWpkhRCsi3neZwm0hVI97GfUh9ioir2cF8YvMbeMAdGCJp10SpjJnFRUhiBQWV/vaPgRnqRwWV93OcVKtcRSFvFcezymAnYKFO0eRqORhzHycx+7xbULqtzoNHmgcVjIFj1W7baTHw+w8f2Rv6d8jwcoVffdfIqB1D8DWlTyPJkzQB4b+OIJjlZYVYYK/J6MokeT2g9mVpR+W6Ij5uNLk92uoc10+lOyvnEWmTj9PZJMTszKdyO6rKS9SFiZs0zVsmR5Nb1ATMKalrFFE0JQDPEG5O4wM9Q== moritz@Caxacuth
       BUILD_TYPE: "MSVC_64_Debug"
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       BUILD_TYPE: "MSVC_64_Python37"
   global:
     PLATFORMTOOLSET: "v140"
-
-init:
-  - sh: curl -sflL 'https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-ssh.sh' | bash -e -
 
 install:
 - if [%BUILD_TYPE%]==[MSVC_64_Debug] set PATH=C:\Miniconda36-x64\Scripts;%PATH%
@@ -55,9 +51,6 @@ test_script:
 artifacts:
   - path: build\wheel\dist
     name: wheels
-
-on_finish:
-  - sh: sleep 10m # to allow troubleshooting with ssh
 
 notifications:
   - provider: Webhook
