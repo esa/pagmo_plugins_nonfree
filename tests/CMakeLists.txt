@@ -9,7 +9,6 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include/pagmo_plugins_nonfree/bo
 add_library(worhp_c SHARED ../include/pagmo_plugins_nonfree/bogus_libs/worhp_lib/worhp_bogus.c)
 if (MSVC)
 	target_compile_options(worhp_c PUBLIC "/std:c++17")
-	target_link_options(worhp_c PUBLIC "/std:c++17")
 endif()
 
 function(ADD_PAGMO_PLUGINS_TESTCASE arg1)
