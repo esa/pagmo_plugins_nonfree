@@ -13,7 +13,7 @@ install:
 - if [%BUILD_TYPE%]==[MSVC_64_Debug] set PATH=C:\Miniconda36-x64\Scripts;%PATH%
 - if [%BUILD_TYPE%]==[MSVC_64_Debug] conda config --add channels conda-forge --force
 - if [%BUILD_TYPE%]==[MSVC_64_Debug] conda update --all -y
-- if [%BUILD_TYPE%]==[MSVC_64_Debug] conda create -y --name ppnf python=3.7 pagmo-devel pybind11
+- if [%BUILD_TYPE%]==[MSVC_64_Debug] conda create -y --name ppnf python=3.7 cmake pagmo-devel pybind11
 # NOTE: need to use "call" because otherwise it won't work within an if block.
 - if [%BUILD_TYPE%]==[MSVC_64_Debug] call activate ppnf
 
