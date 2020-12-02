@@ -10,7 +10,7 @@ environment:
     PLATFORMTOOLSET: "v140"
 
 install:
-- if [%BUILD_TYPE%]==[MSVC_64_Debug] call "C:\\Miniconda37-x64\\Scripts\\activate.bat"
+- if [%BUILD_TYPE%]==[MSVC_64_Debug] set PATH=C:\Miniconda36-x64\Scripts;%PATH%
 - if [%BUILD_TYPE%]==[MSVC_64_Debug] conda config --add channels conda-forge --force
 - if [%BUILD_TYPE%]==[MSVC_64_Debug] conda update --all -y
 - if [%BUILD_TYPE%]==[MSVC_64_Debug] conda create -y --name ppnf python=3.7 cmake pagmo-devel
