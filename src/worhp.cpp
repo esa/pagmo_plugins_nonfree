@@ -179,7 +179,7 @@ population worhp::evolve(population pop) const
     // ---------------------------------------------------------------------------------------------------------
     // ------------------------- WORHP PLUGIN (we attempt loading the worhp library at run-time)--------------
     // We first declare the prototypes of the functions used from the library
-    std::function<void(int *, const char *, Params *)> ReadParams;
+    std::function<void(int *, const char[], Params *)> ReadParams;
     std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpPreInit;
     std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpInit;
     std::function<bool(const Control *, int)> GetUserAction;
@@ -218,7 +218,7 @@ population worhp::evolve(population pop) const
             libworhp,                                    // the library
             "WorhpInit"                                  // name of the function to import
         );
-        ReadParams = boost::dll::import<void(int *, const char *, Params *)>( // type of the function to import
+        ReadParams = boost::dll::import<void(int *, const char[], Params *)>( // type of the function to import
             libworhp,                                                   // the library
             "ReadParams"                                                // name of the function to import
         );
