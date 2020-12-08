@@ -128,15 +128,15 @@ typedef void USI(OptVar *const opt, Workspace *const wsp,
 /*
  *  Prototpyes for Worhp's solver and auxiliary routines.
  */
-void Worhp(OptVar*, Workspace*, Params*, Control*);
+DLL_PUBLIC void Worhp(OptVar*, Workspace*, Params*, Control*);
 void WorhpBasic(OptVar*, Workspace*, Params*, Control*,
                 USI *F, USI *G, USI *DF, USI *DG, USI *HM);
-void WorhpFree(OptVar*, Workspace*, Params*, Control*);
-void WorhpFidif(OptVar*, Workspace*, Params*, Control*);
-void WorhpInit(OptVar*, Workspace*, Params*, Control*);
+DLL_PUBLIC void WorhpFree(OptVar*, Workspace*, Params*, Control*);
+DLL_PUBLIC void WorhpFidif(OptVar*, Workspace*, Params*, Control*);
+DLL_PUBLIC void WorhpInit(OptVar*, Workspace*, Params*, Control*);
 void WorhpRestart(OptVar*, Workspace*, Params*, Control*);
 void WorhpCrossover(OptVar*, Workspace*, Params*, Control*);
-void ReadParams(int*, const char[], Params*);
+DLL_PUBLIC void ReadParams(int*, const char[], Params*);
 
 /*
  *  Worhp Zen

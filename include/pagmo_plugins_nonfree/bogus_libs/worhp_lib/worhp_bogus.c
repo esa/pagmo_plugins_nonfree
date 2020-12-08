@@ -5,21 +5,14 @@
 
 #include "worhp_bogus.h"
 
-// When in windows symbols must be explictly marked for export
-#ifdef _WIN32
-#define __PAGMO_VISIBLE __declspec(dllexport)
-#else
-#define __PAGMO_VISIBLE __attribute__((visibility("default")))
-#endif
-
 inline double closed_interval_rand(double x0, double x1)
 {
     return x0 + (x1 - x0) * rand() / ((double)RAND_MAX);
 }
 
-__PAGMO_VISIBLE void ReadParams(int *a, const char b[], Params *c) {}
-__PAGMO_VISIBLE void WorhpPreInit(OptVar *o, Workspace *w, Params *p, Control *c) {}
-__PAGMO_VISIBLE void WorhpInit(OptVar *o, Workspace *w, Params *p, Control *c)
+void ReadParams(int *a, const char b[], Params *c) {}
+void WorhpPreInit(OptVar *o, Workspace *w, Params *p, Control *c) {}
+void WorhpInit(OptVar *o, Workspace *w, Params *p, Control *c)
 {
     o->X = calloc(o->n, sizeof(double));
     o->G = calloc(o->m, sizeof(double));
@@ -44,13 +37,13 @@ __PAGMO_VISIBLE void WorhpInit(OptVar *o, Workspace *w, Params *p, Control *c)
     c->status = 0; // to ensure it will enter the main loop in worhp.hpp
     srand((unsigned int)(time(NULL)));
 }
-__PAGMO_VISIBLE bool GetUserAction(const Control *c, int b)
+bool GetUserAction(const Control *c, int b)
 {
     return true;
 }
-__PAGMO_VISIBLE void DoneUserAction(Control *a, int b) {}
-__PAGMO_VISIBLE void IterationOutput(OptVar *o, Workspace *w, Params *p, Control *c) {}
-__PAGMO_VISIBLE void Worhp(OptVar *o, Workspace *w, Params *p, Control *c)
+void DoneUserAction(Control *a, int b) {}
+void IterationOutput(OptVar *o, Workspace *w, Params *p, Control *c) {}
+void Worhp(OptVar *o, Workspace *w, Params *p, Control *c)
 {
     c->status = c->status + 100; // this will make it so after ten calls it concludes.
     // Random vector
@@ -60,12 +53,12 @@ __PAGMO_VISIBLE void Worhp(OptVar *o, Workspace *w, Params *p, Control *c)
     }
 }
 
-__PAGMO_VISIBLE void StatusMsg(OptVar *o, Workspace *w, Params *p, Control *c)
+void StatusMsg(OptVar *o, Workspace *w, Params *p, Control *c)
 {
     printf("All went great!!!! What a glamorous Success!!\n");
 }
 
-__PAGMO_VISIBLE void StatusMsgString(OptVar *o, Workspace *w, Params *p, Control *c, char message[])
+void StatusMsgString(OptVar *o, Workspace *w, Params *p, Control *c, char message[])
 {
 #ifdef _MSC_VER //Avoiding a warning in MSVC builds
     strcpy_s(message, sizeof(char) * 47, "All went great!!!! What a glamorous Success!!\n");
@@ -74,7 +67,7 @@ __PAGMO_VISIBLE void StatusMsgString(OptVar *o, Workspace *w, Params *p, Control
 #endif
 }
 
-__PAGMO_VISIBLE void WorhpFree(OptVar *o, Workspace *w, Params *p, Control *c)
+void WorhpFree(OptVar *o, Workspace *w, Params *p, Control *c)
 {
     free(o->X);
     free(o->G);
@@ -93,8 +86,8 @@ __PAGMO_VISIBLE void WorhpFree(OptVar *o, Workspace *w, Params *p, Control *c)
     free(w->HM.col);
     free(w->HM.val);
 }
-__PAGMO_VISIBLE void WorhpFidif(OptVar *o, Workspace *w, Params *p, Control *c) {}
-__PAGMO_VISIBLE bool WorhpSetBoolParam(Params *p, const char *stropt, bool b)
+void WorhpFidif(OptVar *o, Workspace *w, Params *p, Control *c) {}
+bool WorhpSetBoolParam(Params *p, const char *stropt, bool b)
 {
     char *invalid;
     invalid = "invalid_bool_option";
@@ -104,7 +97,7 @@ __PAGMO_VISIBLE bool WorhpSetBoolParam(Params *p, const char *stropt, bool b)
         return 1;
     }
 }
-__PAGMO_VISIBLE bool WorhpSetIntParam(Params *p, const char *stropt, int b)
+bool WorhpSetIntParam(Params *p, const char *stropt, int b)
 {
     char *invalid;
     invalid = "invalid_integer_option";
@@ -114,7 +107,7 @@ __PAGMO_VISIBLE bool WorhpSetIntParam(Params *p, const char *stropt, int b)
         return 1;
     }
 }
-__PAGMO_VISIBLE bool WorhpSetDoubleParam(Params *p, const char *stropt, double b)
+bool WorhpSetDoubleParam(Params *p, const char *stropt, double b)
 {
     char *invalid;
     invalid = "invalid_numeric_option";
