@@ -119,7 +119,7 @@ bool WorhpSetDoubleParam(Params *p, const char *stropt, double b)
 }
 void SetWorhpPrint(worhp_print_t l1) {}
 
-WorhpVersion(int *major, int *minor, char patch[PATCH_STRING_LENGTH])
+void WorhpVersion(int *major, int *minor, char patch[PATCH_STRING_LENGTH])
 {
 #ifdef _MSC_VER //Avoiding a warning in MSVC builds
     strcpy_s(patch, sizeof(char) * PATCH_STRING_LENGTH, "1");
