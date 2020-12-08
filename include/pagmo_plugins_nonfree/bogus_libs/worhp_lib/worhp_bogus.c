@@ -117,9 +117,9 @@ bool WorhpSetDoubleParam(Params *p, const char *stropt, double b)
         return 1;
     }
 }
-__PAGMO_VISIBLE void SetWorhpPrint(worhp_print_t l1) {}
+void SetWorhpPrint(worhp_print_t l1) {}
 
-__PAGMO_VISIBLE void WorhpVersion(int *major, int *minor, char patch[PATCH_STRING_LENGTH])
+WorhpVersion(int *major, int *minor, char patch[PATCH_STRING_LENGTH])
 {
 #ifdef _MSC_VER //Avoiding a warning in MSVC builds
     strcpy_s(patch, sizeof(char) * PATCH_STRING_LENGTH, "1");
