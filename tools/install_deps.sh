@@ -6,6 +6,8 @@ set -x
 # Exit on error.
 set -e
 
+PYBIND11_VERSION="2.5.0"
+
 # For the non manylinux builds (i.e. pip) we use conda and thus install and activate a conda environment
 if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
     if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
@@ -40,9 +42,9 @@ if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
     # needed to guarantee interoperability with pyaudi/pygmo
     if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == *Python* ]]; then
         export PPNF_BUILD_DIR=`pwd`
-        git clone https://github.com/pybind/pybind11.git
-        cd pybind11
-        git checkout 4f72ef846fe8453596230ac285eeaa0ce3278bb4
+        curl -L https://github.com/pybind/pybind11/archive/v${PYBIND11_VERSION}.tar.gz > v${PYBIND11_VERSION}
+        tar xvf v${PYBIND11_VERSION} > /dev/null 2>&1
+        cd pybind11-${PYBIND11_VERSION}
         mkdir build
         cd build
         cmake \
