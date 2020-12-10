@@ -6,7 +6,7 @@ set -x
 # Exit on error.
 set -e
 
-PYBIND11_VERSION="2.4.3"
+PYBIND11_VERSION="2.6.0"
 
 # For the non manylinux builds (i.e. pip) we use conda and thus install and activate a conda environment
 if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
