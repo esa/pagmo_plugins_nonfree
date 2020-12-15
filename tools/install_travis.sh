@@ -48,7 +48,6 @@ elif [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == Python* ]]; then
         -DPPNF_BUILD_TESTS=no \
         -DPPNF_BUILD_CPP=no \
         -DPPNF_BUILD_PYTHON=yes \
-        -Dpybind11_DIR=$PPNF_BUILD_DIR/share/cmake/pybind11/ \
         ..
     make install VERBOSE=1;
     # Move out of the build dir.

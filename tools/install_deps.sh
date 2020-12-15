@@ -6,8 +6,6 @@ set -x
 # Exit on error.
 set -e
 
-PYBIND11_VERSION="2.6.0"
-
 # For the non manylinux builds (i.e. pip) we use conda and thus install and activate a conda environment
 if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
     if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
@@ -31,31 +29,12 @@ if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
     fi
 
     if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == *Python* ]]; then
-        conda_pkgs="$conda_pkgs graphviz doxygen sphinx breathe"
+        conda_pkgs="$conda_pkgs graphviz doxygen sphinx breathe pybind11"
     fi
 
     # We create the conda environment and activate it
     conda create -q -p $deps_dir -y $conda_pkgs
     source activate $deps_dir
-
-    # For python builds, we install pybind11 from the specific commit
-    # needed to guarantee interoperability with pyaudi/pygmo
-    if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == *Python* ]]; then
-        export PPNF_BUILD_DIR=`pwd`
-        curl -L https://github.com/pybind/pybind11/archive/v${PYBIND11_VERSION}.tar.gz > v${PYBIND11_VERSION}
-        tar xvf v${PYBIND11_VERSION} > /dev/null 2>&1
-        cd pybind11-${PYBIND11_VERSION}
-        mkdir build
-        cd build
-        cmake \
-            -DPYBIND11_TEST=NO \
-            -DCMAKE_INSTALL_PREFIX=$PPNF_BUILD_DIR \
-            -DCMAKE_PREFIX_PATH=$PPNF_BUILD_DIR \
-            -DPYTHON_EXECUTABLE=$HOME/local/bin/python3 \
-            ..
-        make install
-        cd ../..
-    fi
 fi
 
 set +e
