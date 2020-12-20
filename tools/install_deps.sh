@@ -29,12 +29,31 @@ if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" != manylinux* ]]; then
     fi
 
     if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == *Python* ]]; then
-        conda_pkgs="$conda_pkgs graphviz doxygen sphinx breathe pybind11"
+        conda_pkgs="$conda_pkgs graphviz doxygen sphinx breathe"
     fi
 
     # We create the conda environment and activate it
     conda create -q -p $deps_dir -y $conda_pkgs
     source activate $deps_dir
+
+    # For python builds, we install pybind11 from the specific commit
+    # needed to guarantee interoperability with pyaudi/pygmo
+    if [[ "${PAGMO_PLUGINS_NONFREE_BUILD}" == *Python* ]]; then
+        export PPNF_BUILD_DIR=`pwd`
+        git clone https://github.com/pybind/pybind11.git
+        cd pybind11
+        git checkout 4f72ef846fe8453596230ac285eeaa0ce3278bb4
+        mkdir build
+        cd build
+        cmake \
+            -DPYBIND11_TEST=NO \
+            -DCMAKE_INSTALL_PREFIX=$PPNF_BUILD_DIR \
+            -DCMAKE_PREFIX_PATH=$PPNF_BUILD_DIR \
+            -DPYTHON_EXECUTABLE=$HOME/local/bin/python3 \
+            ..
+        make install
+        cd ../..
+    fi
 fi
 
 set +e
