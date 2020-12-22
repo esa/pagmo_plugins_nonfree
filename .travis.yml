@@ -71,15 +71,14 @@ matrix:
           - ubuntu-toolchain-r-test
           packages:
           - clang-7
-    - env: PAGMO_PLUGINS_NONFREE_BUILD="Python37" CC="gcc-7" && CXX="g++-7"
+    - env: PAGMO_PLUGINS_NONFREE_BUILD="Python37"
       dist: bionic
+      compiler: gcc
       os: linux
       addons:
         apt:
           sources:
           - ubuntu-toolchain-r-test
-          packages:
-          - g++-7
     - env: PAGMO_PLUGINS_NONFREE_BUILD="OSXDebug" PAGMO_PLUGINS_NONFREE_BUILD_TYPE="Debug"
       os: osx
       osx_image: xcode10.3
