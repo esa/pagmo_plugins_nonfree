@@ -3,9 +3,10 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Py: We Optimize Really Huge Problems (WORHP) &#8212; pagmo_plugins_nonfree 0.21 documentation</title>
-    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pagmo_plugins_nonfree.css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
@@ -106,7 +107,7 @@
 <p>This class is a user-defined algorithm (UDA) that contains a plugin to the WORHP (We Optimize Really Huge Problems)
 solver, a software package for large-scale nonlinear optimization. WORHP is a powerful solver that is able to handle
 robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. The wrapper
-was developed around the version 1.12 of WORHP and the Full Feature Interface (FFI) using the Unified Solver
+was developed around the version 1.14 of WORHP and the Full Feature Interface (FFI) using the Unified Solver
 Interface and the Reverse Communication paradigm (see worhp user manual).</p>
 <dl>
 <dt>Intended use::</dt><dd><div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">pygmo</span> <span class="k">as</span> <span class="nn">pg</span>
@@ -133,14 +134,14 @@ level, to generate a sequence of search directions, which are subject to line se
 or L1 merit function.</p>
 <p>Worhp needs first and second order derivatives, which can be supplied by the user, or approximated by finite
 differences or quasi-Newton methods.</p>
-<p>In order to support pagmo’s population-based optimisation model, <em>snopt7</em> selects
+<p>In order to support pagmo’s population-based optimisation model, <em>worhp</em> selects
 a single individual from the input <em>population</em> to be optimised.
 If the optimisation produces an improved individual (as established by pagmo comparison criteria),
 the optimised individual will be inserted back into the population.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>screen_output</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – when True will activate the original screen output from SNOPT7 and deactivate the logging system based on
+<li><p><strong>screen_output</strong> (<code class="docutils literal notranslate"><span class="pre">bool</span></code>) – when True will activate the original screen output from WORHP and deactivate the logging system based on
 <code class="xref py py-class docutils literal notranslate"><span class="pre">set_verbosity()</span></code>.</p></li>
 <li><p><strong>library</strong> (<code class="docutils literal notranslate"><span class="pre">str</span></code>) – the worhp library filename in your system (absolute path included)</p></li>
 </ul>
@@ -210,8 +211,8 @@ is, they might not necessarily be consistent with worhp’s notion of feasibilit
 <span class="gp">&gt;&gt;&gt; </span><span class="n">pop</span> <span class="o">=</span> <span class="n">algo</span><span class="o">.</span><span class="n">evolve</span><span class="p">(</span><span class="n">pop</span><span class="p">)</span> 
 <span class="go"> Error (Read_XML_File): Could not open file param.xml.</span>
 <span class="go"> WorhpFromXML: Could not open parameter file, using default values.</span>
-<span class="go">WORHP version is (library): 1.12.1</span>
-<span class="go">WORHP version is (plugin headers): 1.12.1</span>
+<span class="go">WORHP version is (library): 1.14.0</span>
+<span class="go">WORHP version is (plugin headers): 1.14.0</span>
 
 <span class="go">WORHP plugin for pagmo/pygmo:</span>
 <span class="go">    The gradient sparsity is assumed dense: 130 components detected.</span>
@@ -427,7 +428,7 @@ election/replacement policies (see <code class="xref py py-attr docutils literal
     </p>
     <p>
         &copy; Copyright 2018, pagmo development team.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
     </p>
   </div>
 </footer>

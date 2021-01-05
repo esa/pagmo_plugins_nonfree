@@ -3,9 +3,10 @@
 <html>
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>C++: We Optimize Really Huge Problems (WORHP) &#8212; pagmo_plugins_nonfree 0.21 documentation</title>
-    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/bootstrap-sphinx.css" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/pagmo_plugins_nonfree.css" />
     <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
     <script src="_static/jquery.js"></script>
@@ -100,13 +101,13 @@
       
   <div class="section" id="c-we-optimize-really-huge-problems-worhp">
 <h1>C++: We Optimize Really Huge Problems (WORHP)<a class="headerlink" href="#c-we-optimize-really-huge-problems-worhp" title="Permalink to this headline">¶</a></h1>
-<dl class="class">
+<dl class="cpp class">
 <dt id="_CPPv4N4ppnf5worhpE">
-<span id="_CPPv3N4ppnf5worhpE"></span><span id="_CPPv2N4ppnf5worhpE"></span><span id="ppnf::worhp"></span><span class="target" id="classppnf_1_1worhp"></span><em class="property">class </em><code class="sig-name descname">worhp</code> : <em class="property">public</em> not_population_based<a class="headerlink" href="#_CPPv4N4ppnf5worhpE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3N4ppnf5worhpE"></span><span id="_CPPv2N4ppnf5worhpE"></span><span id="ppnf::worhp"></span><span class="target" id="classppnf_1_1worhp"></span><em class="property">class </em><code class="sig-prename descclassname">ppnf<code class="sig-prename descclassname">::</code></code><code class="sig-name descname">worhp</code> : <em class="property">public</em> not_population_based<a class="headerlink" href="#_CPPv4N4ppnf5worhpE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>WORHP - (We Optimize Really Huge Problems) </p>
 <p><img alt="_images/worhp.png" src="_images/worhp.png" /></p>
 <p>This class is a user-defined algorithm (UDA) that contains a plugin to the WORHP (We Optimize Really Huge Problems) solver (<a class="reference external" href="https://worhp.de/">https://worhp.de/</a>), a software package for large-scale nonlinear optimization. WORHP is a powerful solver that is able to handle robustly and efficiently constrained nonlinear opimization problems also at high dimensionalities. The wrapper was developed around the version 1.12 of WORHP and the Full Feature Interface (FFI) using the Unified Solver Interface and the Reverse Communication paradigm (see worhp user manual).</p>
-<p><div class="admonition note">
+<p><p><div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>The WORHP library is only available acquiring a licence. You can consult the web pages at
 (<a class="reference external" href="https://worhp.de/">https://worhp.de/</a>) for further information. In thse web pages you will be able to download the correct library
@@ -115,10 +116,11 @@ see what options can be set and their intended use. You will be able to specify 
 library when constructing this UDA.</p>
 </div>
 </p>
+</p>
 <p>Worhp is designed to efficiently solve small- to large-scale constrained optimisation problems (single objective), where the objective function and the constraints are sufficiently smooth, and may be linear, quadratic or nonlinear. It is designed to find locally optimal points of optimisation problems, which may be globally optimal, depending on the problem structure, the initial guess and other factors. Worhp combines a Sequential Quadratic Programming (SQP) method on the general nonlinear level with a primal-dual Interior Point (IP) method on the quadratic subproblem level, to generate a sequence of search directions, which are subject to line search using the Augmented Lagrangian or L1 merit function.</p>
 <p>Worhp needs first and second order derivatives, which can be supplied by the user, or approximated by finite differences or quasi-Newton methods by WORHP.</p>
 <p>In order to support pagmo’s population-based optimisation model, <a class="reference internal" href="#classppnf_1_1worhp_1ab5666b343e15a80b0e91ced5c81872ba"><span class="std std-ref">worhp::evolve()</span></a> will select a single individual from the input ppnf::population to be optimised. If the optimisation produces an improved individual (as established by ppnf::compare_fc()), the optimised individual will be inserted back into the population. The selection and replacement strategies can be configured via set_selection(const std::string &amp;), set_selection(population::size_type), set_replacement(const std::string &amp;) and set_replacement(population::size_type).</p>
-<p><div class="admonition note">
+<p><p><div class="admonition note">
 <p class="admonition-title">Note</p>
 <p>This plugin for the WORHP was developed around version 1.12.1 of the worhp library and will not work with
 any other version.</p>
@@ -132,10 +134,11 @@ in undefined behaviour.</p>
 <p class="admonition-title">See also</p>
 <p><a class="reference external" href="https://worhp.de/">https://worhp.de/</a></p>
 </div>
+</p>
  </p>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Types</p>
-<dl class="type">
+<dl class="cpp type">
 <dt id="_CPPv4N4ppnf5worhp13log_line_typeE">
 <span id="_CPPv3N4ppnf5worhp13log_line_typeE"></span><span id="_CPPv2N4ppnf5worhp13log_line_typeE"></span><span class="target" id="classppnf_1_1worhp_1a60c15d831318a57c1d09c0daa6be8ca0"></span><em class="property">using </em><code class="sig-name descname">log_line_type</code> = std::tuple&lt;unsigned long, double, pagmo::vector_double::size_type, double, bool&gt;<a class="headerlink" href="#_CPPv4N4ppnf5worhp13log_line_typeE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Single data line for the algorithm’s log. </p>
@@ -149,7 +152,7 @@ in undefined behaviour.</p>
 </p>
 </dd></dl>
 
-<dl class="type">
+<dl class="cpp type">
 <dt id="_CPPv4N4ppnf5worhp8log_typeE">
 <span id="_CPPv3N4ppnf5worhp8log_typeE"></span><span id="_CPPv2N4ppnf5worhp8log_typeE"></span><span class="target" id="classppnf_1_1worhp_1afdc7511cc351315a144fcec0527b8839"></span><em class="property">using </em><code class="sig-name descname">log_type</code> = std::vector&lt;<a class="reference internal" href="#_CPPv4N4ppnf5worhp13log_line_typeE" title="ppnf::worhp::log_line_type">log_line_type</a>&gt;<a class="headerlink" href="#_CPPv4N4ppnf5worhp8log_typeE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Log type. </p>
@@ -159,7 +162,7 @@ in undefined behaviour.</p>
 </div>
 <div class="breathe-sectiondef docutils container">
 <p class="breathe-sectiondef-title rubric">Public Functions</p>
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N4ppnf5worhp5worhpEbNSt6stringE">
 <span id="_CPPv3N4ppnf5worhp5worhpEbNSt6stringE"></span><span id="_CPPv2N4ppnf5worhp5worhpEbNSt6stringE"></span><span id="ppnf::worhp::worhp__b.ss"></span><span class="target" id="classppnf_1_1worhp_1ab686b620e85285d243791abb0ff118f2"></span><code class="sig-name descname">worhp</code><span class="sig-paren">(</span>bool <em>screen_output</em> = false, std::string <em>worhp_library</em> = &quot;/usr/local/lib/libworhp.so&quot;<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf5worhp5worhpEbNSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Constructor. </p>
@@ -174,12 +177,12 @@ in undefined behaviour.</p>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK4ppnf5worhp6evolveEN5pagmo10populationE">
-<span id="_CPPv3NK4ppnf5worhp6evolveEN5pagmo10populationE"></span><span id="_CPPv2NK4ppnf5worhp6evolveEN5pagmo10populationE"></span><span id="ppnf::worhp::evolve__pagmo::populationC"></span><span class="target" id="classppnf_1_1worhp_1ab5666b343e15a80b0e91ced5c81872ba"></span>population <code class="sig-name descname">evolve</code><span class="sig-paren">(</span>pagmo::population <em>pop</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf5worhp6evolveEN5pagmo10populationE" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3NK4ppnf5worhp6evolveEN5pagmo10populationE"></span><span id="_CPPv2NK4ppnf5worhp6evolveEN5pagmo10populationE"></span><span id="ppnf::worhp::evolve__pagmo::populationC"></span><span class="target" id="classppnf_1_1worhp_1ab5666b343e15a80b0e91ced5c81872ba"></span>pagmo::population <code class="sig-name descname">evolve</code><span class="sig-paren">(</span>pagmo::population <em>pop</em><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf5worhp6evolveEN5pagmo10populationE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Evolve population. </p>
 <p>This method will select an individual from <code class="docutils literal notranslate"><span class="pre">pop</span></code>, optimise it using the WORHP USI interface, replace an individual in <code class="docutils literal notranslate"><span class="pre">pop</span></code> with the optimised individual, and finally return <code class="docutils literal notranslate"><span class="pre">pop</span></code>. The individual selection and replacement criteria can be set via set_selection(const std::string &amp;), set_selection(population::size_type), set_replacement(const std::string &amp;) and set_replacement(population::size_type). The WORHP solver will then run until one of the stopping criteria is satisfied, and the return status of the WORHP solver will be recorded (it can be fetched with <a class="reference internal" href="#classppnf_1_1worhp_1a2fcd49a63147e46790df3c0bced149d7"><span class="std std-ref">get_last_opt_result()</span></a>).</p>
-<p><div class="admonition warning">
+<p><p><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>All options passed to the WORHP interface are determined first by the xml parameter file, or (if not found) by
 the default options. Then FGtogether is set to true (for constrained problems) and UserDF, UserDG , UserHM to
@@ -187,6 +190,7 @@ the values detected by the pagmo::has_gradient, pagmo::has_hessians methods. Tol
 minimum of prob.get_c_tol() if not 0. All the other options, contained in the data members m_integer_opts,
 m_numeric_opts and m_bool_opts are set after and thus overwrite the above rules.</p>
 </div>
+</p>
 </p>
 <p><dl class="simple">
 <dt><strong>Return</strong></dt><dd><p>the optimised population.</p>
@@ -208,7 +212,7 @@ m_numeric_opts and m_bool_opts are set after and thus overwrite the above rules.
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N4ppnf5worhp13set_verbosityEj">
 <span id="_CPPv3N4ppnf5worhp13set_verbosityEj"></span><span id="_CPPv2N4ppnf5worhp13set_verbosityEj"></span><span id="ppnf::worhp::set_verbosity__unsigned"></span><span class="target" id="classppnf_1_1worhp_1a462f5068f23214b24ca3d423375f7c40"></span>void <code class="sig-name descname">set_verbosity</code><span class="sig-paren">(</span>unsigned <em>n</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf5worhp13set_verbosityEj" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set verbosity. </p>
@@ -237,7 +241,7 @@ m_numeric_opts and m_bool_opts are set after and thus overwrite the above rules.
 </dl>
 </p>
 <p>By default, the verbosity level is zero.</p>
-<p><div class="admonition warning">
+<p><p><div class="admonition warning">
 <p class="admonition-title">Warning</p>
 <p>The number of constraints violated, the constraints violation norm and the feasibility flag stored in the
 log are all determined via the facilities and the tolerances specified within <code class="xref cpp cpp-class docutils literal notranslate"><span class="pre">pagmo::problem</span></code>.
@@ -249,12 +253,13 @@ That is, they might not necessarily be consistent with WORHP’s notion of feasi
 file. WORHP’s screen logging is disabled by default. On-screen logging can be enabled constructing the
 object ppnf::WORHP passing <code class="docutils literal notranslate"><span class="pre">true</span></code> as argument. In this case verbosity will not be allowed to be set.</p>
 </div>
+</p>
  </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK4ppnf5worhp7get_logEv">
-<span id="_CPPv3NK4ppnf5worhp7get_logEv"></span><span id="_CPPv2NK4ppnf5worhp7get_logEv"></span><span id="ppnf::worhp::get_logC"></span><span class="target" id="classppnf_1_1worhp_1a82333e8644ce3c170fefde58dce4c198"></span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N4ppnf5worhpE" title="ppnf::worhp">worhp</a>::<a class="reference internal" href="#_CPPv4N4ppnf5worhp8log_typeE" title="ppnf::worhp::log_type">log_type</a> &amp;<code class="sig-name descname">get_log</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf5worhp7get_logEv" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3NK4ppnf5worhp7get_logEv"></span><span id="_CPPv2NK4ppnf5worhp7get_logEv"></span><span id="ppnf::worhp::get_logC"></span><span class="target" id="classppnf_1_1worhp_1a82333e8644ce3c170fefde58dce4c198"></span><em class="property">const</em> <a class="reference internal" href="#_CPPv4N4ppnf5worhp8log_typeE" title="ppnf::worhp::log_type">log_type</a> &amp;<code class="sig-name descname">get_log</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf5worhp7get_logEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the optimisation log. </p>
 <p>See <a class="reference internal" href="#classppnf_1_1worhp_1afdc7511cc351315a144fcec0527b8839"><span class="std std-ref">worhp::log_type</span></a> for a description of the optimisation log. Logging is turned on/off via <a class="reference internal" href="#classppnf_1_1worhp_1a462f5068f23214b24ca3d423375f7c40"><span class="std std-ref">set_verbosity()</span></a>.</p>
 <p><dl class="simple">
@@ -264,7 +269,7 @@ object ppnf::WORHP passing <code class="docutils literal notranslate"><span clas
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK4ppnf5worhp13get_verbosityEv">
 <span id="_CPPv3NK4ppnf5worhp13get_verbosityEv"></span><span id="_CPPv2NK4ppnf5worhp13get_verbosityEv"></span><span id="ppnf::worhp::get_verbosityC"></span><span class="target" id="classppnf_1_1worhp_1a2182b5eb18444127128c1630be7dcfb6"></span>unsigned int <code class="sig-name descname">get_verbosity</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf5worhp13get_verbosityEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Gets the verbosity level. </p>
@@ -275,7 +280,7 @@ object ppnf::WORHP passing <code class="docutils literal notranslate"><span clas
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK4ppnf5worhp8get_nameEv">
 <span id="_CPPv3NK4ppnf5worhp8get_nameEv"></span><span id="_CPPv2NK4ppnf5worhp8get_nameEv"></span><span id="ppnf::worhp::get_nameC"></span><span class="target" id="classppnf_1_1worhp_1a3a1abda8bce230828014506e5eea28e7"></span>std::string <code class="sig-name descname">get_name</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf5worhp8get_nameEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Algorithm name. </p>
@@ -287,7 +292,7 @@ object ppnf::WORHP passing <code class="docutils literal notranslate"><span clas
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK4ppnf5worhp14get_extra_infoEv">
 <span id="_CPPv3NK4ppnf5worhp14get_extra_infoEv"></span><span id="_CPPv2NK4ppnf5worhp14get_extra_infoEv"></span><span id="ppnf::worhp::get_extra_infoC"></span><span class="target" id="classppnf_1_1worhp_1a2874e1ce111a3bc74d8b4b55bc20ffcf"></span>std::string <code class="sig-name descname">get_extra_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf5worhp14get_extra_infoEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get extra information about the algorithm. </p>
@@ -298,7 +303,7 @@ object ppnf::WORHP passing <code class="docutils literal notranslate"><span clas
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N4ppnf5worhp18set_integer_optionERKNSt6stringEi">
 <span id="_CPPv3N4ppnf5worhp18set_integer_optionERKNSt6stringEi"></span><span id="_CPPv2N4ppnf5worhp18set_integer_optionERKNSt6stringEi"></span><span id="ppnf::worhp::set_integer_option__ssCR.i"></span><span class="target" id="classppnf_1_1worhp_1a1f408e386efff87c47d9d612620cadf6"></span>void <code class="sig-name descname">set_integer_option</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>name</em>, int <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf5worhp18set_integer_optionERKNSt6stringEi" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set integer option. </p>
@@ -313,7 +318,7 @@ object ppnf::WORHP passing <code class="docutils literal notranslate"><span clas
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N4ppnf5worhp19set_integer_optionsERKNSt3mapINSt6stringEiEE">
 <span id="_CPPv3N4ppnf5worhp19set_integer_optionsERKNSt3mapINSt6stringEiEE"></span><span id="_CPPv2N4ppnf5worhp19set_integer_optionsERKNSt3mapINSt6stringEiEE"></span><span id="ppnf::worhp::set_integer_options__std::map:ss.i:CR"></span><span class="target" id="classppnf_1_1worhp_1a5de0a1a67f69acd803fae55537906f13"></span>void <code class="sig-name descname">set_integer_options</code><span class="sig-paren">(</span><em class="property">const</em> std::map&lt;std::string, int&gt; &amp;<em>m</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf5worhp19set_integer_optionsERKNSt3mapINSt6stringEiEE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set integer options. </p>
@@ -327,7 +332,7 @@ object ppnf::WORHP passing <code class="docutils literal notranslate"><span clas
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK4ppnf5worhp19get_integer_optionsEv">
 <span id="_CPPv3NK4ppnf5worhp19get_integer_optionsEv"></span><span id="_CPPv2NK4ppnf5worhp19get_integer_optionsEv"></span><span id="ppnf::worhp::get_integer_optionsC"></span><span class="target" id="classppnf_1_1worhp_1afd03908042d13ce44210484098457a71"></span>std::map&lt;std::string, int&gt; <code class="sig-name descname">get_integer_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf5worhp19get_integer_optionsEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get integer options. </p>
@@ -338,7 +343,7 @@ object ppnf::WORHP passing <code class="docutils literal notranslate"><span clas
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N4ppnf5worhp18set_numeric_optionERKNSt6stringEd">
 <span id="_CPPv3N4ppnf5worhp18set_numeric_optionERKNSt6stringEd"></span><span id="_CPPv2N4ppnf5worhp18set_numeric_optionERKNSt6stringEd"></span><span id="ppnf::worhp::set_numeric_option__ssCR.double"></span><span class="target" id="classppnf_1_1worhp_1af42c0a4434bcb0be2ba29a7c4b4026f7"></span>void <code class="sig-name descname">set_numeric_option</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>name</em>, double <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf5worhp18set_numeric_optionERKNSt6stringEd" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set numeric option. </p>
@@ -353,7 +358,7 @@ object ppnf::WORHP passing <code class="docutils literal notranslate"><span clas
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N4ppnf5worhp19set_numeric_optionsERKNSt3mapINSt6stringEdEE">
 <span id="_CPPv3N4ppnf5worhp19set_numeric_optionsERKNSt3mapINSt6stringEdEE"></span><span id="_CPPv2N4ppnf5worhp19set_numeric_optionsERKNSt3mapINSt6stringEdEE"></span><span id="ppnf::worhp::set_numeric_options__std::map:ss.double:CR"></span><span class="target" id="classppnf_1_1worhp_1a5ebcd1424f8c1c878d78cd41585297a6"></span>void <code class="sig-name descname">set_numeric_options</code><span class="sig-paren">(</span><em class="property">const</em> std::map&lt;std::string, double&gt; &amp;<em>m</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf5worhp19set_numeric_optionsERKNSt3mapINSt6stringEdEE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set numeric options. </p>
@@ -367,7 +372,7 @@ object ppnf::WORHP passing <code class="docutils literal notranslate"><span clas
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK4ppnf5worhp19get_numeric_optionsEv">
 <span id="_CPPv3NK4ppnf5worhp19get_numeric_optionsEv"></span><span id="_CPPv2NK4ppnf5worhp19get_numeric_optionsEv"></span><span id="ppnf::worhp::get_numeric_optionsC"></span><span class="target" id="classppnf_1_1worhp_1a86f45e93586fc03e829cb794e6620c8e"></span>std::map&lt;std::string, double&gt; <code class="sig-name descname">get_numeric_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf5worhp19get_numeric_optionsEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get numeric options. </p>
@@ -378,7 +383,7 @@ object ppnf::WORHP passing <code class="docutils literal notranslate"><span clas
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N4ppnf5worhp15set_bool_optionERKNSt6stringEb">
 <span id="_CPPv3N4ppnf5worhp15set_bool_optionERKNSt6stringEb"></span><span id="_CPPv2N4ppnf5worhp15set_bool_optionERKNSt6stringEb"></span><span id="ppnf::worhp::set_bool_option__ssCR.b"></span><span class="target" id="classppnf_1_1worhp_1a2014900dddbd23e99cbd47a7d2023735"></span>void <code class="sig-name descname">set_bool_option</code><span class="sig-paren">(</span><em class="property">const</em> std::string &amp;<em>name</em>, bool <em>value</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf5worhp15set_bool_optionERKNSt6stringEb" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set bool option. </p>
@@ -393,7 +398,7 @@ object ppnf::WORHP passing <code class="docutils literal notranslate"><span clas
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N4ppnf5worhp16set_bool_optionsERKNSt3mapINSt6stringEbEE">
 <span id="_CPPv3N4ppnf5worhp16set_bool_optionsERKNSt3mapINSt6stringEbEE"></span><span id="_CPPv2N4ppnf5worhp16set_bool_optionsERKNSt3mapINSt6stringEbEE"></span><span id="ppnf::worhp::set_bool_options__std::map:ss.b:CR"></span><span class="target" id="classppnf_1_1worhp_1a3e0f2f995c3effa1473a7ab0758faca8"></span>void <code class="sig-name descname">set_bool_options</code><span class="sig-paren">(</span><em class="property">const</em> std::map&lt;std::string, bool&gt; &amp;<em>m</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf5worhp16set_bool_optionsERKNSt3mapINSt6stringEbEE" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Set bool options. </p>
@@ -407,7 +412,7 @@ object ppnf::WORHP passing <code class="docutils literal notranslate"><span clas
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK4ppnf5worhp16get_bool_optionsEv">
 <span id="_CPPv3NK4ppnf5worhp16get_bool_optionsEv"></span><span id="_CPPv2NK4ppnf5worhp16get_bool_optionsEv"></span><span id="ppnf::worhp::get_bool_optionsC"></span><span class="target" id="classppnf_1_1worhp_1a1bcbb2e77e44b49102b3ffe8f77bbd17"></span>std::map&lt;std::string, bool&gt; <code class="sig-name descname">get_bool_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf5worhp16get_bool_optionsEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get bool options. </p>
@@ -418,42 +423,43 @@ object ppnf::WORHP passing <code class="docutils literal notranslate"><span clas
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N4ppnf5worhp21reset_integer_optionsEv">
 <span id="_CPPv3N4ppnf5worhp21reset_integer_optionsEv"></span><span id="_CPPv2N4ppnf5worhp21reset_integer_optionsEv"></span><span id="ppnf::worhp::reset_integer_options"></span><span class="target" id="classppnf_1_1worhp_1ad0e43baddf1ebed5fb424adc482dbbbc"></span>void <code class="sig-name descname">reset_integer_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf5worhp21reset_integer_optionsEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Clear all integer options. </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N4ppnf5worhp21reset_numeric_optionsEv">
 <span id="_CPPv3N4ppnf5worhp21reset_numeric_optionsEv"></span><span id="_CPPv2N4ppnf5worhp21reset_numeric_optionsEv"></span><span id="ppnf::worhp::reset_numeric_options"></span><span class="target" id="classppnf_1_1worhp_1acbaf6c9d04cc40e36b734290b6fe79c4"></span>void <code class="sig-name descname">reset_numeric_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf5worhp21reset_numeric_optionsEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Clear all numeric options. </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4N4ppnf5worhp18reset_bool_optionsEv">
 <span id="_CPPv3N4ppnf5worhp18reset_bool_optionsEv"></span><span id="_CPPv2N4ppnf5worhp18reset_bool_optionsEv"></span><span id="ppnf::worhp::reset_bool_options"></span><span class="target" id="classppnf_1_1worhp_1a137623c0f753092f037e4861cd8a25be"></span>void <code class="sig-name descname">reset_bool_options</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4ppnf5worhp18reset_bool_optionsEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Clear all numeric options. </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4NK4ppnf5worhp19get_last_opt_resultEv">
 <span id="_CPPv3NK4ppnf5worhp19get_last_opt_resultEv"></span><span id="_CPPv2NK4ppnf5worhp19get_last_opt_resultEv"></span><span id="ppnf::worhp::get_last_opt_resultC"></span><span class="target" id="classppnf_1_1worhp_1a2fcd49a63147e46790df3c0bced149d7"></span>std::string <code class="sig-name descname">get_last_opt_result</code><span class="sig-paren">(</span><span class="sig-paren">)</span> <em class="property">const</em><a class="headerlink" href="#_CPPv4NK4ppnf5worhp19get_last_opt_resultEv" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Get the result of the last optimisation. </p>
 <p><dl class="simple">
-<dt><strong>Return</strong></dt><dd><p>the result of the last call to WORHP. You can check The WORHP user manual for the meaning of the various entries. <div class="admonition seealso">
+<dt><strong>Return</strong></dt><dd><p>the result of the last call to WORHP. You can check The WORHP user manual for the meaning of the various entries. <p><div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p><a class="reference external" href="https://worhp.de/latest/download/user_manual.pdf">https://worhp.de/latest/download/user_manual.pdf</a></p>
 </div>
+</p>
  </p>
 </dd>
 </dl>
 </p>
 </dd></dl>
 
-<dl class="function">
+<dl class="cpp function">
 <dt id="_CPPv4I0EN4ppnf5worhp9serializeEvR7Archivej">
-<span id="_CPPv3I0EN4ppnf5worhp9serializeER7Archivej"></span><span id="_CPPv2I0EN4ppnf5worhp9serializeER7Archivej"></span><span class="target" id="classppnf_1_1worhp_1a8550d25145c78e41bd193b93cec4ed73"></span>template&lt;typename <code class="sig-name descname">Archive</code>&gt;<br />void <code class="sig-name descname">serialize</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN4ppnf5worhp9serializeEvR7Archivej" title="ppnf::worhp::serialize::Archive">Archive</a> &amp;<em>ar</em>, unsigned<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4ppnf5worhp9serializeEvR7Archivej" title="Permalink to this definition">¶</a><br /></dt>
+<span id="_CPPv3I0EN4ppnf5worhp9serializeER7Archivej"></span><span id="_CPPv2I0EN4ppnf5worhp9serializeER7Archivej"></span>template&lt;typename <code class="sig-name descname">Archive</code>&gt;<br /><span class="target" id="classppnf_1_1worhp_1a8550d25145c78e41bd193b93cec4ed73"></span>void <code class="sig-name descname">serialize</code><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv4I0EN4ppnf5worhp9serializeEvR7Archivej" title="ppnf::worhp::serialize::Archive">Archive</a> &amp;<em>ar</em>, unsigned<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4I0EN4ppnf5worhp9serializeEvR7Archivej" title="Permalink to this definition">¶</a><br /></dt>
 <dd><p>Object serialization. </p>
 <p>This method will save/load <code class="docutils literal notranslate"><span class="pre">this</span></code> into the archive <code class="docutils literal notranslate"><span class="pre">ar</span></code>.</p>
 <p><dl class="simple">
@@ -487,7 +493,7 @@ object ppnf::WORHP passing <code class="docutils literal notranslate"><span clas
     </p>
     <p>
         &copy; Copyright 2018, pagmo development team.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.0.1.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 3.3.1.<br/>
     </p>
   </div>
 </footer>
