@@ -1,8 +1,17 @@
 #ifndef WORHP_MACROS_CORE_F
 #define WORHP_MACROS_CORE_F
 
-! check for NaN
+! general
 #define ISNAN(X) (X/=X)
+
+! select case
+! select_1: to force an error if none of the values is selected
+#define WORHP_SELECT_1(var) (var) ;\
+    CASE DEFAULT ;\
+        CALL WorhpError("False select case: var.", 'Worhp', par%NLPprint) ;\
+        ASSERT(FALSE) ;\
+        CALL Terminate(opt, work, par, cnt, reason = DataError) ;\
+        RETURN
 
 ! macros for checking bound types
 #define X_EQ(i)        (ABS(XU(i)-XL(i)) <= work%eps)
@@ -86,114 +95,258 @@
 ! l: index for modified X
 ! i: index for modified inequality X
 ! j: index for modified lower/upper inequality X
-#define LOOP_X_ORIG(k,l) l = 1, work%NLP_n ;\
-    k = idxOrigX(l)
-#define LOOP_X_ORIG_LOW(k,l,i,jl) l = work%NLP_idxXIeqLow0, work%NLP_idxXIeqLowUp1 ;\
-    k = idxOrigX(l) ;\
-    i = l - work%NLP_idxXUnbnd1 ;\
-    jl = l - work%NLP_idxXIeqLow0 + 1
-#define LOOP_X_ORIG_UP(k,l,i,ju) l = work%NLP_idxXIeqLowUp0, work%NLP_idxXIeqUp1 ;\
-    k = idxOrigX(l) ;\
-    i = l - work%NLP_idxXUnbnd1 ;\
-    ju = l - work%NLP_idxXIeqLowUp0 + 1
-#define LOOP_X_ORIG_JUSTLOW(k,l,i,jl) l = work%NLP_idxXIeqLow0, work%NLP_idxXIeqLow1 ;\
-    k = idxOrigX(l) ;\
-    i = l - work%NLP_idxXUnbnd1 ;\
-    jl = l - work%NLP_idxXIeqLow0 + 1
-#define LOOP_X_ORIG_JUSTUP(k,l,i,ju) l = work%NLP_idxXIeqUp0, work%NLP_idxXIeqUp1 ;\
-    k = idxOrigX(l) ;\
-    i = l - work%NLP_idxXUnbnd1 ;\
-    ju = l - work%NLP_idxXIeqLowUp0 + 1
-#define LOOP_X_ORIG_JUSTLOWUP(k,l,i,jl,ju) l = work%NLP_idxXIeqLowUp0, work%NLP_idxXIeqLowUp1 ;\
-    k = idxOrigX(l) ;\
+#define LOOP_X_ORIG(type,k,l) l = 1, work%NLP_n ;\
+    IF (work%NLP_IdxTypeStore) THEN ;\
+        type = idxXType(l) ;\
+    ELSE ;\
+        type = WORHP_NLP_IDXTYPE_X_ORIGX ;\
+    END IF ;\
+    k = idxX(l) ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_n)
+#define LOOP_X_ORIG_LOW(type,k,l,i,jl) l = work%NLP_idxXIeqLow0, work%NLP_idxXIeqLowUp1 ;\
+    IF (work%NLP_IdxTypeStore) THEN ;\
+        type = idxXType(l) ;\
+    ELSE ;\
+        type = WORHP_NLP_IDXTYPE_X_ORIGX ;\
+    END IF ;\
+    k = idxX(l) ;\
     i = l - work%NLP_idxXUnbnd1 ;\
     jl = l - work%NLP_idxXIeqLow0 + 1 ;\
-    ju = l - work%NLP_idxXIeqLowUp0 + 1
+    ASSERT(l >= 1 .AND. l <= work%NLP_n) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_nIeq) ;\
+    ASSERT(jl >= 1 .AND. jl <= work%NLP_nIeqLow + work%NLP_nIeqLowUp)
+#define LOOP_X_ORIG_UP(type,k,l,i,ju) l = work%NLP_idxXIeqLowUp0, work%NLP_idxXIeqUp1 ;\
+    IF (work%NLP_IdxTypeStore) THEN ;\
+        type = idxXType(l) ;\
+    ELSE ;\
+        type = WORHP_NLP_IDXTYPE_X_ORIGX ;\
+    END IF ;\
+    k = idxX(l) ;\
+    i = l - work%NLP_idxXUnbnd1 ;\
+    ju = l - work%NLP_idxXIeqLowUp0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_n) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_nIeq) ;\
+    ASSERT(ju >= 1 .AND. ju <= work%NLP_nIeqUp + work%NLP_nIeqLowUp)
+#define LOOP_X_ORIG_JUSTLOW(type,k,l,i,jl) l = work%NLP_idxXIeqLow0, work%NLP_idxXIeqLow1 ;\
+    IF (work%NLP_IdxTypeStore) THEN ;\
+        type = idxXType(l) ;\
+    ELSE ;\
+        type = WORHP_NLP_IDXTYPE_X_ORIGX ;\
+    END IF ;\
+    k = idxX(l) ;\
+    i = l - work%NLP_idxXUnbnd1 ;\
+    jl = l - work%NLP_idxXIeqLow0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_n) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_nIeq) ;\
+    ASSERT(jl >= 1 .AND. jl <= work%NLP_nIeqLow + work%NLP_nIeqLowUp)
+#define LOOP_X_ORIG_JUSTUP(type,k,l,i,ju) l = work%NLP_idxXIeqUp0, work%NLP_idxXIeqUp1 ;\
+    IF (work%NLP_IdxTypeStore) THEN ;\
+        type = idxXType(l) ;\
+    ELSE ;\
+        type = WORHP_NLP_IDXTYPE_X_ORIGX ;\
+    END IF ;\
+    k = idxX(l) ;\
+    i = l - work%NLP_idxXUnbnd1 ;\
+    ju = l - work%NLP_idxXIeqLowUp0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_n) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_nIeq) ;\
+    ASSERT(ju >= 1 .AND. ju <= work%NLP_nIeqUp + work%NLP_nIeqLowUp)
+#define LOOP_X_ORIG_JUSTLOWUP(type,k,l,i,jl,ju) l = work%NLP_idxXIeqLowUp0, work%NLP_idxXIeqLowUp1 ;\
+    IF (work%NLP_IdxTypeStore) THEN ;\
+        type = idxXType(l) ;\
+    ELSE ;\
+        type = WORHP_NLP_IDXTYPE_X_ORIGX ;\
+    END IF ;\
+    k = idxX(l) ;\
+    i = l - work%NLP_idxXUnbnd1 ;\
+    jl = l - work%NLP_idxXIeqLow0 + 1 ;\
+    ju = l - work%NLP_idxXIeqLowUp0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_n) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_nIeq) ;\
+    ASSERT(jl >= 1 .AND. jl <= work%NLP_nIeqLow + work%NLP_nIeqLowUp) ;\
+    ASSERT(ju >= 1 .AND. ju <= work%NLP_nIeqUp + work%NLP_nIeqLowUp)
 #define LOOP_X(l) l = 1, work%NLP_n
 #define LOOP_X_LOW(l,i,jl) l = work%NLP_idxXIeqLow0, work%NLP_idxXIeqLowUp1 ;\
     i = l - work%NLP_idxXUnbnd1 ;\
-    jl = l - work%NLP_idxXIeqLow0 + 1
+    jl = l - work%NLP_idxXIeqLow0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_n) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_nIeq) ;\
+    ASSERT(jl >= 1 .AND. jl <= work%NLP_nIeqLow + work%NLP_nIeqLowUp)
 #define LOOP_X_UP(l,i,ju) l = work%NLP_idxXIeqLowUp0, work%NLP_idxXIeqUp1 ;\
     i = l - work%NLP_idxXUnbnd1 ;\
-    ju = l - work%NLP_idxXIeqLowUp0 + 1
+    ju = l - work%NLP_idxXIeqLowUp0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_n) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_nIeq) ;\
+    ASSERT(ju >= 1 .AND. ju <= work%NLP_nIeqUp + work%NLP_nIeqLowUp)
 #define LOOP_X_JUSTLOW(l,i,jl) l = work%NLP_idxXIeqLow0, work%NLP_idxXIeqLow1 ;\
     i = l - work%NLP_idxXUnbnd1 ;\
-    jl = l - work%NLP_idxXIeqLow0 + 1
+    jl = l - work%NLP_idxXIeqLow0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_n) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_nIeq) ;\
+    ASSERT(jl >= 1 .AND. jl <= work%NLP_nIeqLow + work%NLP_nIeqLowUp)
 #define LOOP_X_JUSTUP(l,i,ju) l = work%NLP_idxXIeqUp0, work%NLP_idxXIeqUp1 ;\
     i = l - work%NLP_idxXUnbnd1 ;\
-    ju = l - work%NLP_idxXIeqLowUp0 + 1
+    ju = l - work%NLP_idxXIeqLowUp0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_n) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_nIeq) ;\
+    ASSERT(ju >= 1 .AND. ju <= work%NLP_nIeqUp + work%NLP_nIeqLowUp)
 #define LOOP_X_JUSTLOWUP(l,i,jl,ju) l = work%NLP_idxXIeqLowUp0, work%NLP_idxXIeqLowUp1 ;\
     i = l - work%NLP_idxXUnbnd1 ;\
     jl = l - work%NLP_idxXIeqLow0 + 1 ;\
-    ju = l - work%NLP_idxXIeqLowUp0 + 1
+    ju = l - work%NLP_idxXIeqLowUp0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_n) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_nIeq) ;\
+    ASSERT(jl >= 1 .AND. jl <= work%NLP_nIeqLow + work%NLP_nIeqLowUp) ;\
+    ASSERT(ju >= 1 .AND. ju <= work%NLP_nIeqUp + work%NLP_nIeqLowUp)
 
 ! macros for loops over G (only relevant if worhp_nlp is used)
 ! k: index for original G
 ! l: index for modified G
 ! i: index for modified inequality G
 ! j: index for modified lower/upper inequality G
-#define LOOP_G_ORIG(k,l) l = 1, work%NLP_m ;\
-    k = idxOrigG(l)
-#define LOOP_G_ORIG_EQ(k,l,i) l = work%NLP_idxGeq0, work%NLP_idxGeq1 ;\
-    k = idxOrigG(l) ;\
-    i = l
-#define LOOP_G_ORIG_IEQ(k,l,i) l = work%NLP_idxGieqLow0, work%NLP_idxGieqUp1 ;\
-    k = idxOrigG(l) ;\
-    i = l - work%NLP_idxGeq1
-#define LOOP_G_ORIG_LOW(k,l,i,jl) l = work%NLP_idxGieqLow0, work%NLP_idxGieqLowUp1 ;\
-    k = idxOrigG(l) ;\
+#define LOOP_G_ORIG(type,k,l) l = 1, work%NLP_m ;\
+    IF (work%NLP_IdxTypeStore) THEN ;\
+        type = idxGType(l) ;\
+    ELSE ;\
+        type = WORHP_NLP_IDXTYPE_G_ORIGG ;\
+    END IF ;\
+    k = idxG(l) ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_m)
+#define LOOP_G_ORIG_EQ(type,k,l,i) l = work%NLP_idxGeq0, work%NLP_idxGeq1 ;\
+    IF (work%NLP_IdxTypeStore) THEN ;\
+        type = idxGType(l) ;\
+    ELSE ;\
+        type = WORHP_NLP_IDXTYPE_G_ORIGG ;\
+    END IF ;\
+    k = idxG(l) ;\
+    i = l ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_m) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_mEq)
+#define LOOP_G_ORIG_IEQ(type,k,l,i) l = work%NLP_idxGieqLow0, work%NLP_idxGieqUp1 ;\
+    IF (work%NLP_IdxTypeStore) THEN ;\
+        type = idxGType(l) ;\
+    ELSE ;\
+        type = WORHP_NLP_IDXTYPE_G_ORIGG ;\
+    END IF ;\
+    k = idxG(l) ;\
     i = l - work%NLP_idxGeq1 ;\
-    jl = l - work%NLP_idxGieqLow0 + 1
-#define LOOP_G_ORIG_UP(k,l,i,ju) l = work%NLP_idxGieqLowUp0, work%NLP_idxGieqUp1 ;\
-    k = idxOrigG(l) ;\
-    i = l - work%NLP_idxGeq1 ;\
-    ju = l - work%NLP_idxGieqLowUp0 + 1
-#define LOOP_G_ORIG_JUSTLOW(k,l,i,jl) l = work%NLP_idxGieqLow0, work%NLP_idxGieqLow1 ;\
-    k = idxOrigG(l) ;\
-    i = l - work%NLP_idxGeq1 ;\
-    jl = l - work%NLP_idxGieqLow0 + 1
-#define LOOP_G_ORIG_JUSTUP(k,l,i,ju) l = work%NLP_idxGieqUp0, work%NLP_idxGieqUp1 ;\
-    k = idxOrigG(l) ;\
-    i = l - work%NLP_idxGeq1 ;\
-    ju = l - work%NLP_idxGieqLowUp0 + 1
-#define LOOP_G_ORIG_JUSTLOWUP(k,l,i,jl,ju) l = work%NLP_idxGieqLowUp0, work%NLP_idxGieqLowUp1 ;\
-    k = idxOrigG(l) ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_m) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_mIeq)
+#define LOOP_G_ORIG_LOW(type,k,l,i,jl) l = work%NLP_idxGieqLow0, work%NLP_idxGieqLowUp1 ;\
+    IF (work%NLP_IdxTypeStore) THEN ;\
+        type = idxGType(l) ;\
+    ELSE ;\
+        type = WORHP_NLP_IDXTYPE_G_ORIGG ;\
+    END IF ;\
+    k = idxG(l) ;\
     i = l - work%NLP_idxGeq1 ;\
     jl = l - work%NLP_idxGieqLow0 + 1 ;\
-    ju = l - work%NLP_idxGieqLowUp0 + 1
+    ASSERT(l >= 1 .AND. l <= work%NLP_m) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_mIeq) ;\
+    ASSERT(jl >= 1 .AND. jl <= work%NLP_mIeqLow + work%NLP_mIeqLowUp)
+#define LOOP_G_ORIG_UP(type,k,l,i,ju) l = work%NLP_idxGieqLowUp0, work%NLP_idxGieqUp1 ;\
+    IF (work%NLP_IdxTypeStore) THEN ;\
+        type = idxGType(l) ;\
+    ELSE ;\
+        type = WORHP_NLP_IDXTYPE_G_ORIGG ;\
+    END IF ;\
+    k = idxG(l) ;\
+    i = l - work%NLP_idxGeq1 ;\
+    ju = l - work%NLP_idxGieqLowUp0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_m) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_mIeq) ;\
+    ASSERT(ju >= 1 .AND. ju <= work%NLP_mIeqUp + work%NLP_mIeqLowUp)
+#define LOOP_G_ORIG_JUSTLOW(type,k,l,i,jl) l = work%NLP_idxGieqLow0, work%NLP_idxGieqLow1 ;\
+    IF (work%NLP_IdxTypeStore) THEN ;\
+        type = idxGType(l) ;\
+    ELSE ;\
+        type = WORHP_NLP_IDXTYPE_G_ORIGG ;\
+    END IF ;\
+    k = idxG(l) ;\
+    i = l - work%NLP_idxGeq1 ;\
+    jl = l - work%NLP_idxGieqLow0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_m) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_mIeq) ;\
+    ASSERT(jl >= 1 .AND. jl <= work%NLP_mIeqLow + work%NLP_mIeqLowUp)
+#define LOOP_G_ORIG_JUSTUP(type,k,l,i,ju) l = work%NLP_idxGieqUp0, work%NLP_idxGieqUp1 ;\
+    IF (work%NLP_IdxTypeStore) THEN ;\
+        type = idxGType(l) ;\
+    ELSE ;\
+        type = WORHP_NLP_IDXTYPE_G_ORIGG ;\
+    END IF ;\
+    k = idxG(l) ;\
+    i = l - work%NLP_idxGeq1 ;\
+    ju = l - work%NLP_idxGieqLowUp0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_m) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_mIeq) ;\
+    ASSERT(ju >= 1 .AND. ju <= work%NLP_mIeqUp + work%NLP_mIeqLowUp)
+#define LOOP_G_ORIG_JUSTLOWUP(type,k,l,i,jl,ju) l = work%NLP_idxGieqLowUp0, work%NLP_idxGieqLowUp1 ;\
+    IF (work%NLP_IdxTypeStore) THEN ;\
+        type = idxGType(l) ;\
+    ELSE ;\
+        type = WORHP_NLP_IDXTYPE_G_ORIGG ;\
+    END IF ;\
+    k = idxG(l) ;\
+    i = l - work%NLP_idxGeq1 ;\
+    jl = l - work%NLP_idxGieqLow0 + 1 ;\
+    ju = l - work%NLP_idxGieqLowUp0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_m) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_mIeq) ;\
+    ASSERT(jl >= 1 .AND. jl <= work%NLP_mIeqLow + work%NLP_mIeqLowUp) ;\
+    ASSERT(ju >= 1 .AND. ju <= work%NLP_mIeqUp + work%NLP_mIeqLowUp)
 #define LOOP_G(l) l = 1, work%NLP_m
 #define LOOP_G_EQ(l,i) l = work%NLP_idxGeq0, work%NLP_idxGeq1 ;\
-    i = l
+    i = l ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_m) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_mEq)
 #define LOOP_G_IEQ(l,i) l = work%NLP_idxGieqLow0, work%NLP_idxGieqUp1 ;\
-    i = l - work%NLP_idxGeq1
+    i = l - work%NLP_idxGeq1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_m) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_mIeq)
 #define LOOP_G_LOW(l,i,jl) l = work%NLP_idxGieqLow0, work%NLP_idxGieqLowUp1 ;\
     i = l - work%NLP_idxGeq1 ;\
-    jl = l - work%NLP_idxGieqLow0 + 1
+    jl = l - work%NLP_idxGieqLow0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_m) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_mIeq) ;\
+    ASSERT(jl >= 1 .AND. jl <= work%NLP_mIeqLow + work%NLP_mIeqLowUp)
 #define LOOP_G_UP(l,i,ju) l = work%NLP_idxGieqLowUp0, work%NLP_idxGieqUp1 ;\
     i = l - work%NLP_idxGeq1 ;\
-    ju = l - work%NLP_idxGieqLowUp0 + 1
+    ju = l - work%NLP_idxGieqLowUp0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_m) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_mIeq) ;\
+    ASSERT(ju >= 1 .AND. ju <= work%NLP_mIeqUp + work%NLP_mIeqLowUp)
 #define LOOP_G_JUSTLOW(l,i,jl) l = work%NLP_idxGieqLow0, work%NLP_idxGieqLow1 ;\
     i = l - work%NLP_idxGeq1 ;\
-    jl = l - work%NLP_idxGieqLow0 + 1
+    jl = l - work%NLP_idxGieqLow0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_m) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_mIeq) ;\
+    ASSERT(jl >= 1 .AND. jl <= work%NLP_mIeqLow + work%NLP_mIeqLowUp)
 #define LOOP_G_JUSTUP(l,i,ju) l = work%NLP_idxGieqUp0, work%NLP_idxGieqUp1 ;\
     i = l - work%NLP_idxGeq1 ;\
-    ju = l - work%NLP_idxGieqLowUp0 + 1
+    ju = l - work%NLP_idxGieqLowUp0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_m) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_mIeq) ;\
+    ASSERT(ju >= 1 .AND. ju <= work%NLP_mIeqUp + work%NLP_mIeqLowUp)
 #define LOOP_G_JUSTLOWUP(l,i,jl,ju) l = work%NLP_idxGieqLowUp0, work%NLP_idxGieqLowUp1 ;\
     i = l - work%NLP_idxGeq1 ;\
     jl = l - work%NLP_idxGieqLow0 + 1 ;\
-    ju = l - work%NLP_idxGieqLowUp0 + 1
+    ju = l - work%NLP_idxGieqLowUp0 + 1 ;\
+    ASSERT(l >= 1 .AND. l <= work%NLP_m) ;\
+    ASSERT(i >= 1 .AND. i <= work%NLP_mIeq) ;\
+    ASSERT(jl >= 1 .AND. jl <= work%NLP_mIeqLow + work%NLP_mIeqLowUp) ;\
+    ASSERT(ju >= 1 .AND. ju <= work%NLP_mIeqUp + work%NLP_mIeqLowUp)
 
 ! macros for loops over S (only relevant if worhp_nlp is used)
 ! k: index for original G
 ! l: index for modified G
 ! i: index for modified S
 ! j: index for modified lower/upper inequality S
-#define LOOP_S_ORIG(k,l,i) LOOP_G_ORIG_IEQ(k,l,i)
-#define LOOP_S_ORIG_LOW(k,l,i,jl) LOOP_G_ORIG_LOW(k,l,i,jl)
-#define LOOP_S_ORIG_UP(k,l,i,ju) LOOP_G_ORIG_UP(k,l,i,ju)
-#define LOOP_S_ORIG_JUSTLOW(k,l,i,jl) LOOP_G_ORIG_JUSTLOW(k,l,i,jl)
-#define LOOP_S_ORIG_JUSTUP(k,l,i,ju) LOOP_G_ORIG_JUSTUP(k,l,i,ju)
-#define LOOP_S_ORIG_JUSTLOWUP(k,l,i,jl,ju) LOOP_G_ORIG_JUSTLOWUP(k,l,i,jl,ju)
+#define LOOP_S_ORIG(type,k,l,i) LOOP_G_ORIG_IEQ(type,k,l,i)
+#define LOOP_S_ORIG_LOW(type,k,l,i,jl) LOOP_G_ORIG_LOW(type,k,l,i,jl)
+#define LOOP_S_ORIG_UP(type,k,l,i,ju) LOOP_G_ORIG_UP(type,k,l,i,ju)
+#define LOOP_S_ORIG_JUSTLOW(type,k,l,i,jl) LOOP_G_ORIG_JUSTLOW(type,k,l,i,jl)
+#define LOOP_S_ORIG_JUSTUP(type,k,l,i,ju) LOOP_G_ORIG_JUSTUP(type,k,l,i,ju)
+#define LOOP_S_ORIG_JUSTLOWUP(type,k,l,i,jl,ju) LOOP_G_ORIG_JUSTLOWUP(type,k,l,i,jl,ju)
 #define LOOP_S(l,i) LOOP_G_IEQ(l,i)
 #define LOOP_S_LOW(l,i,jl) LOOP_G_LOW(l,i,jl)
 #define LOOP_S_UP(l,i,ju) LOOP_G_UP(l,i,ju)
@@ -204,73 +357,94 @@
 ! macros for loops over DF (only relevant if worhp_nlp is used)
 #ifdef WORHP_NLP_CREATEMATRIX
 #define LOOP_DF(k,i,row,val) i = 1, work%NLP_DF%nnz ;\
-    k = idxOrigDF(i) ;\
+    k = idxDF(i) ;\
     row = DFrow(i) ;\
-    val = DFval(i)
+    val = DFval(i) ;\
+    ASSERT(row >= 1 .AND. row <= work%NLP_n)
 #define LOOP_DF_IDX(k,i,row) i = 1, work%NLP_DF%nnz ;\
-    k = idxOrigDF(i) ;\
-    row = DFrow(i)
+    k = idxDF(i) ;\
+    row = DFrow(i) ;\
+    ASSERT(row >= 1 .AND. row <= work%NLP_n)
 #define LOOP_DF_VAL(k,i,val) i = 1, work%NLP_DF%nnz ;\
-    k = idxOrigDF(i) ;\
+    k = idxDF(i) ;\
     val = DFval(i)
 #define LOOP_DG(k,i,row,col,val) i = 1, work%NLP_DG%nnz ;\
-    k = idxOrigDG(i) ;\
+    k = idxDG(i) ;\
     row = DGrow(i) ;\
     col = DGcol(i) ;\
-    val = DGval(i)
+    val = DGval(i) ;\
+    ASSERT(row >= 1 .AND. row <= work%NLP_m) ;\
+    ASSERT(col >= 1 .AND. col <= work%NLP_n)
 #define LOOP_DG_IDX(k,i,row,col) i = 1, work%NLP_DG%nnz ;\
-    k = idxOrigDG(i) ;\
+    k = idxDG(i) ;\
     row = DGrow(i) ;\
-    col = DGcol(i)
+    col = DGcol(i) ;\
+    ASSERT(row >= 1 .AND. row <= work%NLP_m) ;\
+    ASSERT(col >= 1 .AND. col <= work%NLP_n)
 #define LOOP_DG_VAL(k,i,val) i = 1, work%NLP_DG%nnz ;\
-    k = idxOrigDG(i) ;\
+    k = idxDG(i) ;\
     val = DGval(i)
 #define LOOP_HM(k,i,row,col,val) i = 1, work%NLP_HM%nnz ;\
-    k = idxOrigHM(i) ;\
+    k = idxHM(i) ;\
     row = HMrow(i) ;\
     col = HMcol(i) ;\
-    val = HMval(i)
+    val = HMval(i) ;\
+    ASSERT(row >= 1 .AND. row <= work%NLP_n) ;\
+    ASSERT(col >= 1 .AND. col <= work%NLP_n)
 #define LOOP_HM_IDX(k,i,row,col) i = 1, work%NLP_HM%nnz ;\
-    k = idxOrigHM(i) ;\
+    k = idxHM(i) ;\
     row = HMrow(i) ;\
-    col = HMcol(i)
+    col = HMcol(i) ;\
+    ASSERT(row >= 1 .AND. row <= work%NLP_n) ;\
+    ASSERT(col >= 1 .AND. col <= work%NLP_n)
 #define LOOP_HM_VAL(k,i,val) i = 1, work%NLP_HM%nnz ;\
-    k = idxOrigHM(i) ;\
+    k = idxHM(i) ;\
     val = HMval(i)
 #else
 #define LOOP_DF(k,i,row,val) i = 1, work%NLP_DF%nnz ;\
-    k = idxOrigDF(i) ;\
-    row = idxX(DFrow(k)) ;\
-    val = DFval(k) * work%NLP_ScaleF * work%NLP_ScaleFalg
+    k = idxDF(i) ;\
+    row = idxOrigX(DFrow(k)) ;\
+    val = DFval(k) * work%NLP_ScaleF * work%NLP_ScaleFalg ;\
+    ASSERT(row >= 1 .AND. row <= work%NLP_n)
 #define LOOP_DF_IDX(k,i,row) i = 1, work%NLP_DF%nnz ;\
-    k = idxOrigDF(i) ;\
-    row = idxX(DFrow(k))
+    k = idxDF(i) ;\
+    row = idxOrigX(DFrow(k)) ;\
+    ASSERT(row >= 1 .AND. row <= work%NLP_n)
 #define LOOP_DF_VAL(k,i,val) i = 1, work%NLP_DF%nnz ;\
-    k = idxOrigDF(i) ;\
-    val = DFval(k) * work%NLP_ScaleF * work%NLP_ScaleFalg
+    k = idxDF(i) ;\
+    val = DFval(k) * work%NLP_ScaleF * work%NLP_ScaleFalg ;\
+    ASSERT(k >= 1 .AND. k <= work%DF%nnz)
 #define LOOP_DG(k,i,row,col,val) i = 1, work%NLP_DG%nnz ;\
-    k = idxOrigDG(i) ;\
-    row = idxG(DGrow(k)) ;\
-    col = idxX(DGcol(k)) ;\
-    val = DGval(k) * ScaleG(row)
+    k = idxDG(i) ;\
+    row = idxOrigG(DGrow(k)) ;\
+    col = idxOrigX(DGcol(k)) ;\
+    val = DGval(k) * ScaleG(row) ;\
+    ASSERT(row >= 1 .AND. row <= work%NLP_m) ;\
+    ASSERT(col >= 1 .AND. col <= work%NLP_n)
 #define LOOP_DG_IDX(k,i,row,col) i = 1, work%NLP_DG%nnz ;\
-    k = idxOrigDG(i) ;\
-    row = idxG(DGrow(k)) ;\
-    col = idxX(DGcol(k))
+    k = idxDG(i) ;\
+    row = idxOrigG(DGrow(k)) ;\
+    col = idxOrigX(DGcol(k)) ;\
+    ASSERT(row >= 1 .AND. row <= work%NLP_m) ;\
+    ASSERT(col >= 1 .AND. col <= work%NLP_n)
 #define LOOP_DG_VAL(k,i,val) i = 1, work%NLP_DG%nnz ;\
-    k = idxOrigDG(i) ;\
-    val = DGval(k) * ScaleG(idxG(DGrow(k)))
+    k = idxDG(i) ;\
+    val = DGval(k) * ScaleG(idxOrigG(DGrow(k)))
 #define LOOP_HM(k,i,row,col,val) i = 1, work%NLP_HM%nnz ;\
-    k = idxOrigHM(i) ;\
-    row = idxX(HMrow(k)) ;\
-    col = idxX(HMcol(k)) ;\
-    val = HMval(k)
+    k = idxHM(i) ;\
+    row = idxOrigX(HMrow(k)) ;\
+    col = idxOrigX(HMcol(k)) ;\
+    val = HMval(k) ;\
+    ASSERT(row >= 1 .AND. row <= work%NLP_n) ;\
+    ASSERT(col >= 1 .AND. col <= work%NLP_n)
 #define LOOP_HM_IDX(k,i,row,col) i = 1, work%NLP_HM%nnz ;\
-    k = idxOrigHM(i) ;\
-    row = idxX(HMrow(k)) ;\
-    col = idxX(HMcol(k))
+    k = idxHM(i) ;\
+    row = idxOrigX(HMrow(k)) ;\
+    col = idxOrigX(HMcol(k)) ;\
+    ASSERT(row >= 1 .AND. row <= work%NLP_n) ;\
+    ASSERT(col >= 1 .AND. col <= work%NLP_n)
 #define LOOP_HM_VAL(k,i,val) i = 1, work%NLP_HM%nnz ;\
-    k = idxOrigHM(i) ;\
+    k = idxHM(i) ;\
     val = HMval(k)
 #endif
 

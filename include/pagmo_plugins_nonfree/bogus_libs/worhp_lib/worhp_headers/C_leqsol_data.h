@@ -55,12 +55,16 @@ typedef struct LeqsolWorkspaceStruct {
 
   bool solve_blas3;
   bool solve_mf;
+  bool action;
 
   bool initsymb;
   bool initlu;
 
   double *valsave;
   double *diag;
+  double *perm;
+  double *buf;
+  double *d;
 
   void *akeep;
   void *fkeep;

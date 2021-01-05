@@ -98,7 +98,7 @@ DLL_PUBLIC void StatusMsgString(OptVar* o, Workspace* w, Params* p, Control* c, 
 /**
  * Writes a string describing the given solver status into the given C-string.
  * The 'message' parameter has to be allocated and large enough, use the
- * constant 'MAX_STATUS_LENGTH' for this.
+ * constant 'WORHP_MAX_STATUS_LENGTH' for this.
  */
 DLL_PUBLIC void Status2String(int status, char str[]);
 
@@ -137,6 +137,7 @@ typedef struct MajorIterNoticeStruct {
   double FeasMax;
   double eps;
   double IP_Barrier;
+  double IP_BarrierShift;
   double IP_PenaltyFeas;
   double IP_PenaltyObj;
   double IP_RegTau;
@@ -167,7 +168,7 @@ typedef struct MajorIterNoticeStruct {
  * Create a MajorIterNotice, containing information about the current major
  * iteration that can be used for printing.
  */
-DLL_PUBLIC MajorIterNotice CreateMajorIterNotice(OptVar*, Workspace*, Params*, Control*);
+DLL_PUBLIC MajorIterNotice CreateMajorIterNotice(const OptVar*, const Workspace*, const Params*, const Control*);
 
 /**
  * Print a message for the major iteration based on the MajorIterNotice

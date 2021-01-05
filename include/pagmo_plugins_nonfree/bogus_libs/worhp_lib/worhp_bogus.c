@@ -53,6 +53,11 @@ void Worhp(OptVar *o, Workspace *w, Params *p, Control *c)
     }
 }
 
+void WorhpDiag(OptVar *o, Workspace *w, Params *p, Control *c)
+{
+    printf("Many Diagnostics!!!! So helpful!!\n");
+}
+
 void StatusMsg(OptVar *o, Workspace *w, Params *p, Control *c)
 {
     printf("All went great!!!! What a glamorous Success!!\n");
@@ -127,5 +132,5 @@ void WorhpVersion(int *major, int *minor, char patch[PATCH_STRING_LENGTH])
     strcpy(patch, "1");
 #endif
     *major = 1;
-    *minor = 12;
+    *minor = 14;
 };
