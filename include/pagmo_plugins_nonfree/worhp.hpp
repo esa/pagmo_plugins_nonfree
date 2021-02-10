@@ -78,6 +78,11 @@ see https://www.gnu.org/licenses/. */
 namespace ppnf
 {
 
+    //forward declaration
+    namespace detail {
+        struct worhp_raii;
+    }
+
 /// WORHP - (We Optimize Really Huge Problems)
 /**
  * \image html worhp.png
@@ -263,6 +268,10 @@ private:
     void load(Archive &ar) = delete;
     template <typename Archive>
     void save(Archive &ar) const = delete;
+
+    // Private evolution function, saving and returning WORHP state  
+    std::tuple<pagmo::population, detail::worhp_raii> evolve_with_state(pagmo::population pop) const;
+
 };
 
 } // namespace ppnf

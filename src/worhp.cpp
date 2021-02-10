@@ -154,6 +154,13 @@ worhp::worhp(bool screen_output, std::string worhp_library)
  */
 population worhp::evolve(population pop) const
 {
+    population result;
+    std::tie (result, std::ignore) = evolve_with_state(pop);
+    return result;
+}
+
+std::tuple<population, detail::worhp_raii> worhp::evolve_with_state(population pop) const
+{
     // We store some useful properties
     const auto &prob = pop.get_problem(); // This is a const reference, so using set_seed, for example, will not work
     auto dim = prob.get_nx();
@@ -172,10 +179,7 @@ population worhp::evolve(population pop) const
                     "The problem appears to be stochastic " + get_name() + " cannot deal with it");
     }
 
-    if (!pop.size()) {
-        // In case of an empty pop, just return it.
-        return pop;
-    }
+
     // ---------------------------------------------------------------------------------------------------------
     // ------------------------- WORHP PLUGIN (we attempt loading the worhp library at run-time)--------------
     // We first declare the prototypes of the functions used from the library
@@ -420,6 +424,11 @@ We report the exact text of the original exception thrown:
 
     // USI-3 (and 8): Allocate solver memory (and deallocate upon destruction of wr)
     detail::worhp_raii wr(&opt, &wsp, &par, &cnt, WorhpInit, WorhpFree);
+
+    if (!pop.size()) {
+        // In case of an empty pop, just return it.
+        return std::make_tuple(pop, wr);
+    }
 
     // This flag informs Worhp that f and g should not be evaluated seperately. pagmo fitness always computes both
     // so that if only the objfun is needed also the constraints are computed. This flag signals to worhp that this
@@ -723,7 +732,7 @@ We report the exact text of the original exception thrown:
         StatusMsg(&opt, &wsp, &par, &cnt);
     }
 
-    return pop;
+    return std::make_tuple(pop, wr);
 }
 
 /// Set verbosity.
