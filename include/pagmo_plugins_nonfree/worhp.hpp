@@ -54,6 +54,7 @@ see https://www.gnu.org/licenses/. */
 #include <boost/functional/hash.hpp>
 #include <boost/serialization/map.hpp>
 #include <iomanip>
+#include <memory>
 #include <mutex>
 #include <pagmo/algorithm.hpp>
 #include <pagmo/algorithms/not_population_based.hpp>
@@ -263,6 +264,12 @@ private:
     mutable std::pair<pagmo::vector_double, pagmo::vector_double> m_f_cache = {{}, {}};
     mutable std::pair<pagmo::vector_double, pagmo::vector_double> m_g_cache = {{}, {}};
 
+    // The worhp data structures
+    mutable OptVar opt;
+    mutable Workspace wsp;
+    mutable Params par;
+    mutable Control cnt;
+
     // Deleting the methods load save public in base as to avoid conflict with serialize
     template <typename Archive>
     void load(Archive &ar) = delete;
@@ -270,7 +277,7 @@ private:
     void save(Archive &ar) const = delete;
 
     // Private evolution function, saving and returning WORHP state  
-    std::tuple<pagmo::population, detail::worhp_raii> evolve_with_state(pagmo::population pop) const;
+    std::tuple<pagmo::population, std::shared_ptr<detail::worhp_raii>> evolve_with_state(pagmo::population pop) const;
 
 };
 

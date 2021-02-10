@@ -51,6 +51,7 @@ see https://www.gnu.org/licenses/. */
 #include <boost/functional/hash.hpp>
 #include <boost/serialization/map.hpp>
 #include <iomanip>
+#include <memory>
 #include <mutex>
 #include <numeric>
 #include <pagmo/algorithm.hpp>
@@ -93,10 +94,12 @@ struct worhp_raii {
                std::function<void(OptVar *, Workspace *, Params *, Control *)> &WorhpFree)
         : m_o(o), m_w(w), m_p(p), m_c(c), m_WorhpFree(WorhpFree)
     {
+        print("Calling WorhpInit\n");
         WorhpInit(m_o, m_w, m_p, m_c);
     }
     ~worhp_raii()
     {
+        print("Calling WorhpFree\n");
         m_WorhpFree(m_o, m_w, m_p, m_c);
     }
     OptVar *m_o;
@@ -159,7 +162,7 @@ population worhp::evolve(population pop) const
     return result;
 }
 
-std::tuple<population, detail::worhp_raii> worhp::evolve_with_state(population pop) const
+std::tuple<population, std::shared_ptr<detail::worhp_raii>> worhp::evolve_with_state(population pop) const
 {
     // We store some useful properties
     const auto &prob = pop.get_problem(); // This is a const reference, so using set_seed, for example, will not work
@@ -332,10 +335,6 @@ We report the exact text of the original exception thrown:
 
     // With reference to the worhp User Manual (V1.12)
     // USI-0:  Call WorhpPreInit to properly initialise the (empty) data structures.
-    OptVar opt;
-    Workspace wsp;
-    Params par;
-    Control cnt;
     WorhpPreInit(&opt, &wsp, &par, &cnt);
 
     // USI-1: Read parameters from XML
@@ -423,7 +422,7 @@ We report the exact text of the original exception thrown:
     wsp.HM.nnz = static_cast<int>(hs_idx_map.size() + dim); // lower triangular sparse + full diagonal
 
     // USI-3 (and 8): Allocate solver memory (and deallocate upon destruction of wr)
-    detail::worhp_raii wr(&opt, &wsp, &par, &cnt, WorhpInit, WorhpFree);
+    std::shared_ptr<detail::worhp_raii> wr = std::make_shared<detail::worhp_raii>(&opt, &wsp, &par, &cnt, WorhpInit, WorhpFree);
 
     if (!pop.size()) {
         // In case of an empty pop, just return it.
