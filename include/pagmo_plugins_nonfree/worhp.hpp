@@ -265,10 +265,10 @@ private:
     mutable std::pair<pagmo::vector_double, pagmo::vector_double> m_g_cache = {{}, {}};
 
     // The worhp data structures
-    mutable OptVar opt;
-    mutable Workspace wsp;
-    mutable Params par;
-    mutable Control cnt;
+    mutable OptVar m_opt;
+    mutable Workspace m_wsp;
+    mutable Params m_par;
+    mutable Control m_cnt;
 
     // Deleting the methods load save public in base as to avoid conflict with serialize
     template <typename Archive>
@@ -277,7 +277,8 @@ private:
     void save(Archive &ar) const = delete;
 
     // Private evolution function, saving and returning WORHP state  
-    std::tuple<pagmo::population, std::shared_ptr<detail::worhp_raii>> evolve_with_state(pagmo::population pop) const;
+    std::tuple<pagmo::population, std::shared_ptr<detail::worhp_raii>> evolve_with_state(
+        OptVar& opt, Workspace& wsp, Params& par, Control& cnt, pagmo::population pop) const;
 
 };
 

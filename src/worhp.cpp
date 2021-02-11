@@ -158,11 +158,26 @@ worhp::worhp(bool screen_output, std::string worhp_library)
 population worhp::evolve(population pop) const
 {
     population result;
-    std::tie (result, std::ignore) = evolve_with_state(pop);
+    //these will go out of state at the end of the method call.
+    OptVar opt;
+    Workspace wsp;
+    Params par;
+    Control cnt;
+    std::tie (result, std::ignore) = evolve_with_state(opt, wsp, par, cnt, pop);
     return result;
 }
 
-std::tuple<population, std::shared_ptr<detail::worhp_raii>> worhp::evolve_with_state(population pop) const
+population worhp::zen_init(population pop)
+{
+    population result;
+    //these will go out of state at the end of the method call.
+    std::shared_ptr<detail::worhp_raii>> wr;
+    std::tie (result, wr) = evolve_with_state(m_opt, m_wsp, m_par, m_cnt, pop);
+    return result;
+}
+
+std::tuple<population, std::shared_ptr<detail::worhp_raii>> worhp::evolve_with_state(
+    OptVar& opt, Workspace& wsp, Params& par, Control& cnt, population pop) const
 {
     // We store some useful properties
     const auto &prob = pop.get_problem(); // This is a const reference, so using set_seed, for example, will not work
