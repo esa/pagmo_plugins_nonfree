@@ -179,6 +179,9 @@ public:
      */
     worhp(bool screen_output = false, std::string worhp_library = "/usr/local/lib/libworhp.so");
     pagmo::population evolve(pagmo::population pop) const;
+    pagmo::population zen_init(pagmo::population pop);
+    pagmo::vector_double zen_update(const pagmo::vector_double &dp, const pagmo::vector_double &dr,
+                             const pagmo::vector_double &dq, const pagmo::vector_double &db, int order);
     void set_verbosity(unsigned n);
     const log_type &get_log() const;
     unsigned int get_verbosity() const;
@@ -265,10 +268,11 @@ private:
     mutable std::pair<pagmo::vector_double, pagmo::vector_double> m_g_cache = {{}, {}};
 
     // The worhp data structures
-    mutable OptVar m_opt;
-    mutable Workspace m_wsp;
-    mutable Params m_par;
-    mutable Control m_cnt;
+    OptVar m_opt;
+    Workspace m_wsp;
+    Params m_par;
+    Control m_cnt;
+    std::shared_ptr<detail::worhp_raii> m_wr;
 
     // Deleting the methods load save public in base as to avoid conflict with serialize
     template <typename Archive>
@@ -278,7 +282,7 @@ private:
 
     // Private evolution function, saving and returning WORHP state  
     std::tuple<pagmo::population, std::shared_ptr<detail::worhp_raii>> evolve_with_state(
-        OptVar& opt, Workspace& wsp, Params& par, Control& cnt, pagmo::population pop) const;
+        OptVar& opt, Workspace& wsp, Params& par, Control& cnt, pagmo::population pop, bool useZen = false) const;
 
 };
 

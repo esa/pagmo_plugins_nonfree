@@ -170,14 +170,75 @@ population worhp::evolve(population pop) const
 population worhp::zen_init(population pop)
 {
     population result;
-    //these will go out of state at the end of the method call.
-    std::shared_ptr<detail::worhp_raii>> wr;
-    std::tie (result, wr) = evolve_with_state(m_opt, m_wsp, m_par, m_cnt, pop);
+
+    /*
+     * this is to make sure that the old object is deconstructed
+     *_before_ constructing a new one using the same worhp objects
+     */
+    m_wr.reset<detail::worhp_raii>(nullptr);
+
+    std::tie (result, m_wr) = evolve_with_state(m_opt, m_wsp, m_par, m_cnt, pop, true);
     return result;
 }
 
+vector_double worhp::zen_update(const pagmo::vector_double &dp, const pagmo::vector_double &dr,
+                             const pagmo::vector_double &dq, const pagmo::vector_double &db, int order) {
+
+    if (!m_wr) {
+        pagmo_throw(std::runtime_error, "No optimization state saved for sensitivity updates. Call zen_init first.");
+    }
+
+    // ---------------------------------------------------------------------------------------------------------
+    // ------------------------- WORHP PLUGIN (we attempt loading the worhp library at run-time)--------------
+    std::function<void(OptVar *, Workspace *, Params *, Control *, const  char * ,double *,
+     const double *, const double *, const double *, const double *, const int *)> ZenUpdate;
+
+    boost::filesystem::path library_filename(m_worhp_library);
+    // We then try to load the library at run time and locate the symbols used.
+    try {
+        // Here we import at runtime the worhp library and protect the whole try block with a mutex
+        std::lock_guard<std::mutex> lock(detail::library_load_mutex);
+        if (!boost::filesystem::is_regular_file(library_filename)) {
+            pagmo_throw(std::invalid_argument,
+                        "The worhp library file name was constructed to be: " + library_filename.string()
+                            + " and it does not appear to be a file");
+        }
+        boost::dll::shared_library libworhp(library_filename);
+
+        ZenUpdate = boost::dll::import<void(OptVar *, Workspace *, Params *, Control *, const  char * ,double *,
+     const double * , const double * , const double * , const double * , const int *)>( // type of the function to import
+            libworhp,                                       // the library
+            "ZenUpdate"                                  // name of the function to import
+        );
+    } catch (const std::exception &e) {
+        std::string message(
+            R"(
+An error occurred while loading the worhp library at run-time. This is typically caused by one of the following
+reasons:
+
+- The file declared to be the worhp library, i.e. )"
+            + m_worhp_library
+            + R"(, is not found or is found but it is not a shared library containing the necessary symbols 
+(is the file really a valid shared library?)
+ - The library is found and it does contain the symbols, but it needs linking to some additional libraries that are not found
+at run-time.
+
+We report the exact text of the original exception thrown:
+
+ )" + std::string(e.what()));
+        pagmo_throw(std::invalid_argument, message);
+    }
+    // ------------------------- END WORHP PLUGIN -------------------------------------------------------------
+
+    vector_double Xnew(m_opt.n);
+    ZenUpdate(&m_opt, &m_wsp, &m_par, &m_cnt, "X", Xnew.data(), dp.data(), dr.data(), dq.data(), db.data(), &order);
+    return Xnew;
+}
+
+ 
+
 std::tuple<population, std::shared_ptr<detail::worhp_raii>> worhp::evolve_with_state(
-    OptVar& opt, Workspace& wsp, Params& par, Control& cnt, population pop) const
+    OptVar& opt, Workspace& wsp, Params& par, Control& cnt, population pop, bool useZen) const
 {
     // We store some useful properties
     const auto &prob = pop.get_problem(); // This is a const reference, so using set_seed, for example, will not work
@@ -464,6 +525,10 @@ We report the exact text of the original exception thrown:
         WorhpSetBoolParam(&par, "UserHM", true);
     } else {
         WorhpSetBoolParam(&par, "UserHM", false);
+    }
+
+    if (useZen) {
+        WorhpSetBoolParam(&par, "UseZen", true);
     }
 
     // Logic for the handling of constraints tolerances. The logic is as follows:
