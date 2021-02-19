@@ -57,7 +57,7 @@ class worhp_test_case(_ut.TestCase):
 
     def run_test_zen_update(self):
         import pygmo as pg
-        from .core import worhp, _test_intermodule
+        from .core import worhp
         uda = worhp(screen_output=False,
                      library="/usr/local/lib/libworhp.so")
         algo = pg.algorithm(uda)

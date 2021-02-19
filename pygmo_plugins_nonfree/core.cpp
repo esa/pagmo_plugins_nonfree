@@ -102,7 +102,7 @@ PYBIND11_MODULE(core, m)
     // We expose the additional constructor
     worhp_.def(py::init<bool, std::string>(), py::arg("screen_output") = false, py::arg("library") = "/usr/local/lib/");
     worhp_.def("evolve", &ppnf::worhp::evolve);
-    worhp_.def("zen_update", &ppnf::worhp::zen_update);
+    worhp_.def("zen_update", &ppnf::worhp::zen_update, ppnf::worhp_zen_update_docstring().c_str());
     worhp_.def("set_verbosity", &ppnf::worhp::set_verbosity);
     worhp_.def("get_name", &ppnf::worhp::get_name);
     worhp_.def("get_extra_info", &ppnf::worhp::get_extra_info);
