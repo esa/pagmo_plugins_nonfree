@@ -149,7 +149,7 @@ worhp::worhp(bool screen_output, std::string worhp_library)
  *
  * @return the optimised population.
  *
- * @throws std::invalid_argument if a version mismatch is found between the declared library and 1.12
+ * @throws std::invalid_argument if a version mismatch is found between the declared library and 1.14
  * @throws std::invalid_argument in the following cases:
  * - the population's problem is multi-objective or stochastic
  * @throws unspecified any exception thrown by the public interface of pagmo::problem or
@@ -330,7 +330,7 @@ We report the exact text of the original exception thrown:
     m_log.clear();
     auto fevals0 = prob.get_fevals();
 
-    // With reference to the worhp User Manual (V1.12)
+    // With reference to the worhp User Manual (V1.14)
     // USI-0:  Call WorhpPreInit to properly initialise the (empty) data structures.
     WorhpPreInit(&opt, &wsp, &par, &cnt);
 
@@ -736,11 +736,35 @@ We report the exact text of the original exception thrown:
     return pop;
 }
 
+/// Sensitivity Updates (Worhp Zen)
+/**
+ * This method allows to apply perturbations to the constraints and objective function of the last computed problem.
+ * It then returns an updated optimal solution without having to repeat the optimization process.
+ * To do that, Worhp computes sensitivity matrices and gives an approximation of the new optimum.
+ *
+ * For a detailed description and a definition of the accepted perturbations, see the Worhp Zen Manual.
+ *
+ *
+ * @param dp the perturbation given to the fitness function (not implemented at the moment)
+ * @param dr the perturbation of the linear multiplier
+ * @param dq perturbation added to the constraints
+ * @param db perturbation added to the box bounds
+ * @param order the order of approximation
+ *
+ * @return the updated optimum x
+ *
+ * @throws std::invalid_argument in the following cases:
+ * - the dimension of dr differs from the problem dimension
+ * - the dimension of dq differs from the number of constraints
+ * - the dimension of db differs from the problem dimension
+ * - runtime loading of the worhp library failed
+ * @throws std::runtime_error if no previous optimization run has been saved
+ */
 vector_double worhp::zen_update(const vector_double &dp, const vector_double &dr,
                              const vector_double &dq, const vector_double &db, int order) {
 
     if (!m_wr) {
-        pagmo_throw(std::runtime_error, "No optimization state saved for sensitivity updates. Call zen_init first.");
+        pagmo_throw(std::runtime_error, "No optimization state saved for sensitivity updates. Call evolve first.");
     }
 
     // ---------------------------------------------------------------------------------------------------------
