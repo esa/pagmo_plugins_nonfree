@@ -749,7 +749,7 @@ We report the exact text of the original exception thrown:
  * @param dr the perturbation of the linear multiplier
  * @param dq perturbation added to the constraints
  * @param db perturbation added to the box bounds
- * @param order the order of approximation
+ * @param order the order of the taylor approximation
  *
  * @return the updated optimum x
  *
@@ -812,22 +812,22 @@ We report the exact text of the original exception thrown:
     const double* dp_data = dp.data();
     if (dp.size() == 0) {
         // this is probably the case anyway, but not defined in the standard
-        dp_data = nullptr;
+        dp_data = NULL;
     }
     const double* dr_data = dr.data();
     if (dr.size() == 0) {
         // this is probably the case anyway, but not defined in the standard
-        dr_data = nullptr;
+        dr_data = NULL;
     }
     const double* dq_data = dq.data();
     if (dq.size() == 0) {
         // this is probably the case anyway, but not defined in the standard
-        dq_data = nullptr;
+        dq_data = NULL;
     }
     const double* db_data = db.data();
     if (db.size() == 0) {
         // this is probably the case anyway, but not defined in the standard
-        db_data = nullptr;
+        db_data = NULL;
     }
 
     if (dr_data && dr.size() != m_opt.n) {
@@ -846,7 +846,7 @@ We report the exact text of the original exception thrown:
     }
 
     vector_double Xnew(m_opt.n);
-    ZenUpdate(&m_opt, &m_wsp, &m_par, &m_cnt, "X", Xnew.data(), dp.data(), dr.data(), dq.data(), db.data(), &order);
+    ZenUpdate(&m_opt, &m_wsp, &m_par, &m_cnt, "X", Xnew.data(), dp_data, dr_data, dq_data, db_data, &order);
     return Xnew;
 }
 
