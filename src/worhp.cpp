@@ -746,9 +746,9 @@ We report the exact text of the original exception thrown:
  *
  *
  * @param dp the perturbation given to the fitness function (not implemented at the moment)
- * @param dr the perturbation of the linear multiplier
- * @param dq perturbation added to the constraints
- * @param db perturbation added to the box bounds
+ * @param dr linear perturbation in the objective function
+ * @param dq constant perturbation in the constraints
+ * @param db constant perturbation in the box bounds
  * @param order the order of the taylor approximation
  *
  * @return the updated optimum x
@@ -809,44 +809,24 @@ We report the exact text of the original exception thrown:
     }
     // ------------------------- END WORHP PLUGIN -------------------------------------------------------------
 
-    const double* dp_data = dp.data();
-    if (dp.size() == 0) {
-        // this is probably the case anyway, but not defined in the standard
-        dp_data = NULL;
-    }
-    const double* dr_data = dr.data();
-    if (dr.size() == 0) {
-        // this is probably the case anyway, but not defined in the standard
-        dr_data = NULL;
-    }
-    const double* dq_data = dq.data();
-    if (dq.size() == 0) {
-        // this is probably the case anyway, but not defined in the standard
-        dq_data = NULL;
-    }
-    const double* db_data = db.data();
-    if (db.size() == 0) {
-        // this is probably the case anyway, but not defined in the standard
-        db_data = NULL;
-    }
 
-    if (dr_data && dr.size() != m_opt.n) {
+    if (dr.data() && dr.size() != m_opt.n) {
         pagmo_throw(std::invalid_argument,
                         "Last problem has dimension " + std::to_string(m_opt.n) + ", but passed perturbation dr has size " + std::to_string(dr.size()));
     }
 
-    if (dq_data && dq.size() != m_opt.m) {
+    if (dq.data() && dq.size() != m_opt.m) {
         pagmo_throw(std::invalid_argument,
                         "Last problem has " + std::to_string(m_opt.m) + " constraints, but passed perturbation dq has size " + std::to_string(dq.size()));
     }
 
-    if (db_data && db.size() != m_opt.n) {
+    if (db.data() && db.size() != m_opt.n) {
         pagmo_throw(std::invalid_argument,
                         "Last problem has dimension " + std::to_string(m_opt.n) + ", but passed perturbation db has size " + std::to_string(db.size()));
     }
 
     vector_double Xnew(m_opt.n);
-    ZenUpdate(&m_opt, &m_wsp, &m_par, &m_cnt, "X", Xnew.data(), dp_data, dr_data, dq_data, db_data, &order);
+    ZenUpdate(&m_opt, &m_wsp, &m_par, &m_cnt, "X", Xnew.data(), NULL, dr.data(), dq.data(), db.data(), &order);
     return Xnew;
 }
 
