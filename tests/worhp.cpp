@@ -255,3 +255,24 @@ BOOST_AUTO_TEST_CASE(serialization_test)
     auto after_text = boost::lexical_cast<std::string>(algo);
     BOOST_CHECK_EQUAL(before_text, after_text);
 }
+
+BOOST_AUTO_TEST_CASE(zen_update)
+{
+    algorithm algo{worhp{false, WORHP_LIB}};
+    // Check illegal state, calling zen_update before evolve
+    BOOST_CHECK_THROW(algo.extract<worhp>()->zen_update({}, {}, {}, {}, 1), std::runtime_error);
+
+    // Evolve
+    BOOST_CHECK_NO_THROW(algo.evolve(population{rastrigin{10u}, 1u}));
+
+    // Check wrong size of problem
+    BOOST_CHECK_THROW(algo.extract<worhp>()->zen_update({}, vector_double(8,1), {}, {}, 1), std::invalid_argument);
+
+    // Check right call
+    BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_update({}, vector_double(10,1), {}, {}, 1));
+
+    // Check multiple perturbations
+    BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_update({}, vector_double(10,1), {}, vector_double(10,1), 1));
+
+    // TODO: check after serialization, check constraint perturbation
+}

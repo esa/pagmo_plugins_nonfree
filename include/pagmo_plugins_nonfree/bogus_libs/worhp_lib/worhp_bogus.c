@@ -134,3 +134,13 @@ void WorhpVersion(int *major, int *minor, char patch[PATCH_STRING_LENGTH])
     *major = 1;
     *minor = 14;
 };
+
+void ZenUpdate (OptVar *o, Workspace *w, Params *p, Control *c,
+    const char *var_pert, double *varnew, const double *dp,
+    const double *dr, const double *dq,
+    const double *db, const int *order)
+{
+    for (int j = 0; j < o->n; ++j) {
+        varnew[j] = closed_interval_rand(o->XL[j], o->XU[j]);
+    }
+}
