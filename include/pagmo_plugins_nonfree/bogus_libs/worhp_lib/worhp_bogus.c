@@ -148,7 +148,6 @@ void ZenUpdate(OptVar *o, Workspace *w, Params *p, Control *c,
 void ZenGetMaxPert(OptVar *o, Workspace *w, Params *p, Control *c,
         double *maxDP, double *maxDR, double *maxDQ, double *maxDB)
 {
-    
     for (int j = 0; j < o->k; ++j) {
         maxDP[j] = 0.1;
     }

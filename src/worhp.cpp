@@ -832,11 +832,11 @@ We report the exact text of the original exception thrown:
 
 /// Maximum Perturbation for Sensitivity Updates (Worhp Zen)
 /**
- * This method is in support for the Worhp Zen updates. It returns the maximum perturbatiosn for the last computed problem.
+ * This method is in support for the Worhp Zen updates. It returns the maximum perturbations for the last computed problem.
  *
  * For a detailed description and a definition of the accepted perturbations, see the Worhp Zen Manual.
  *
- * @return the updated optimum x
+ * @return {maxDP, maxDR, maxDQ, maxDB}
  *
  * @throws std::runtime_error if no previous optimization run has been saved
  */

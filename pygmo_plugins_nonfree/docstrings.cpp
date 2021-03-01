@@ -562,6 +562,18 @@ Raises:
  )";
 }
 
+std::string worhp_zen_get_max_perturbations_docstring()
+{
+    return R"(zen_get_max_perturbations()
+
+    Get maximum perturbations for the last computed problem.
+
+    Returns:
+    ``List[List[double]]`` of maxDP, maxDR, maxDQ, maxDB
+
+    )";
+}
+
 // Utilities for implementing the exposition of algorithms
 // which inherit from not_population_based.
 std::string bls_selection_docstring(const std::string &algo)

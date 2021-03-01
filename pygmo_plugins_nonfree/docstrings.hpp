@@ -21,6 +21,7 @@ std::string worhp_set_integer_option_docstring();
 std::string worhp_set_numeric_option_docstring();
 std::string worhp_set_bool_option_docstring();
 std::string worhp_zen_update_docstring();
+std::string worhp_zen_get_max_perturbations_docstring();
 }
 
 #endif
