@@ -830,6 +830,70 @@ We report the exact text of the original exception thrown:
     return Xnew;
 }
 
+/// Maximum Perturbation for Sensitivity Updates (Worhp Zen)
+/**
+ * This method is in support for the Worhp Zen updates. It returns the maximum perturbatiosn for the last computed problem.
+ *
+ * For a detailed description and a definition of the accepted perturbations, see the Worhp Zen Manual.
+ *
+ * @return the updated optimum x
+ *
+ * @throws std::runtime_error if no previous optimization run has been saved
+ */
+std::vector<vector_double> worhp::zen_get_max_perturbations() {
+
+    if (!m_wr) {
+        pagmo_throw(std::runtime_error, "No optimization state saved for sensitivity updates. Call evolve first.");
+    }
+
+    // ---------------------------------------------------------------------------------------------------------
+    // ------------------------- WORHP PLUGIN (we attempt loading the worhp library at run-time)--------------
+    std::function<void(OptVar *, Workspace *, Params *, Control *, double *, double *,double *,double *)> ZenGetMaxPert;
+
+    boost::filesystem::path library_filename(m_worhp_library);
+    // We then try to load the library at run time and locate the symbols used.
+    try {
+        // Here we import at runtime the worhp library and protect the whole try block with a mutex
+        std::lock_guard<std::mutex> lock(detail::library_load_mutex);
+        if (!boost::filesystem::is_regular_file(library_filename)) {
+            pagmo_throw(std::invalid_argument,
+                        "The worhp library file name was constructed to be: " + library_filename.string()
+                            + " and it does not appear to be a file");
+        }
+        boost::dll::shared_library libworhp(library_filename);
+
+        ZenGetMaxPert = boost::dll::import<void(OptVar *, Workspace *, Params *, Control *, 
+        double *, double *,double *,double *)>( // type of the function to import
+            libworhp,                                       // the library
+            "ZenGetMaxPert"                                  // name of the function to import
+        );
+    } catch (const std::exception &e) {
+        std::string message(
+            R"(
+An error occurred while loading the worhp library at run-time. This is typically caused by one of the following
+reasons:
+
+- The file declared to be the worhp library, i.e. )"
+            + m_worhp_library
+            + R"(, is not found or is found but it is not a shared library containing the necessary symbols 
+(is the file really a valid shared library?)
+ - The library is found and it does contain the symbols, but it needs linking to some additional libraries that are not found
+at run-time.
+
+We report the exact text of the original exception thrown:
+
+ )" + std::string(e.what()));
+        pagmo_throw(std::invalid_argument, message);
+    }
+    // ------------------------- END WORHP PLUGIN -------------------------------------------------------------
+
+
+    vector_double maxDP(m_opt.k), maxDR(m_opt.n), maxDQ(m_opt.m), maxDB(m_opt.n);
+    
+    ZenGetMaxPert(&m_opt, &m_wsp, &m_par, &m_cnt, maxDP.data(), maxDR.data(), maxDQ.data(), maxDB.data());
+    return std::vector{maxDP, maxDR, maxDQ, maxDB};
+}
+
 /// Set verbosity.
 /**
  * This method will set the algorithm's verbosity. If \p n is zero, no output is produced during the

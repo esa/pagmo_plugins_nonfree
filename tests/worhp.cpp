@@ -276,3 +276,21 @@ BOOST_AUTO_TEST_CASE(zen_update)
 
     // TODO: check after serialization, check constraint perturbation
 }
+
+BOOST_AUTO_TEST_CASE(zen_get_max_perturbations)
+{
+    algorithm algo{worhp{false, WORHP_LIB}};
+    // Check illegal state, calling zen_update before evolve
+    BOOST_CHECK_THROW(algo.extract<worhp>()->zen_get_max_perturbations(), std::runtime_error);
+
+    // Evolve
+    BOOST_CHECK_NO_THROW(algo.evolve(population{rastrigin{10u}, 1u}));
+
+    // Check right call
+    BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_get_max_perturbations());
+
+    // Check dimensions of maximum perturbations
+    std::vector<vector_double> maxpert = algo.extract<worhp>()->zen_get_max_perturbations();
+    BOOST_CHECK_EQUAL(maxpert[1].size(), 10u);
+    BOOST_CHECK_EQUAL(maxpert[3].size(), 10u);
+}

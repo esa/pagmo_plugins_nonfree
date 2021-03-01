@@ -181,6 +181,7 @@ public:
     pagmo::population evolve(pagmo::population pop) const;
     pagmo::vector_double zen_update(const pagmo::vector_double &dp, const pagmo::vector_double &dr,
                              const pagmo::vector_double &dq, const pagmo::vector_double &db, int order);
+    std::vector<pagmo::vector_double> zen_get_max_perturbations();
     void set_verbosity(unsigned n);
     const log_type &get_log() const;
     unsigned int get_verbosity() const;
