@@ -145,7 +145,7 @@ void ZenGetD(OptVar*, Workspace*, Params*, Control*,
              const char *var_pert, const char *pert, int *dim, double *d);
 void ZenGetDMatrix(OptVar*, Workspace*, Params*, Control*,
                    const char *var_pert, const char *pert, double *val);
-void ZenGetMaxPert(OptVar*, Workspace*, Params*, Control*,
+DLL_PUBLIC void ZenGetMaxPert(OptVar*, Workspace*, Params*, Control*,
                    double *max_dp, double *max_dr, double *max_dq,
                    double *max_db);
 void ZenCalcD(OptVar*, Workspace*, Params*, Control*,
