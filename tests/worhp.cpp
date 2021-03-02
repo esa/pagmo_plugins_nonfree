@@ -285,7 +285,7 @@ BOOST_AUTO_TEST_CASE(zen_update)
     // Initialize a different algorithm
     algorithm algo2{worhp{false, WORHP_LIB}};
     algo2.evolve(population{rastrigin{12u}, 1u});
-    BOOST_CHECK_NO_THROW(algo2.extract<worhp>()->zen_update({}, {}, {}, {}, 1), std::runtime_error);
+    BOOST_CHECK_NO_THROW(algo2.extract<worhp>()->zen_update({}, {}, {}, {}, 1));
 
     // Deserialize contents of first algorithm
     {
