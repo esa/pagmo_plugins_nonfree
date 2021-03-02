@@ -150,7 +150,7 @@ DLL_PUBLIC void ZenGetMaxPert(OptVar*, Workspace*, Params*, Control*,
                    double *max_db);
 void ZenCalcD(OptVar*, Workspace*, Params*, Control*,
               const char *var_pert, const char *pert, int *dim);
-void ZenUpdate(OptVar*, Workspace*, Params*, Control*,
+DLL_PUBLIC void ZenUpdate(OptVar*, Workspace*, Params*, Control*,
                const char *var_pert, double *varnew, const double *dp,
                const double *dr, const double *dq,
                const double *db, const int *order);
