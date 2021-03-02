@@ -274,7 +274,28 @@ BOOST_AUTO_TEST_CASE(zen_update)
     // Check multiple perturbations
     BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_update({}, vector_double(10,1), {}, vector_double(10,1), 1));
 
-    // TODO: check after serialization, check constraint perturbation
+    // Check after serialization
+    std::stringstream ss;
+    // Now serialize, deserialize and compare the result.
+    {
+        boost::archive::binary_oarchive oarchive(ss);
+        oarchive << algo;
+    }
+
+    // Initialize a different algorithm
+    algorithm algo2{worhp{false, WORHP_LIB}};
+    algo2.evolve(population{rastrigin{12u}, 1u});
+    BOOST_CHECK_NO_THROW(algo2.extract<worhp>()->zen_update({}, {}, {}, {}, 1), std::runtime_error);
+
+    // Deserialize contents of first algorithm
+    {
+        boost::archive::binary_iarchive iarchive(ss);
+        iarchive >> algo2;
+    }
+
+    // Pointer should not have been serialized, thus giving the usual warning message about evolving first
+    BOOST_CHECK_THROW(algo2.extract<worhp>()->zen_update({}, {}, {}, {}, 1), std::runtime_error);
+    
 }
 
 BOOST_AUTO_TEST_CASE(zen_get_max_perturbations)
