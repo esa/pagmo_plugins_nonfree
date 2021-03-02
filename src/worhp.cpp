@@ -882,16 +882,13 @@ We report the exact text of the original exception thrown:
     }
     // ------------------------- END WORHP PLUGIN -------------------------------------------------------------
 
-    if (m_opt.k > 1000 || m_opt.k < 0) {
-        print("Warning, m_opt.k:", m_opt.k, "\n");
-    }
     if (m_opt.n > 1000 || m_opt.n < 0) {
         print("Warning, m_opt.n:", m_opt.n, "\n");
     }
     if (m_opt.m > 1000 || m_opt.m < 0) {
         print("Warning, m_opt.m:", m_opt.m, "\n");
     }
-    vector_double maxDP(m_opt.k), maxDR(m_opt.n), maxDQ(m_opt.m), maxDB(m_opt.n);
+    vector_double maxDP(0), maxDR(m_opt.n), maxDQ(m_opt.m), maxDB(m_opt.n);
     
     ZenGetMaxPert(&m_opt, &m_wsp, &m_par, &m_cnt, maxDP.data(), maxDR.data(), maxDQ.data(), maxDB.data());
     return std::vector{maxDP, maxDR, maxDQ, maxDB};
