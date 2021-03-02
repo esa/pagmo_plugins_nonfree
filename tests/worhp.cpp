@@ -269,10 +269,10 @@ BOOST_AUTO_TEST_CASE(zen_update)
     BOOST_CHECK_THROW(algo.extract<worhp>()->zen_update({}, vector_double(8,1), {}, {}, 1), std::invalid_argument);
 
     // Check right call
-    BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_update({}, vector_double(10,1), {}, {}, 1));
+    algo.extract<worhp>()->zen_update({}, vector_double(10,1), {}, {}, 1);
 
     // Check multiple perturbations
-    BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_update({}, vector_double(10,1), {}, vector_double(10,1), 1));
+    algo.extract<worhp>()->zen_update({}, vector_double(10,1), {}, vector_double(10,1), 1);
 
     // TODO: check after serialization, check constraint perturbation
 }
