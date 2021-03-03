@@ -295,6 +295,21 @@ BOOST_AUTO_TEST_CASE(zen_update)
 
     // Pointer should not have been serialized, thus giving the usual warning message about evolving first
     BOOST_CHECK_THROW(algo2.extract<worhp>()->zen_update({}, {}, {}, {}, 1), std::runtime_error);
+
+    // Test copy constructor
+    BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_update({}, {}, {}, {}, 1));
+    algorithm algo3(algo);
+    // Pointer should not have been copied, thus giving the usual warning message about evolving first
+    BOOST_CHECK_THROW(algo3.extract<worhp>()->zen_update({}, {}, {}, {}, 1), std::runtime_error);
+    // It is evolvable, though
+    BOOST_CHECK_NO_THROW(algo3.evolve(population{rastrigin{15u}, 1u}););
+    BOOST_CHECK_NO_THROW(algo3.extract<worhp>()->zen_update({}, {}, {}, {}, 1));
+
+    // Test copy assignment constructor
+    BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_update({}, {}, {}, {}, 1));
+    algorithm algo4 = algo;
+    // Pointer should not have been copied, thus giving the usual warning message about evolving first
+    BOOST_CHECK_THROW(algo4.extract<worhp>()->zen_update({}, {}, {}, {}, 1), std::runtime_error);
     
 }
 
