@@ -179,7 +179,11 @@ public:
      */
     worhp(bool screen_output = false, std::string worhp_library = "/usr/local/lib/libworhp.so");
 
-    // Custom copy constructor, necessary because the worhp data structures hold pointers
+    /**
+    * Custom copy constructor, necessary because the worhp data structures hold pointers.
+    * It copies the settings, but not the results of the last call to evolve.
+    * Evolve needs to be called again before zen_update or zen_get_max_perturbations can be used.
+    */ 
     worhp(const worhp& other);
 
     pagmo::population evolve(pagmo::population pop) const;
