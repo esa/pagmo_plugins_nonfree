@@ -178,6 +178,10 @@ public:
      *
      */
     worhp(bool screen_output = false, std::string worhp_library = "/usr/local/lib/libworhp.so");
+
+    // Custom copy constructor, necessary because the worhp data structures hold pointers
+    worhp(const worhp& other);
+
     pagmo::population evolve(pagmo::population pop) const;
     pagmo::vector_double zen_update(const pagmo::vector_double &dp, const pagmo::vector_double &dr,
                              const pagmo::vector_double &dq, const pagmo::vector_double &db, int order);

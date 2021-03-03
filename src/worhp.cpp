@@ -124,6 +124,13 @@ worhp::worhp(bool screen_output, std::string worhp_library)
 {
 }
 
+worhp::worhp(const worhp& other)
+    : m_worhp_library(other.m_worhp_library), m_integer_opts(other.m_integer_opts), m_numeric_opts(other.m_numeric_opts),
+     m_bool_opts(other.m_bool_opts), m_screen_output(other.m_screen_output),
+      m_verbosity(other.m_verbosity), m_log()
+{
+}
+
 /// Evolve population.
 /**
  * This method will select an individual from \p pop, optimise it using the WORHP USI interface, replace an
@@ -323,6 +330,8 @@ We report the exact text of the original exception thrown:
     // All is good, proceed
     m_log.clear();
     auto fevals0 = prob.get_fevals();
+    // Make sure old data structure are freed correctly
+    m_wr.reset<detail::worhp_raii>(nullptr); // we want the destructor for the old values to be called before the constructor for the new values
 
     // With reference to the worhp User Manual (V1.14)
     // USI-0:  Call WorhpPreInit to properly initialise the (empty) data structures.
@@ -414,7 +423,6 @@ We report the exact text of the original exception thrown:
     wsp.HM.nnz = static_cast<int>(hs_idx_map.size() + dim); // lower triangular sparse + full diagonal
 
     // USI-3 (and 8): Allocate solver memory (and deallocate upon destruction of wr)
-    m_wr.reset<detail::worhp_raii>(nullptr);
     m_wr = std::make_shared<detail::worhp_raii>(&opt, &wsp, &par, &cnt, WorhpInit, WorhpFree);
 
     if (!pop.size()) {
