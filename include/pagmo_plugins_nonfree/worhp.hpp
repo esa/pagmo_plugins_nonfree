@@ -183,6 +183,8 @@ public:
     * Custom copy constructor, necessary because the worhp data structures hold pointers.
     * It copies the settings, but not the results of the last call to evolve.
     * Evolve needs to be called again before zen_update or zen_get_max_perturbations can be used.
+    * 
+    * @param other Another instance of worhp
     */ 
     worhp(const worhp& other);
 
