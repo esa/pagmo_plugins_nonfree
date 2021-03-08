@@ -94,12 +94,10 @@ struct worhp_raii {
                std::function<void(OptVar *, Workspace *, Params *, Control *)> &WorhpFree)
         : m_o(o), m_w(w), m_p(p), m_c(c), m_WorhpFree(WorhpFree)
     {
-        print("Calling WorhpInit\n");
         WorhpInit(m_o, m_w, m_p, m_c);
     }
     ~worhp_raii()
     {
-        print("Calling WorhpFree\n");
         m_WorhpFree(m_o, m_w, m_p, m_c);
     }
     OptVar *m_o;
@@ -758,6 +756,7 @@ We report the exact text of the original exception thrown:
  * @return the updated optimum x
  *
  * @throws std::invalid_argument in the following cases:
+ * - non-zero perturbation dp is given
  * - the dimension of dr differs from the problem dimension
  * - the dimension of dq differs from the number of constraints
  * - the dimension of db differs from the problem dimension
@@ -813,6 +812,10 @@ We report the exact text of the original exception thrown:
     }
     // ------------------------- END WORHP PLUGIN -------------------------------------------------------------
 
+    if (dp.size() > 0) {
+        pagmo_throw(std::invalid_argument,
+                        "Perturbation dp of non-zero size " + std::to_string(dp.size()) + " given, but not implemented yet.");
+    }
 
     if (dr.data() && dr.size() != m_opt.n) {
         pagmo_throw(std::invalid_argument,

@@ -553,6 +553,7 @@ Returns:
     ``List[double]`` the updated optimum x
 
 Raises:
+    ValueError: perturbation dp of non-zero size is given
     ValueError: the dimension of dr differs from the problem dimension
     ValueError: the dimension of dq differs from the number of constraints
     ValueError: the dimension of db differs from the problem dimension

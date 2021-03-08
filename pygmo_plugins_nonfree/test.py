@@ -36,6 +36,7 @@ class worhp_test_case(_ut.TestCase):
     def runTest(self):
         self.run_test_interface()
         self.run_test_zen_update()
+        self.run_test_zen_max_perturbations()
 
     def run_test_interface(self):
         import pygmo as pg
@@ -66,6 +67,18 @@ class worhp_test_case(_ut.TestCase):
         w = algo.extract(worhp)
         # test for illegal state check, calling zen_update before an optimization run happened
         self.assertRaises(RuntimeError, lambda: w.zen_update([], [1]*30, [], [1]*30, 1))
+
+    def run_test_zen_max_perturbations(self):
+        import pygmo as pg
+        from .core import worhp
+        uda = worhp(screen_output=False,
+                     library="/usr/local/lib/libworhp.so")
+        algo = pg.algorithm(uda)
+        prob = pg.problem(pg.schwefel(30))
+        pop = pg.population(prob=prob, size=25)
+        w = algo.extract(worhp)
+        # test for illegal state check, calling zen_update before an optimization run happened
+        self.assertRaises(RuntimeError, lambda: w.zen_get_max_perturbations())
 
 
 
