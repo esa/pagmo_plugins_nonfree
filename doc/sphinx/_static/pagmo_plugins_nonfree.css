@@ -25,7 +25,7 @@ code, pre {
     font-family: "bebas_neuebook";
     font-weight: bold;
     font-size: 30px;
-    color: #333333;
+    color: #2C3E50;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
     -khtml-user-select: none;
@@ -40,49 +40,15 @@ code, pre {
 
 h1, .h1 {
     font-family: "bebas_neuebook";
-    color: #333333;
+    color: #008cba;
 }
 
 h2, .h2 {
     font-family: "bebas_neuebook";
-    color: #333333;
+    color: #008cba;
 }
 
 h3, .h3 {
     font-family: "bebas_neuebook";
-    color: #333333;
-}
-
-.navbar-inverse {
-    background-color: #333333;
-    border-color: #333333;
-}
-
-a {
-    color: #9c1d1d;
-    text-decoration: none;
-}
-
-a:hover {
-    color: #ab5255;
-}
-
-code {
-    padding: 2px 4px;
-    font-size: 90%;
-    color: #9c1d1d;
-    background-color: #f1f1f1;
-    border-radius: 0;
-}
-
-.alert-info {
-    background-color: #789e6d;
-    border-color: #789e6d;
-    color: #ffffff;
-}
-
-.alert-warning {
-    background-color: #ffba4c;
-    border-color: #ffba4c;
-    color: #ffffff;
+    color: #008cba;
 }
