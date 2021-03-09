@@ -260,19 +260,19 @@ BOOST_AUTO_TEST_CASE(zen_update)
 {
     algorithm algo{worhp{false, WORHP_LIB}};
     // Check illegal state, calling zen_update before evolve
-    BOOST_CHECK_THROW(algo.extract<worhp>()->zen_update({}, {}, {}, {}, 1), std::runtime_error);
+    BOOST_CHECK_THROW(algo.extract<worhp>()->zen_update({}, {}, {}, 1), std::runtime_error);
 
     // Evolve
     BOOST_CHECK_NO_THROW(algo.evolve(population{rastrigin{10u}, 1u}));
 
     // Check wrong size of problem
-    BOOST_CHECK_THROW(algo.extract<worhp>()->zen_update({}, vector_double(8,1), {}, {}, 1), std::invalid_argument);
+    BOOST_CHECK_THROW(algo.extract<worhp>()->zen_update(vector_double(8,1), {}, {}, 1), std::invalid_argument);
 
     // Check right call
-    BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_update({}, vector_double(10,1), {}, {}, 1));
+    BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_update(vector_double(10,1), {}, {}, 1));
 
     // Check multiple perturbations
-    BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_update({}, vector_double(10,1), {}, vector_double(10,1), 1));
+    BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_update(vector_double(10,1), {}, vector_double(10,1), 1));
 
     // Check after serialization
     std::stringstream ss;
@@ -285,7 +285,7 @@ BOOST_AUTO_TEST_CASE(zen_update)
     // Initialize a different algorithm
     algorithm algo2{worhp{false, WORHP_LIB}};
     algo2.evolve(population{rastrigin{12u}, 1u});
-    BOOST_CHECK_NO_THROW(algo2.extract<worhp>()->zen_update({}, {}, {}, {}, 1));
+    BOOST_CHECK_NO_THROW(algo2.extract<worhp>()->zen_update({}, {}, {}, 1));
 
     // Deserialize contents of first algorithm
     {
@@ -294,22 +294,22 @@ BOOST_AUTO_TEST_CASE(zen_update)
     }
 
     // Pointer should not have been serialized, thus giving the usual warning message about evolving first
-    BOOST_CHECK_THROW(algo2.extract<worhp>()->zen_update({}, {}, {}, {}, 1), std::runtime_error);
+    BOOST_CHECK_THROW(algo2.extract<worhp>()->zen_update({}, {}, {}, 1), std::runtime_error);
 
     // Test copy constructor
-    BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_update({}, {}, {}, {}, 1));
+    BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_update({}, {}, {}, 1));
     algorithm algo3(algo);
     // Pointer should not have been copied, thus giving the usual warning message about evolving first
-    BOOST_CHECK_THROW(algo3.extract<worhp>()->zen_update({}, {}, {}, {}, 1), std::runtime_error);
+    BOOST_CHECK_THROW(algo3.extract<worhp>()->zen_update({}, {}, {}, 1), std::runtime_error);
     // It is evolvable, though
     BOOST_CHECK_NO_THROW(algo3.evolve(population{rastrigin{15u}, 1u}););
-    BOOST_CHECK_NO_THROW(algo3.extract<worhp>()->zen_update({}, {}, {}, {}, 1));
+    BOOST_CHECK_NO_THROW(algo3.extract<worhp>()->zen_update({}, {}, {}, 1));
 
     // Test copy assignment constructor
-    BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_update({}, {}, {}, {}, 1));
+    BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_update({}, {}, {}, 1));
     algorithm algo4 = algo;
     // Pointer should not have been copied, thus giving the usual warning message about evolving first
-    BOOST_CHECK_THROW(algo4.extract<worhp>()->zen_update({}, {}, {}, {}, 1), std::runtime_error);
+    BOOST_CHECK_THROW(algo4.extract<worhp>()->zen_update({}, {}, {}, 1), std::runtime_error);
     
 }
 
@@ -327,6 +327,7 @@ BOOST_AUTO_TEST_CASE(zen_get_max_perturbations)
 
     // Check dimensions of maximum perturbations
     std::vector<vector_double> maxpert = algo.extract<worhp>()->zen_get_max_perturbations();
-    BOOST_CHECK_EQUAL(maxpert[1].size(), 10u);
-    BOOST_CHECK_EQUAL(maxpert[3].size(), 10u);
+    BOOST_CHECK_EQUAL(maxpert[0].size(), 10u);
+    BOOST_CHECK_EQUAL(maxpert[1].size(), 0u);
+    BOOST_CHECK_EQUAL(maxpert[2].size(), 10u);
 }

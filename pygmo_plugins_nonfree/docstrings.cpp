@@ -541,9 +541,10 @@ It then returns an updated optimal solution without having to repeat the optimiz
 To do that, Worhp computes sensitivity matrices and gives an approximation of the new optimum.
 
 For a detailed description and a definition of the accepted perturbations, see the Worhp Zen Manual.
+The perturbation dp, a non-linear perturbation of the fitness function, is not implemented at the moment,
+as it requires dedicated support of the fitness function.
 
 Args:
-    dp (``List[double]``): the perturbation given to the fitness function (not implemented at the moment)
     dr (``List[double]``): the perturbation of the linear multiplier
     dq (``List[double]``): perturbation added to the constraints
     db (``List[double]``): perturbation added to the box bounds
@@ -553,7 +554,6 @@ Returns:
     ``List[double]`` the updated optimum x
 
 Raises:
-    ValueError: perturbation dp of non-zero size is given
     ValueError: the dimension of dr differs from the problem dimension
     ValueError: the dimension of dq differs from the number of constraints
     ValueError: the dimension of db differs from the problem dimension
@@ -570,7 +570,7 @@ std::string worhp_zen_get_max_perturbations_docstring()
     Get maximum perturbations for the last computed problem.
 
     Returns:
-    ``List[List[double]]`` of maxDP, maxDR, maxDQ, maxDB
+    ``List[List[double]]`` of maxDR, maxDQ, maxDB
 
     )";
 }

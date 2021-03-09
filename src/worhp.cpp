@@ -745,9 +745,10 @@ We report the exact text of the original exception thrown:
  * To do that, Worhp computes sensitivity matrices and gives an approximation of the new optimum.
  *
  * For a detailed description and a definition of the accepted perturbations, see the Worhp Zen Manual.
+ * The perturbation dp, a non-linear perturbation of the fitness function, is not implemented at the moment,
+ * as it requires dedicated support of the fitness function.
  *
  *
- * @param dp the perturbation given to the fitness function (not implemented at the moment)
  * @param dr linear perturbation in the objective function
  * @param dq constant perturbation in the constraints
  * @param db constant perturbation in the box bounds
@@ -756,14 +757,13 @@ We report the exact text of the original exception thrown:
  * @return the updated optimum x
  *
  * @throws std::invalid_argument in the following cases:
- * - non-zero perturbation dp is given
  * - the dimension of dr differs from the problem dimension
  * - the dimension of dq differs from the number of constraints
  * - the dimension of db differs from the problem dimension
  * - runtime loading of the worhp library failed
  * @throws std::runtime_error if no previous optimization run has been saved
  */
-vector_double worhp::zen_update(const vector_double &dp, const vector_double &dr,
+vector_double worhp::zen_update(const vector_double &dr,
                              const vector_double &dq, const vector_double &db, int order) {
 
     if (!m_wr) {
@@ -812,11 +812,6 @@ We report the exact text of the original exception thrown:
     }
     // ------------------------- END WORHP PLUGIN -------------------------------------------------------------
 
-    if (dp.size() > 0) {
-        pagmo_throw(std::invalid_argument,
-                        "Perturbation dp of non-zero size " + std::to_string(dp.size()) + " given, but not implemented yet.");
-    }
-
     if (dr.data() && dr.size() != m_opt.n) {
         pagmo_throw(std::invalid_argument,
                         "Last problem has dimension " + std::to_string(m_opt.n) + ", but passed perturbation dr has size " + std::to_string(dr.size()));
@@ -843,7 +838,7 @@ We report the exact text of the original exception thrown:
  *
  * For a detailed description and a definition of the accepted perturbations, see the Worhp Zen Manual.
  *
- * @return {maxDP, maxDR, maxDQ, maxDB}
+ * @return {maxDR, maxDQ, maxDB}
  *
  * @throws std::runtime_error if no previous optimization run has been saved
  */
@@ -894,9 +889,6 @@ We report the exact text of the original exception thrown:
     }
     // ------------------------- END WORHP PLUGIN -------------------------------------------------------------
 
-    if (m_opt.k > 1000 || m_opt.k < 0) {
-        print("Warning, m_opt.k:", m_opt.k, "\n");
-    }
     if (m_opt.n > 1000 || m_opt.n < 0) {
         print("Warning, m_opt.n:", m_opt.n, "\n");
     }
@@ -906,7 +898,7 @@ We report the exact text of the original exception thrown:
     vector_double maxDP(m_opt.k), maxDR(m_opt.n), maxDQ(m_opt.m), maxDB(m_opt.n);
     
     ZenGetMaxPert(&m_opt, &m_wsp, &m_par, &m_cnt, maxDP.data(), maxDR.data(), maxDQ.data(), maxDB.data());
-    return std::vector{maxDP, maxDR, maxDQ, maxDB};
+    return std::vector{maxDR, maxDQ, maxDB};
 }
 
 /// Set verbosity.
