@@ -532,7 +532,7 @@ Args:
 
 std::string worhp_zen_update_docstring()
 {
-    return R"(zen_update(dp, dr, dq, db, order)  
+    return R"(zen_update(dr, dq, db, order)  
 
 Apply perturbations to fitness and constraints
 
