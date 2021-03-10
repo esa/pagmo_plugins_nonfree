@@ -101,8 +101,8 @@ bool WorhpGetBoolParam(Params *p, const char *stropt, bool *b)
     invalid = "invalid_bool_option";
     if (strcmp(stropt, invalid) == 0) {
         return 0;
-        *b = 1;
     } else {
+        *b = 1;
         return 1;
     }
 }
