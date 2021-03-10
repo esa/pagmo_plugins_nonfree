@@ -635,7 +635,7 @@ We report the exact text of the original exception thrown:
      * Make sure to reset the requested user action afterwards by calling
      * DoneUserAction, except for 'callWorhp' and 'fidif'.
      */
-    while (cnt.status < TerminateSuccess && cnt.status > TerminateError) {
+    while (cnt.status > TerminateError && (cnt.status < TerminateSuccess || !cnt.ZenInit)) {
         /*
          * WORHP's main routine.
          * Do not manually reset callWorhp, this is only done by the FD routines.
@@ -825,6 +825,10 @@ We report the exact text of the original exception thrown:
     if (db.data() && db.size() != m_opt.n) {
         pagmo_throw(std::invalid_argument,
                         "Last problem has dimension " + std::to_string(m_opt.n) + ", but passed perturbation db has size " + std::to_string(db.size()));
+    }
+
+    if (!m_cnt.ZenInit) {
+        pagmo_throw(std::runtime_error, "Data structures for zen updates were not initialised, possibly due to an unsuccessful termination. Last optimisation status is: " + m_last_opt_res);
     }
 
     vector_double Xnew(m_opt.n);

@@ -46,6 +46,9 @@ void IterationOutput(OptVar *o, Workspace *w, Params *p, Control *c) {}
 void Worhp(OptVar *o, Workspace *w, Params *p, Control *c)
 {
     c->status = c->status + 100; // this will make it so after ten calls it concludes.
+    if (c->status >= TerminateSuccess) {
+        c->ZenInit = true;
+    }
     // Random vector
     int j;
     for (j = 0; j < o->n; ++j) {
