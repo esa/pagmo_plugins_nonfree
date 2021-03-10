@@ -448,7 +448,6 @@ We report the exact text of the original exception thrown:
         WorhpSetBoolParam(&par, "UserHM", true);
     } else {
         WorhpSetBoolParam(&par, "UserHM", false);
-        WorhpSetBoolParam(&par, "FidifHM", true);
     }
 
     // enable zen updates
@@ -855,6 +854,8 @@ std::vector<vector_double> worhp::zen_get_max_perturbations() {
     // ---------------------------------------------------------------------------------------------------------
     // ------------------------- WORHP PLUGIN (we attempt loading the worhp library at run-time)--------------
     std::function<void(OptVar *, Workspace *, Params *, Control *, double *, double *,double *,double *)> ZenGetMaxPert;
+    std::function<bool(Params *, const char *, bool *)> WorhpGetBoolParam;
+    std::function<bool(Params *, const char *, bool)> WorhpSetBoolParam;
 
     boost::filesystem::path library_filename(m_worhp_library);
     // We then try to load the library at run time and locate the symbols used.
@@ -873,6 +874,17 @@ std::vector<vector_double> worhp::zen_get_max_perturbations() {
             libworhp,                                       // the library
             "ZenGetMaxPert"                                  // name of the function to import
         );
+
+        WorhpGetBoolParam = boost::dll::import<bool(Params *, const char *, bool *)>( // type of the function to import
+            libworhp,                                                               // the library
+            "WorhpGetBoolParam"                                                     // name of the function to import
+        );
+
+        WorhpSetBoolParam = boost::dll::import<bool(Params *, const char *, bool)>( // type of the function to import
+            libworhp,                                                               // the library
+            "WorhpSetBoolParam"                                                     // name of the function to import
+        );
+
     } catch (const std::exception &e) {
         std::string message(
             R"(
@@ -892,6 +904,13 @@ We report the exact text of the original exception thrown:
         pagmo_throw(std::invalid_argument, message);
     }
     // ------------------------- END WORHP PLUGIN -------------------------------------------------------------
+
+    bool user_hessians;
+    WorhpGetBoolParam(&m_par, "UserHM", &user_hessians);
+
+    if (!user_hessians) {
+        WorhpSetBoolParam(&m_par, "FidifHM", true); // Finite differences needed for sensitivity matrices
+    }
 
     if (m_opt.n > 1000 || m_opt.n < 0) {
         print("Warning, m_opt.n:", m_opt.n, "\n");

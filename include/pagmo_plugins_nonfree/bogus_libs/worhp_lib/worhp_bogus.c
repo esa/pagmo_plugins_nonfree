@@ -95,6 +95,17 @@ void WorhpFree(OptVar *o, Workspace *w, Params *p, Control *c)
     free(w->HM.val);
 }
 void WorhpFidif(OptVar *o, Workspace *w, Params *p, Control *c) {}
+bool WorhpGetBoolParam(Params *p, const char *stropt, bool *b)
+{
+    char *invalid;
+    invalid = "invalid_bool_option";
+    if (strcmp(stropt, invalid) == 0) {
+        return 0;
+        *b = 1;
+    } else {
+        return 1;
+    }
+}
 bool WorhpSetBoolParam(Params *p, const char *stropt, bool b)
 {
     char *invalid;
