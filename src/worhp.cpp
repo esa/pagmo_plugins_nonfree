@@ -448,6 +448,7 @@ We report the exact text of the original exception thrown:
         WorhpSetBoolParam(&par, "UserHM", true);
     } else {
         WorhpSetBoolParam(&par, "UserHM", false);
+        WorhpSetBoolParam(&par, "FidifHM", true); // Finite differences needed for sensitivity matrices
     }
 
     // enable zen updates
