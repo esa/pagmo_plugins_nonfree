@@ -753,7 +753,7 @@ We report the exact text of the original exception thrown:
  * @param db constant perturbation in the box bounds
  * @param order the order of the taylor approximation
  *
- * @return the updated optimum x
+ * @return the updated optimum x and an approximation of the cost f
  *
  * @throws std::invalid_argument in the following cases:
  * - the dimension of dr differs from the problem dimension

@@ -274,6 +274,10 @@ BOOST_AUTO_TEST_CASE(zen_update)
     // Check multiple perturbations
     BOOST_CHECK_NO_THROW(algo.extract<worhp>()->zen_update(vector_double(10,1), {}, vector_double(10,1), 1));
 
+    // Check dimensions of return value
+    std::pair<vector_double, double> result = algo.extract<worhp>()->zen_update(vector_double(10,1), {}, vector_double(10,1), 1);
+    BOOST_CHECK_EQUAL(result.first.size(), 10u);
+
     // Check after serialization
     std::stringstream ss;
     // Now serialize, deserialize and compare the result.

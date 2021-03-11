@@ -551,7 +551,7 @@ Args:
     order (``int``) the order of taylor approximation used
 
 Returns:
-    ``List[double]`` the updated optimum x
+    ``Tuple[List[double]]`` the updated optimum x and an approximation of the cost f
 
 Raises:
     ValueError: the dimension of dr differs from the problem dimension
