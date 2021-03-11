@@ -762,9 +762,8 @@ We report the exact text of the original exception thrown:
  * - runtime loading of the worhp library failed
  * @throws std::runtime_error if no previous optimization run has been saved
  */
-vector_double worhp::zen_update(const vector_double &dr,
-                             const vector_double &dq, const vector_double &db, int order) {
-
+std::pair<vector_double, double> worhp::zen_update(const vector_double &dr, const vector_double &dq, 
+                                                   const vector_double &db, int order) {
     if (!m_wr) {
         pagmo_throw(std::runtime_error, "No optimization state saved for sensitivity updates. Call evolve first.");
     }
@@ -832,7 +831,9 @@ We report the exact text of the original exception thrown:
 
     vector_double Xnew(m_opt.n);
     ZenUpdate(&m_opt, &m_wsp, &m_par, &m_cnt, "X", Xnew.data(), NULL, dr.data(), dq.data(), db.data(), &order);
-    return Xnew;
+    double Fnew = 0.0;
+    ZenUpdate(&m_opt, &m_wsp, &m_par, &m_cnt, "F", &Fnew, NULL, dr.data(), dq.data(), db.data(), &order);
+    return std::make_pair(Xnew, Fnew);
 }
 
 /// Maximum Perturbation for Sensitivity Updates (Worhp Zen)
