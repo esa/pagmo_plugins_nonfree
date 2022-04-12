@@ -159,6 +159,7 @@ BOOST_AUTO_TEST_CASE(streams_and_log)
     uda.set_verbosity(1u);
     pop = uda.evolve(pop);
     BOOST_CHECK_EQUAL(uda.get_log().size(), 100);
+    BOOST_CHECK(pop.get_problem().get_fevals() > 1);
     uda.set_verbosity(23u);
     BOOST_CHECK(uda.get_verbosity() == 23u);
     BOOST_CHECK(uda.get_name().find("SNOPT7") != std::string::npos);
