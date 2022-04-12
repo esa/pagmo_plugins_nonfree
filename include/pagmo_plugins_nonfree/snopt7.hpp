@@ -91,7 +91,7 @@ struct user_data {
     // The log.
     using log_type = std::vector<log_line_type>;
     // The problem stored in the evolve() population
-    const pagmo::problem *m_prob;
+    pagmo::problem m_prob;
     // A preallocated decision vector
     pagmo::vector_double m_dv;
     // The verbosity
