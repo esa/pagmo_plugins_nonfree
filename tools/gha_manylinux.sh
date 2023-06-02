@@ -73,6 +73,8 @@ make -j4 install
 
 # pygmo_plugins_nonfree
 cd ${GITHUB_WORKSPACE}
+# NOTE: this is temporary.
+cat boost_dll.diff | patch -p1
 mkdir build_pagmo_plugins_nonfree
 cd build_pagmo_plugins_nonfree
 cmake -DCMAKE_BUILD_TYPE=Release \
@@ -92,18 +94,23 @@ make -j2 install
 
 # Making the wheel and installing it
 cd wheel
-# Copy the installed ppnf files, wherever they might be in /usr/local,
+# Move the installed ppnf files, wherever they might be in /usr/local,
 # into the current dir.
-cp -a `find /usr/local/lib -type d -iname 'pygmo_plugins_nonfree'` ./
+mv `/opt/python/${PYTHON_DIR}/bin/python -c 'import site; print(site.getsitepackages()[0])'`/pygmo_plugins_nonfree* ./
 # Create the wheel and repair it.
+# NOTE: this is temporary because some libraries in the docker
+# image are installed in lib64 rather than lib and they are
+# not picked up properly by the linker.
+export LD_LIBRARY_PATH="/usr/local/lib64:/usr/local/lib"
 /opt/python/${PYTHON_DIR}/bin/python setup.py bdist_wheel
 auditwheel repair dist/pygmo* -w ./dist2
 # Try to install it and run the tests.
+unset LD_LIBRARY_PATH
 cd /
 /opt/python/${PYTHON_DIR}/bin/pip install ${GITHUB_WORKSPACE}/build/wheel/dist2/pygmo*
 /opt/python/${PYTHON_DIR}/bin/ipcluster start --daemonize=True
 sleep 20
-/opt/python/${PYTHON_DIR}/bin/python -c "import pygmo; pygmo.test.run_test_suite(1); pygmo.mp_island.shutdown_pool(); pygmo.mp_bfe.shutdown_pool()"
+/opt/python/${PYTHON_DIR}/bin/python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()";
 
 # Upload to pypi. This variable will contain something if this is a tagged build (vx.y.z), otherwise it will be empty.
 # if [[ "${PYGMO_RELEASE_VERSION}" != "" ]]; then
