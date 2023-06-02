@@ -82,15 +82,16 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 	-DPPNF_BUILD_CPP=yes \
 	-DPPNF_BUILD_TESTS=no \
 	-DPPNF_BUILD_PYTHON=no ../;
-make -j2 install
+make -j4 install
 cd ..
+mkdir build
 cd build
 cmake -DCMAKE_BUILD_TYPE=Release \
 	-DBoost_NO_BOOST_CMAKE=ON \
 	-DPPNF_BUILD_CPP=no \
 	-DPPNF_BUILD_PYTHON=yes \
 	-DPYTHON_EXECUTABLE=/opt/python/${PYTHON_DIR}/bin/python ../;
-make -j2 install 
+make -j4 install
 
 # Making the wheel and installing it
 cd wheel
