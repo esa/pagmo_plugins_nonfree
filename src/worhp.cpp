@@ -51,6 +51,7 @@ see https://www.gnu.org/licenses/. */
 #include <boost/functional/hash.hpp>
 #include <boost/serialization/map.hpp>
 #include <iomanip>
+#include <memory>
 #include <mutex>
 #include <numeric>
 #include <pagmo/algorithm.hpp>
@@ -121,6 +122,13 @@ worhp::worhp(bool screen_output, std::string worhp_library)
 {
 }
 
+worhp::worhp(const worhp& other)
+    : m_worhp_library(other.m_worhp_library), m_integer_opts(other.m_integer_opts), m_numeric_opts(other.m_numeric_opts),
+     m_bool_opts(other.m_bool_opts), m_screen_output(other.m_screen_output),
+      m_verbosity(other.m_verbosity), m_log()
+{
+}
+
 /// Evolve population.
 /**
  * This method will select an individual from \p pop, optimise it using the WORHP USI interface, replace an
@@ -146,7 +154,7 @@ worhp::worhp(bool screen_output, std::string worhp_library)
  *
  * @return the optimised population.
  *
- * @throws std::invalid_argument if a version mismatch is found between the declared library and 1.12
+ * @throws std::invalid_argument if a version mismatch is found between the declared library and 1.14
  * @throws std::invalid_argument in the following cases:
  * - the population's problem is multi-objective or stochastic
  * @throws unspecified any exception thrown by the public interface of pagmo::problem or
@@ -160,6 +168,10 @@ population worhp::evolve(population pop) const
     const auto bounds = prob.get_bounds();
     const auto &lb = bounds.first;
     const auto &ub = bounds.second;
+    auto &opt = m_opt;
+    auto &wsp = m_wsp;
+    auto &par = m_par;
+    auto &cnt = m_cnt;
 
     // PREAMBLE-------------------------------------------------------------------------------------------------
     // We start by checking that the problem is suitable for this particular algorithm.
@@ -172,17 +184,13 @@ population worhp::evolve(population pop) const
                     "The problem appears to be stochastic " + get_name() + " cannot deal with it");
     }
 
-    if (!pop.size()) {
-        // In case of an empty pop, just return it.
-        return pop;
-    }
+
     // ---------------------------------------------------------------------------------------------------------
     // ------------------------- WORHP PLUGIN (we attempt loading the worhp library at run-time)--------------
     // We first declare the prototypes of the functions used from the library
     std::function<void(int *, const char[], Params *)> ReadParams;
     std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpPreInit;
     std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpInit;
-    std::function<void(OptVar *, Workspace *, Params *, Control *)> WorhpDiag;
     std::function<bool(const Control *, int)> GetUserAction;
     std::function<void(Control *, int)> DoneUserAction;
     std::function<void(OptVar *, Workspace *, Params *, Control *)> IterationOutput;
@@ -218,11 +226,6 @@ population worhp::evolve(population pop) const
                                             Control *)>( // type of the function to import
             libworhp,                                    // the library
             "WorhpInit"                                  // name of the function to import
-        );
-        WorhpDiag = boost::dll::import<void(OptVar *, Workspace *, Params *,
-                                            Control *)>( // type of the function to import
-            libworhp,                                    // the library
-            "WorhpDiag"                                  // name of the function to import
         );
         ReadParams = boost::dll::import<void(int *, const char[], Params *)>( // type of the function to import
             libworhp,                                                   // the library
@@ -325,13 +328,11 @@ We report the exact text of the original exception thrown:
     // All is good, proceed
     m_log.clear();
     auto fevals0 = prob.get_fevals();
+    // Make sure old data structure are freed correctly
+    m_wr.reset<detail::worhp_raii>(nullptr); // we want the destructor for the old values to be called before the constructor for the new values
 
-    // With reference to the worhp User Manual (V1.12)
+    // With reference to the worhp User Manual (V1.14)
     // USI-0:  Call WorhpPreInit to properly initialise the (empty) data structures.
-    OptVar opt;
-    Workspace wsp;
-    Params par;
-    Control cnt;
     WorhpPreInit(&opt, &wsp, &par, &cnt);
 
     // USI-1: Read parameters from XML
@@ -352,6 +353,7 @@ We report the exact text of the original exception thrown:
     // USI-2: Specify problem dimensions
     opt.n = static_cast<int>(dim);
     opt.m = static_cast<int>(prob.get_nc()); // number of constraints
+    opt.k = 0; // No perturbation argument for fitness function
     auto n_eq = prob.get_nec();
     // Get the sparsity pattern of the gradient
     auto pagmo_gs = prob.gradient_sparsity();
@@ -419,7 +421,12 @@ We report the exact text of the original exception thrown:
     wsp.HM.nnz = static_cast<int>(hs_idx_map.size() + dim); // lower triangular sparse + full diagonal
 
     // USI-3 (and 8): Allocate solver memory (and deallocate upon destruction of wr)
-    detail::worhp_raii wr(&opt, &wsp, &par, &cnt, WorhpInit, WorhpFree);
+    m_wr = std::make_shared<detail::worhp_raii>(&opt, &wsp, &par, &cnt, WorhpInit, WorhpFree);
+
+    if (!pop.size()) {
+        // In case of an empty pop, just return it.
+        return pop;
+    }
 
     // This flag informs Worhp that f and g should not be evaluated seperately. pagmo fitness always computes both
     // so that if only the objfun is needed also the constraints are computed. This flag signals to worhp that this
@@ -441,7 +448,12 @@ We report the exact text of the original exception thrown:
         WorhpSetBoolParam(&par, "UserHM", true);
     } else {
         WorhpSetBoolParam(&par, "UserHM", false);
+        WorhpSetBoolParam(&par, "FidifHM", true); // Finite differences needed for sensitivity matrices
     }
+
+    // enable zen updates
+    WorhpSetBoolParam(&par, "UseZen", true);
+    
 
     // Logic for the handling of constraints tolerances. The logic is as follows:
     // - if the user provides the "TolFeas" option, use that *unconditionally*. Otherwise,
@@ -623,7 +635,7 @@ We report the exact text of the original exception thrown:
      * Make sure to reset the requested user action afterwards by calling
      * DoneUserAction, except for 'callWorhp' and 'fidif'.
      */
-    while (cnt.status < TerminateSuccess && cnt.status > TerminateError) {
+    while (cnt.status > TerminateError && (cnt.status < TerminateSuccess || !cnt.ZenInit)) {
         /*
          * WORHP's main routine.
          * Do not manually reset callWorhp, this is only done by the FD routines.
@@ -724,6 +736,194 @@ We report the exact text of the original exception thrown:
     }
 
     return pop;
+}
+
+/// Sensitivity Updates (Worhp Zen)
+/**
+ * This method allows to apply perturbations to the constraints and objective function of the last computed problem.
+ * It then returns an updated optimal solution without having to repeat the optimization process.
+ * To do that, Worhp computes sensitivity matrices and gives an approximation of the new optimum.
+ *
+ * For a detailed description and a definition of the accepted perturbations, see the Worhp Zen Manual.
+ * The perturbation dp, a non-linear perturbation of the fitness function, is not implemented at the moment,
+ * as it requires dedicated support of the fitness function.
+ *
+ *
+ * @param dr linear perturbation in the objective function
+ * @param dq constant perturbation in the constraints
+ * @param db constant perturbation in the box bounds
+ * @param order the order of the taylor approximation
+ *
+ * @return the updated optimum x and an approximation of the cost f
+ *
+ * @throws std::invalid_argument in the following cases:
+ * - the dimension of dr differs from the problem dimension
+ * - the dimension of dq differs from the number of constraints
+ * - the dimension of db differs from the problem dimension
+ * - runtime loading of the worhp library failed
+ * @throws std::runtime_error if no previous optimization run has been saved
+ */
+std::pair<vector_double, double> worhp::zen_update(const vector_double &dr, const vector_double &dq, 
+                                                   const vector_double &db, int order) {
+    if (!m_wr) {
+        pagmo_throw(std::runtime_error, "No optimization state saved for sensitivity updates. Call evolve first.");
+    }
+
+    // ---------------------------------------------------------------------------------------------------------
+    // ------------------------- WORHP PLUGIN (we attempt loading the worhp library at run-time)--------------
+    std::function<void(OptVar *, Workspace *, Params *, Control *, const  char * ,double *,
+     const double *, const double *, const double *, const double *, const int *)> ZenUpdate;
+
+    boost::filesystem::path library_filename(m_worhp_library);
+    // We then try to load the library at run time and locate the symbols used.
+    try {
+        // Here we import at runtime the worhp library and protect the whole try block with a mutex
+        std::lock_guard<std::mutex> lock(detail::library_load_mutex);
+        if (!boost::filesystem::is_regular_file(library_filename)) {
+            pagmo_throw(std::invalid_argument,
+                        "The worhp library file name was constructed to be: " + library_filename.string()
+                            + " and it does not appear to be a file");
+        }
+        boost::dll::shared_library libworhp(library_filename);
+
+        ZenUpdate = boost::dll::import<void(OptVar *, Workspace *, Params *, Control *, const  char * ,double *,
+     const double * , const double * , const double * , const double * , const int *)>( // type of the function to import
+            libworhp,                                       // the library
+            "ZenUpdate"                                  // name of the function to import
+        );
+    } catch (const std::exception &e) {
+        std::string message(
+            R"(
+An error occurred while loading the worhp library at run-time. This is typically caused by one of the following
+reasons:
+
+- The file declared to be the worhp library, i.e. )"
+            + m_worhp_library
+            + R"(, is not found or is found but it is not a shared library containing the necessary symbols 
+(is the file really a valid shared library?)
+ - The library is found and it does contain the symbols, but it needs linking to some additional libraries that are not found
+at run-time.
+
+We report the exact text of the original exception thrown:
+
+ )" + std::string(e.what()));
+        pagmo_throw(std::invalid_argument, message);
+    }
+    // ------------------------- END WORHP PLUGIN -------------------------------------------------------------
+
+    if (dr.data() && dr.size() != m_opt.n) {
+        pagmo_throw(std::invalid_argument,
+                        "Last problem has dimension " + std::to_string(m_opt.n) + ", but passed perturbation dr has size " + std::to_string(dr.size()));
+    }
+
+    if (dq.data() && dq.size() != m_opt.m) {
+        pagmo_throw(std::invalid_argument,
+                        "Last problem has " + std::to_string(m_opt.m) + " constraints, but passed perturbation dq has size " + std::to_string(dq.size()));
+    }
+
+    if (db.data() && db.size() != m_opt.n) {
+        pagmo_throw(std::invalid_argument,
+                        "Last problem has dimension " + std::to_string(m_opt.n) + ", but passed perturbation db has size " + std::to_string(db.size()));
+    }
+
+    if (!m_cnt.ZenInit) {
+        pagmo_throw(std::runtime_error, "Data structures for zen updates were not initialised, possibly due to an unsuccessful termination. Last optimisation status is: " + m_last_opt_res);
+    }
+
+    vector_double Xnew(m_opt.n);
+    ZenUpdate(&m_opt, &m_wsp, &m_par, &m_cnt, "X", Xnew.data(), NULL, dr.data(), dq.data(), db.data(), &order);
+    double Fnew = 0.0;
+    ZenUpdate(&m_opt, &m_wsp, &m_par, &m_cnt, "F", &Fnew, NULL, dr.data(), dq.data(), db.data(), &order);
+    return std::make_pair(Xnew, Fnew);
+}
+
+/// Maximum Perturbation for Sensitivity Updates (Worhp Zen)
+/**
+ * This method is in support for the Worhp Zen updates. It returns the maximum perturbations for the last computed problem.
+ *
+ * For a detailed description and a definition of the accepted perturbations, see the Worhp Zen Manual.
+ *
+ * @return {maxDR, maxDQ, maxDB}
+ *
+ * @throws std::runtime_error if no previous optimization run has been saved
+ */
+std::vector<vector_double> worhp::zen_get_max_perturbations() {
+
+    if (!m_wr) {
+        pagmo_throw(std::runtime_error, "No optimization state saved for sensitivity updates. Call evolve first.");
+    }
+
+    // ---------------------------------------------------------------------------------------------------------
+    // ------------------------- WORHP PLUGIN (we attempt loading the worhp library at run-time)--------------
+    std::function<void(OptVar *, Workspace *, Params *, Control *, double *, double *,double *,double *)> ZenGetMaxPert;
+    std::function<bool(Params *, const char *, bool *)> WorhpGetBoolParam;
+    std::function<bool(Params *, const char *, bool)> WorhpSetBoolParam;
+
+    boost::filesystem::path library_filename(m_worhp_library);
+    // We then try to load the library at run time and locate the symbols used.
+    try {
+        // Here we import at runtime the worhp library and protect the whole try block with a mutex
+        std::lock_guard<std::mutex> lock(detail::library_load_mutex);
+        if (!boost::filesystem::is_regular_file(library_filename)) {
+            pagmo_throw(std::invalid_argument,
+                        "The worhp library file name was constructed to be: " + library_filename.string()
+                            + " and it does not appear to be a file");
+        }
+        boost::dll::shared_library libworhp(library_filename);
+
+        ZenGetMaxPert = boost::dll::import<void(OptVar *, Workspace *, Params *, Control *, 
+        double *, double *,double *,double *)>( // type of the function to import
+            libworhp,                                       // the library
+            "ZenGetMaxPert"                                  // name of the function to import
+        );
+
+        WorhpGetBoolParam = boost::dll::import<bool(Params *, const char *, bool *)>( // type of the function to import
+            libworhp,                                                               // the library
+            "WorhpGetBoolParam"                                                     // name of the function to import
+        );
+
+        WorhpSetBoolParam = boost::dll::import<bool(Params *, const char *, bool)>( // type of the function to import
+            libworhp,                                                               // the library
+            "WorhpSetBoolParam"                                                     // name of the function to import
+        );
+
+    } catch (const std::exception &e) {
+        std::string message(
+            R"(
+An error occurred while loading the worhp library at run-time. This is typically caused by one of the following
+reasons:
+
+- The file declared to be the worhp library, i.e. )"
+            + m_worhp_library
+            + R"(, is not found or is found but it is not a shared library containing the necessary symbols 
+(is the file really a valid shared library?)
+ - The library is found and it does contain the symbols, but it needs linking to some additional libraries that are not found
+at run-time.
+
+We report the exact text of the original exception thrown:
+
+ )" + std::string(e.what()));
+        pagmo_throw(std::invalid_argument, message);
+    }
+    // ------------------------- END WORHP PLUGIN -------------------------------------------------------------
+
+    bool user_hessians;
+    WorhpGetBoolParam(&m_par, "UserHM", &user_hessians);
+
+    if (!user_hessians) {
+        WorhpSetBoolParam(&m_par, "FidifHM", true); // Finite differences needed for sensitivity matrices
+    }
+
+    if (m_opt.n > 1000 || m_opt.n < 0) {
+        print("Warning, m_opt.n:", m_opt.n, "\n");
+    }
+    if (m_opt.m > 1000 || m_opt.m < 0) {
+        print("Warning, m_opt.m:", m_opt.m, "\n");
+    }
+    vector_double maxDP(m_opt.k), maxDR(m_opt.n), maxDQ(m_opt.m), maxDB(m_opt.n);
+    
+    ZenGetMaxPert(&m_opt, &m_wsp, &m_par, &m_cnt, maxDP.data(), maxDR.data(), maxDQ.data(), maxDB.data());
+    return std::vector{maxDR, maxDQ, maxDB};
 }
 
 /// Set verbosity.

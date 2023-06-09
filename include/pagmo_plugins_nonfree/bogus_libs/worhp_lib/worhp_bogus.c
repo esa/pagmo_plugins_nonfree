@@ -46,6 +46,9 @@ void IterationOutput(OptVar *o, Workspace *w, Params *p, Control *c) {}
 void Worhp(OptVar *o, Workspace *w, Params *p, Control *c)
 {
     c->status = c->status + 100; // this will make it so after ten calls it concludes.
+    if (c->status >= TerminateSuccess) {
+        c->ZenInit = true;
+    }
     // Random vector
     int j;
     for (j = 0; j < o->n; ++j) {
@@ -92,6 +95,17 @@ void WorhpFree(OptVar *o, Workspace *w, Params *p, Control *c)
     free(w->HM.val);
 }
 void WorhpFidif(OptVar *o, Workspace *w, Params *p, Control *c) {}
+bool WorhpGetBoolParam(Params *p, const char *stropt, bool *b)
+{
+    char *invalid;
+    invalid = "invalid_bool_option";
+    if (strcmp(stropt, invalid) == 0) {
+        return 0;
+    } else {
+        *b = 1;
+        return 1;
+    }
+}
 bool WorhpSetBoolParam(Params *p, const char *stropt, bool b)
 {
     char *invalid;
@@ -134,3 +148,30 @@ void WorhpVersion(int *major, int *minor, char patch[PATCH_STRING_LENGTH])
     *major = 1;
     *minor = 14;
 };
+
+void ZenUpdate(OptVar *o, Workspace *w, Params *p, Control *c,
+    const char *var_pert, double *varnew, const double *dp,
+    const double *dr, const double *dq,
+    const double *db, const int *order)
+{
+    for (int j = 0; j < o->n; ++j) {
+        varnew[j] = closed_interval_rand(o->XL[j], o->XU[j]);
+    }
+}
+
+void ZenGetMaxPert(OptVar *o, Workspace *w, Params *p, Control *c,
+        double *maxDP, double *maxDR, double *maxDQ, double *maxDB)
+{
+    for (int j = 0; j < o->k; ++j) {
+        maxDP[j] = 0.1;
+    }
+
+    for (int j = 0; j < o->n; ++j) {
+        maxDR[j] = 0.1;
+        maxDB[j] = 0.1;
+    }
+
+    for (int j = 0; j < o->m; ++j) {
+        maxDQ[j] = 0.1;
+    }
+}

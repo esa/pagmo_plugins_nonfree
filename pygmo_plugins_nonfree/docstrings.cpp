@@ -530,6 +530,51 @@ Args:
 )";
 }
 
+std::string worhp_zen_update_docstring()
+{
+    return R"(zen_update(dr, dq, db, order)  
+
+Apply perturbations to fitness and constraints
+
+This method allows to apply perturbations to the constraints and objective function of the last computed problem.
+It then returns an updated optimal solution without having to repeat the optimization process.
+To do that, Worhp computes sensitivity matrices and gives an approximation of the new optimum.
+
+For a detailed description and a definition of the accepted perturbations, see the Worhp Zen Manual.
+The perturbation dp, a non-linear perturbation of the fitness function, is not implemented at the moment,
+as it requires dedicated support of the fitness function.
+
+Args:
+    dr (``List[double]``): the perturbation of the linear multiplier
+    dq (``List[double]``): perturbation added to the constraints
+    db (``List[double]``): perturbation added to the box bounds
+    order (``int``) the order of taylor approximation used
+
+Returns:
+    ``Tuple[List[double]]`` the updated optimum x and an approximation of the cost f
+
+Raises:
+    ValueError: the dimension of dr differs from the problem dimension
+    ValueError: the dimension of dq differs from the number of constraints
+    ValueError: the dimension of db differs from the problem dimension
+    ValueError: runtime loading of the worhp library failed
+    RuntimeError: if no previous optimization run has been saved
+
+ )";
+}
+
+std::string worhp_zen_get_max_perturbations_docstring()
+{
+    return R"(zen_get_max_perturbations()
+
+    Get maximum perturbations for the last computed problem.
+
+    Returns:
+    ``List[List[double]]`` of maxDR, maxDQ, maxDB
+
+    )";
+}
+
 // Utilities for implementing the exposition of algorithms
 // which inherit from not_population_based.
 std::string bls_selection_docstring(const std::string &algo)

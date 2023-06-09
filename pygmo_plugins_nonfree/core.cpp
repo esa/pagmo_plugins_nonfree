@@ -3,6 +3,7 @@
 #include <pagmo/s11n.hpp>
 #include <pybind11/numpy.h>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 #include <sstream>
 #include <string>
 
@@ -101,6 +102,8 @@ PYBIND11_MODULE(core, m)
     // We expose the additional constructor
     worhp_.def(py::init<bool, std::string>(), py::arg("screen_output") = false, py::arg("library") = "/usr/local/lib/");
     worhp_.def("evolve", &ppnf::worhp::evolve);
+    worhp_.def("zen_update", &ppnf::worhp::zen_update, ppnf::worhp_zen_update_docstring().c_str());
+    worhp_.def("zen_get_max_perturbations", &ppnf::worhp::zen_get_max_perturbations, ppnf::worhp_zen_get_max_perturbations_docstring().c_str());
     worhp_.def("set_verbosity", &ppnf::worhp::set_verbosity);
     worhp_.def("get_name", &ppnf::worhp::get_name);
     worhp_.def("get_extra_info", &ppnf::worhp::get_extra_info);

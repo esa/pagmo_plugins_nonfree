@@ -54,6 +54,7 @@ see https://www.gnu.org/licenses/. */
 #include <boost/functional/hash.hpp>
 #include <boost/serialization/map.hpp>
 #include <iomanip>
+#include <memory>
 #include <mutex>
 #include <pagmo/algorithm.hpp>
 #include <pagmo/algorithms/not_population_based.hpp>
@@ -77,6 +78,11 @@ see https://www.gnu.org/licenses/. */
 
 namespace ppnf
 {
+
+    //forward declaration
+    namespace detail {
+        struct worhp_raii;
+    }
 
 /// WORHP - (We Optimize Really Huge Problems)
 /**
@@ -172,7 +178,20 @@ public:
      *
      */
     worhp(bool screen_output = false, std::string worhp_library = "/usr/local/lib/libworhp.so");
+
+    /**
+    * Custom copy constructor, necessary because the worhp data structures hold pointers.
+    * It copies the settings, but not the results of the last call to evolve.
+    * Evolve needs to be called again before zen_update or zen_get_max_perturbations can be used.
+    * 
+    * @param other Another instance of worhp
+    */ 
+    worhp(const worhp& other);
+
     pagmo::population evolve(pagmo::population pop) const;
+    std::pair<pagmo::vector_double, double> zen_update(const pagmo::vector_double &dr, const pagmo::vector_double &dq,
+                                                       const pagmo::vector_double &db, int order);
+    std::vector<pagmo::vector_double> zen_get_max_perturbations();
     void set_verbosity(unsigned n);
     const log_type &get_log() const;
     unsigned int get_verbosity() const;
@@ -258,11 +277,19 @@ private:
     mutable std::pair<pagmo::vector_double, pagmo::vector_double> m_f_cache = {{}, {}};
     mutable std::pair<pagmo::vector_double, pagmo::vector_double> m_g_cache = {{}, {}};
 
+    // The worhp data structures, caching results from an evolution
+    mutable OptVar m_opt;
+    mutable Workspace m_wsp;
+    mutable Params m_par;
+    mutable Control m_cnt;
+    mutable std::shared_ptr<detail::worhp_raii> m_wr;
+
     // Deleting the methods load save public in base as to avoid conflict with serialize
     template <typename Archive>
     void load(Archive &ar) = delete;
     template <typename Archive>
     void save(Archive &ar) const = delete;
+
 };
 
 } // namespace ppnf
