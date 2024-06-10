@@ -20,14 +20,14 @@ source activate $deps_dir
 # We build and install pagmo_plugins_nonfree
 mkdir build_cpp
 cd build_cpp
-cmake -G "Ninja" ../ -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Release -DPPFN_BUILD_CPP=yes -DPPFN_BUILD_TESTS=no -DPPFN_BUILD_PYTHON=no -DBoost_NO_BOOST_CMAKE=ON
+cmake -G "Ninja" ../ -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_CPP=yes -DPPNF_BUILD_TESTS=no -DPPNF_BUILD_PYTHON=no -DBoost_NO_BOOST_CMAKE=ON
 cmake --build . --target=install --config=Release -- -j 2
 
 # We build and install pygmo_plugins_nonfree
 cd ../
 mkdir build
 cd build
-cmake -G "Ninja" ../ -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Release -DPPFN_BUILD_CPP=no -DPPFN_BUILD_TESTS=no -DPPFN_BUILD_PYTHON=yes -DBoost_NO_BOOST_CMAKE=ON
+cmake -G "Ninja" ../ -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_CPP=no -DPPFN_BUILD_TESTS=no -DPPNF_BUILD_PYTHON=yes -DBoost_NO_BOOST_CMAKE=ON
 cmake --build . --target=install --config=Release -- -j 2
 
 # We get out of build as to test the global installation
