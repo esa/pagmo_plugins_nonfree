@@ -1,5 +1,5 @@
-# CMake version check.
-cmake_minimum_required(VERSION 3.3)
+# NOTE: current minimum requirement.
+cmake_minimum_required(VERSION 3.18.0)
 
 # Module path setup.
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules" "${CMAKE_SOURCE_DIR}/cmake_modules/yacma")
@@ -135,7 +135,7 @@ endif()
 
 if(PPNF_BUILD_PYTHON)
     # Find python
-    find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+    find_package(Python3 REQUIRED COMPONENTS Interpreter Development.Module)
     message(STATUS "Python3 interpreter: ${Python3_EXECUTABLE}")
     message(STATUS "Python3 installation directory: ${Python3_SITEARCH}")
     message(STATUS "Python3 include directories: ${Python3_INCLUDE_DIRS}")

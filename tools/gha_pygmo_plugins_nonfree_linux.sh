@@ -27,7 +27,7 @@ cmake --build . --target=install --config=Release -- -j 2
 cd ../
 mkdir build
 cd build
-cmake -G "Ninja" ../ -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_CPP=no -DPPFN_BUILD_TESTS=no -DPPNF_BUILD_PYTHON=yes -DBoost_NO_BOOST_CMAKE=ON
+cmake -G "Ninja" ../ -DCMAKE_INSTALL_PREFIX=$deps_dir -DCMAKE_PREFIX_PATH=$deps_dir -DCMAKE_BUILD_TYPE=Release -DPPNF_BUILD_CPP=no -DPPNF_BUILD_TESTS=no -DPPNF_BUILD_PYTHON=yes -DBoost_NO_BOOST_CMAKE=ON
 cmake --build . --target=install --config=Release -- -j 2
 
 # We get out of build as to test the global installation
