@@ -102,11 +102,11 @@ mv `/opt/python/${PYTHON_DIR}/bin/python -c 'import site; print(site.getsitepack
 # not picked up properly by the linker.
 export LD_LIBRARY_PATH="/usr/local/lib64:/usr/local/lib"
 /opt/python/${PYTHON_DIR}/bin/python setup.py bdist_wheel
-auditwheel repair dist/pygmo* -w ./dist2
+auditwheel repair dist/pygmo_plugins_nonfree* -w ./dist2
 # Try to install it and run the tests.
 unset LD_LIBRARY_PATH
 cd /
-/opt/python/${PYTHON_DIR}/bin/pip install ${GITHUB_WORKSPACE}/build/wheel/dist2/pygmo*
+/opt/python/${PYTHON_DIR}/bin/pip install ${GITHUB_WORKSPACE}/build/wheel/dist2/pygmo_plugins_nonfree*
 /opt/python/${PYTHON_DIR}/bin/ipcluster start --daemonize=True
 sleep 20
 /opt/python/${PYTHON_DIR}/bin/python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()";
