@@ -19,12 +19,12 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  amd64-manylinux228-py312:
+  amd64-manylinux228-py309:
      runs-on: ubuntu-latest
      container:
       image: pagmo2/manylinux228_x86_64_with_deps:latest
       env: 
-        PPNF_BUILD_TYPE: "Python312"
+        PPNF_BUILD_TYPE: "Python309"
         TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
      steps:

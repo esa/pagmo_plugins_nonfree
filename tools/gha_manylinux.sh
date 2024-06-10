@@ -37,7 +37,7 @@ echo "PYTHON_DIR: ${PYTHON_DIR}"
 
 # The pagmo/pygmo versions to be used.
 export PAGMO_VERSION="2.19.0"
-export PYGMO_VERSION="2.19.6"
+export PYGMO_VERSION="2.19.5"
 
 # Check if this is a release build.
 if [[ "${GITHUB_REF}" == "refs/tags/v"* ]]; then
