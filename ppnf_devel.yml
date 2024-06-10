@@ -1,0 +1,13 @@
+name: ppnf_devel
+channels:
+  - conda-forge
+dependencies:
+  - c-compiler
+  - cxx-compiler
+  - ninja
+  - cmake >=3.18
+  - boost-cpp >=1.48
+  - pagmo-devel
+  - pybind11
+  - python
+  - pygmo
