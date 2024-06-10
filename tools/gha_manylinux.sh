@@ -95,7 +95,7 @@ make -j4 install
 cd wheel
 # Move the installed ppnf files, wherever they might be in /usr/local,
 # into the current dir.
-mv `find /usr/local/lib -type d -iname 'pygmo_plugins_nonfree'` ./
+mv `/opt/python/${PYTHON_DIR}/bin/python -c 'import site; print(site.getsitepackages()[0])'`/pygmo_plugins_nonfree ./
 # Create the wheel and repair it.
 # NOTE: this is temporary because some libraries in the docker
 # image are installed in lib64 rather than lib and they are
