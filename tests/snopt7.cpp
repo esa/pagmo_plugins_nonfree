@@ -10,7 +10,7 @@
 #include <pagmo/problem.hpp>
 #include <pagmo/problems/ackley.hpp>
 #include <pagmo/problems/cec2006.hpp>
-#include <pagmo/problems/hock_schittkowsky_71.hpp>
+#include <pagmo/problems/hock_schittkowski_71.hpp>
 #include <pagmo/problems/inventory.hpp>
 #include <pagmo/problems/zdt.hpp>
 #include <pagmo/types.hpp>
@@ -139,7 +139,7 @@ BOOST_AUTO_TEST_CASE(evolve)
         prob.set_c_tol({1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6, 1e-6});
         BOOST_CHECK_NO_THROW((uda2.evolve(population{prob, 1u})));
         // We now call the evolve. Not much to test in terms of outputs, so we just check that it does not throw.
-        BOOST_CHECK_NO_THROW((uda2.evolve(population{hock_schittkowsky_71{}, 1u})));
+        BOOST_CHECK_NO_THROW((uda2.evolve(population{hock_schittkowski_71{}, 1u})));
         BOOST_CHECK_NO_THROW((uda2.evolve(population{cec2006{1}, 1u})));
         BOOST_CHECK_NO_THROW((uda2.evolve(population{ackley{10}, 1u})));
         BOOST_CHECK_NO_THROW((uda2.evolve(population{ackley{10}, 0u})));

@@ -62,6 +62,5 @@ setup(name=NAME,
       install_requires=INSTALL_REQUIRES,
       packages=['pygmo_plugins_nonfree'],
       # Include pre-compiled extension
-      package_data={'pygmo_plugins_nonfree': ['core.pyd'] + \
-                    DLL_LIST if os.name == 'nt' else ['core.so']},
+      package_data={"pygmo_plugins_nonfree": [f for f in os.listdir("pygmo_plugins_nonfree/") if f.endswith(".so")]},
       distclass=BinaryDistribution)

@@ -555,33 +555,34 @@ pagmo::population snopt7::evolve_version(pagmo::population &pop) const
         }
         boost::dll::shared_library libsnopt7_c(path_to_lib);
         // We then load the symbols we need for the SNOPT7 plugin
-        snInit = boost::dll::import<void(snProblem *, char *, char *,
-                                         int)>( // type of the function to import
-            libsnopt7_c,                        // the library
-            "snInit"                            // name of the function to import
+        snInit = boost::dll::import_symbol<void(snProblem *, char *, char *,
+                                                int)>( // type of the function to import
+            libsnopt7_c,                               // the library
+            "snInit"                                   // name of the function to import
         );
 
-        setIntParameter = boost::dll::import<int(snProblem *, char[], int)>( // type of the function to import
-            libsnopt7_c,                                                     // the library
-            "setIntParameter"                                                // name of the function to import
+        setIntParameter = boost::dll::import_symbol<int(snProblem *, char[], int)>( // type of the function to import
+            libsnopt7_c,                                                            // the library
+            "setIntParameter"                                                       // name of the function to import
         );
 
-        setRealParameter = boost::dll::import<int(snProblem *, char[], double)>( // type of the function to import
-            libsnopt7_c,                                                         // the library
-            "setRealParameter"                                                   // name of the function to import
+        setRealParameter
+            = boost::dll::import_symbol<int(snProblem *, char[], double)>( // type of the function to import
+                libsnopt7_c,                                               // the library
+                "setRealParameter"                                         // name of the function to import
+            );
+
+        deleteSNOPT = boost::dll::import_symbol<void(snProblem *)>( // type of the function to import
+            libsnopt7_c,                                            // the library
+            "deleteSNOPT"                                           // name of the function to import
         );
 
-        deleteSNOPT = boost::dll::import<void(snProblem *)>( // type of the function to import
-            libsnopt7_c,                                     // the library
-            "deleteSNOPT"                                    // name of the function to import
-        );
-
-        solveA = boost::dll::import<int(snProblem *, int, int, int, double, int, snFunA, int, int *, int *, double *,
-                                        int, int *, int *, double *, double *, double *, double *, double *, int *,
-                                        double *, double *, int *, double *, int *, int *,
-                                        double *)>( // type of the function to import
-            libsnopt7_c,                            // the library
-            "solveA"                                // name of the function to import
+        solveA = boost::dll::import_symbol<int(snProblem *, int, int, int, double, int, snFunA, int, int *, int *,
+                                               double *, int, int *, int *, double *, double *, double *, double *,
+                                               double *, int *, double *, double *, int *, double *, int *, int *,
+                                               double *)>( // type of the function to import
+            libsnopt7_c,                                   // the library
+            "solveA"                                       // name of the function to import
         );
     } catch (const std::exception &e) {
         std::string message(
