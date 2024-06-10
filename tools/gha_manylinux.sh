@@ -73,8 +73,6 @@ make -j4 install
 
 # pygmo_plugins_nonfree
 cd ${GITHUB_WORKSPACE}
-# NOTE: this is temporary.
-cat boost_dll.diff | patch -p1
 mkdir build_pagmo_plugins_nonfree
 cd build_pagmo_plugins_nonfree
 cmake -DCMAKE_BUILD_TYPE=Release \
