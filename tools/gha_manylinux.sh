@@ -88,7 +88,7 @@ cmake -DCMAKE_BUILD_TYPE=Release \
 	-DBoost_NO_BOOST_CMAKE=ON \
 	-DPPNF_BUILD_CPP=no \
 	-DPPNF_BUILD_PYTHON=yes \
-	-DPYTHON_EXECUTABLE=/opt/python/${PYTHON_DIR}/bin/python ../;
+	-DPython3_EXECUTABLE=/opt/python/${PYTHON_DIR}/bin/python ../;
 make -j4 install
 
 # Making the wheel and installing it
