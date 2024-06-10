@@ -209,85 +209,88 @@ population worhp::evolve(population pop) const
         }
         boost::dll::shared_library libworhp(library_filename);
         // We then load the symbols we need for the WORHP plugin
-        WorhpPreInit = boost::dll::import<void(OptVar *, Workspace *, Params *,
+        WorhpPreInit = boost::dll::import_symbol<void(OptVar *, Workspace *, Params *,
+                                                      Control *)>( // type of the function to import
+            libworhp,                                              // the library
+            "WorhpPreInit"                                         // name of the function to import
+        );
+        WorhpInit = boost::dll::import_symbol<void(OptVar *, Workspace *, Params *,
+                                                   Control *)>( // type of the function to import
+            libworhp,                                           // the library
+            "WorhpInit"                                         // name of the function to import
+        );
+        WorhpDiag = boost::dll::import_symbol<void(OptVar *, Workspace *, Params *,
+                                                   Control *)>( // type of the function to import
+            libworhp,                                           // the library
+            "WorhpDiag"                                         // name of the function to import
+        );
+        ReadParams = boost::dll::import_symbol<void(int *, const char[], Params *)>( // type of the function to import
+            libworhp,                                                                // the library
+            "ReadParams"                                                             // name of the function to import
+        );
+        SetWorhpPrint = boost::dll::import_symbol<void(worhp_print_t)>( // type of the function to import
+            libworhp,                                                   // the library
+            "SetWorhpPrint"                                             // name of the function to import
+        );
+        GetUserAction = boost::dll::import_symbol<bool(const Control *, int)>( // type of the function to import
+            libworhp,                                                          // the library
+            "GetUserAction"                                                    // name of the function to import
+        );
+        DoneUserAction = boost::dll::import_symbol<void(Control *, int)>( // type of the function to import
+            libworhp,                                                     // the library
+            "DoneUserAction"                                              // name of the function to import
+        );
+        IterationOutput = boost::dll::import_symbol<void(OptVar *, Workspace *, Params *,
+                                                         Control *)>( // type of the function to import
+            libworhp,                                                 // the library
+            "IterationOutput"                                         // name of the function to import
+        );
+        Worhp = boost::dll::import_symbol<void(OptVar *, Workspace *, Params *,
                                                Control *)>( // type of the function to import
             libworhp,                                       // the library
-            "WorhpPreInit"                                  // name of the function to import
+            "Worhp"                                         // name of the function to import
         );
-        WorhpInit = boost::dll::import<void(OptVar *, Workspace *, Params *,
-                                            Control *)>( // type of the function to import
-            libworhp,                                    // the library
-            "WorhpInit"                                  // name of the function to import
+        StatusMsg = boost::dll::import_symbol<void(OptVar *, Workspace *, Params *,
+                                                   Control *)>( // type of the function to import
+            libworhp,                                           // the library
+            "StatusMsg"                                         // name of the function to import
         );
-        WorhpDiag = boost::dll::import<void(OptVar *, Workspace *, Params *,
-                                            Control *)>( // type of the function to import
-            libworhp,                                    // the library
-            "WorhpDiag"                                  // name of the function to import
+        StatusMsgString = boost::dll::import_symbol<void(OptVar *, Workspace *, Params *, Control *,
+                                                         char message[])>( // type of the function to import
+            libworhp,                                                      // the library
+            "StatusMsgString"                                              // name of the function to import
         );
-        ReadParams = boost::dll::import<void(int *, const char[], Params *)>( // type of the function to import
-            libworhp,                                                   // the library
-            "ReadParams"                                                // name of the function to import
-        );
-        SetWorhpPrint = boost::dll::import<void(worhp_print_t)>( // type of the function to import
-            libworhp,                                            // the library
-            "SetWorhpPrint"                                      // name of the function to import
-        );
-        GetUserAction = boost::dll::import<bool(const Control *, int)>( // type of the function to import
-            libworhp,                                                   // the library
-            "GetUserAction"                                             // name of the function to import
-        );
-        DoneUserAction = boost::dll::import<void(Control *, int)>( // type of the function to import
-            libworhp,                                              // the library
-            "DoneUserAction"                                       // name of the function to import
-        );
-        IterationOutput = boost::dll::import<void(OptVar *, Workspace *, Params *,
-                                                  Control *)>( // type of the function to import
-            libworhp,                                          // the library
-            "IterationOutput"                                  // name of the function to import
-        );
-        Worhp = boost::dll::import<void(OptVar *, Workspace *, Params *,
-                                        Control *)>( // type of the function to import
-            libworhp,                                // the library
-            "Worhp"                                  // name of the function to import
-        );
-        StatusMsg = boost::dll::import<void(OptVar *, Workspace *, Params *,
-                                            Control *)>( // type of the function to import
-            libworhp,                                    // the library
-            "StatusMsg"                                  // name of the function to import
-        );
-        StatusMsgString = boost::dll::import<void(OptVar *, Workspace *, Params *, Control *,
-                                                  char message[])>( // type of the function to import
-            libworhp,                                               // the library
-            "StatusMsgString"                                       // name of the function to import
-        );
-        WorhpSetBoolParam = boost::dll::import<bool(Params *, const char *, bool)>( // type of the function to import
-            libworhp,                                                               // the library
-            "WorhpSetBoolParam"                                                     // name of the function to import
-        );
-        WorhpSetIntParam = boost::dll::import<bool(Params *, const char *, int)>( // type of the function to import
-            libworhp,                                                             // the library
-            "WorhpSetIntParam"                                                    // name of the function to import
-        );
-        WorhpSetDoubleParam
-            = boost::dll::import<bool(Params *, const char *, double)>( // type of the function to import
-                libworhp,                                               // the library
-                "WorhpSetDoubleParam"                                   // name of the function to import
+        WorhpSetBoolParam
+            = boost::dll::import_symbol<bool(Params *, const char *, bool)>( // type of the function to import
+                libworhp,                                                    // the library
+                "WorhpSetBoolParam"                                          // name of the function to import
             );
-        WorhpFree = boost::dll::import<void(OptVar *, Workspace *, Params *,
-                                            Control *)>( // type of the function to import
-            libworhp,                                    // the library
-            "WorhpFree"                                  // name of the function to import
+        WorhpSetIntParam
+            = boost::dll::import_symbol<bool(Params *, const char *, int)>( // type of the function to import
+                libworhp,                                                   // the library
+                "WorhpSetIntParam"                                          // name of the function to import
+            );
+        WorhpSetDoubleParam
+            = boost::dll::import_symbol<bool(Params *, const char *, double)>( // type of the function to import
+                libworhp,                                                      // the library
+                "WorhpSetDoubleParam"                                          // name of the function to import
+            );
+        WorhpFree = boost::dll::import_symbol<void(OptVar *, Workspace *, Params *,
+                                                   Control *)>( // type of the function to import
+            libworhp,                                           // the library
+            "WorhpFree"                                         // name of the function to import
         );
-        WorhpFidif = boost::dll::import<void(OptVar *, Workspace *, Params *,
-                                             Control *)>( // type of the function to import
-            libworhp,                                     // the library
-            "WorhpFidif"                                  // name of the function to import
+        WorhpFidif = boost::dll::import_symbol<void(OptVar *, Workspace *, Params *,
+                                                    Control *)>( // type of the function to import
+            libworhp,                                            // the library
+            "WorhpFidif"                                         // name of the function to import
         );
-        WorhpVersion = boost::dll::import<void(int *major, int *minor,
-                                               char patch[PATCH_STRING_LENGTH])>( // type of the function to import
-            libworhp,                                                             // the library
-            "WorhpVersion"                                                        // name of the function to import
-        );
+        WorhpVersion
+            = boost::dll::import_symbol<void(int *major, int *minor,
+                                             char patch[PATCH_STRING_LENGTH])>( // type of the function to import
+                libworhp,                                                       // the library
+                "WorhpVersion"                                                  // name of the function to import
+            );
     } catch (const std::exception &e) {
         std::string message(
             R"(

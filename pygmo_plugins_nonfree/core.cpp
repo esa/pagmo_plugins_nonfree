@@ -65,10 +65,6 @@ pagmo::population test_intermodule(const pagmo::population &pop) {
 
 PYBIND11_MODULE(core, m)
 {
-    // This function needs to be called before doing anything with threads.
-    // https://docs.python.org/3/c-api/init.html
-    PyEval_InitThreads();
-
     // Disable automatic function signatures in the docs.
     // NOTE: the 'options' object needs to stay alive
     // throughout the whole definition of the module.

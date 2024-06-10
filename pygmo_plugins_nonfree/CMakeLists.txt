@@ -1,35 +1,52 @@
-# Python version check.
-if(${PYTHON_VERSION_MAJOR} LESS 3 )
-    message(FATAL_ERROR "Minimum supported Python version is 3.x")
-endif()
+# Configure the version file.
+configure_file("${CMAKE_CURRENT_SOURCE_DIR}/_version.py.in" "${CMAKE_CURRENT_SOURCE_DIR}/_version.py" @ONLY)   
 
-# Create the module
-YACMA_PYTHON_MODULE(core core.cpp docstrings.cpp)
+# The list of pykep's Python files.
+set(PPFN_PYTHON_FILES __init__.py _version.py test.py)
 
-# Finding pagmo_plugins_nonfree
-find_package(pagmo_plugins_nonfree REQUIRED)
-
-# Finding pybind11
-find_package(pybind11 REQUIRED)
-
-target_link_libraries(core PRIVATE Pagmo_plugins_nonfree::pagmo_plugins_nonfree ${PYGMO_PLUGINS_NONFREE_BP_TARGET} Boost::disable_autolinking)
-target_include_directories(core SYSTEM PRIVATE "${pybind11_INCLUDE_DIR}")
-target_compile_definitions(core PRIVATE "${pybind11_DEFINITIONS}")
-
-set_property(TARGET core PROPERTY CXX_STANDARD 17)
-set_property(TARGET core PROPERTY CXX_STANDARD_REQUIRED YES)
-set_property(TARGET core PROPERTY CXX_EXTENSIONS NO)
-
-# Helper file with version number.
-CONFIGURE_FILE("${CMAKE_CURRENT_SOURCE_DIR}/_version.py.in" "${CMAKE_CURRENT_BINARY_DIR}/_version.py" @ONLY)
-
-# Setup the installation path.
-set(PYGMO_PLUGINS_NONFREE_INSTALL_PATH "${YACMA_PYTHON_MODULES_INSTALL_PATH}/pygmo_plugins_nonfree")
-install(TARGETS core
- RUNTIME DESTINATION ${PYGMO_PLUGINS_NONFREE_INSTALL_PATH}
- LIBRARY DESTINATION ${PYGMO_PLUGINS_NONFREE_INSTALL_PATH}
+# Core module.
+Python3_add_library(core MODULE WITH_SOABI 
+    core.cpp
+    docstrings.cpp
 )
 
-# Add the Python files.
-install(FILES __init__.py test.py "${CMAKE_CURRENT_BINARY_DIR}/_version.py"
-     DESTINATION ${PYGMO_PLUGINS_NONFREE_INSTALL_PATH})
+target_link_libraries(core PRIVATE pagmo_plugins_nonfree)
+target_link_libraries(core PRIVATE "${pybind11_LIBRARIES}")
+
+target_include_directories(core SYSTEM PRIVATE "${pybind11_INCLUDE_DIR}" "${Python3_INCLUDE_DIRS}")
+target_compile_definitions(core PRIVATE "${pybind11_DEFINITIONS}")
+target_compile_options(core PRIVATE
+    "$<$<CONFIG:Debug>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG}>"
+    "$<$<CONFIG:Release>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE}>"
+    "$<$<CONFIG:RelWithDebInfo>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE}>"
+    "$<$<CONFIG:MinSizeRel>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE}>"
+    
+)
+target_include_directories(core PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>
+    $<INSTALL_INTERFACE:include>)
+set_target_properties(core PROPERTIES CXX_VISIBILITY_PRESET hidden)
+set_target_properties(core PROPERTIES VISIBILITY_INLINES_HIDDEN TRUE)
+target_compile_features(core PRIVATE cxx_std_17)
+set_property(TARGET core PROPERTY CXX_EXTENSIONS NO)
+
+# Installation setup.
+if(PPFN_INSTALL_PATH STREQUAL "")
+    message(STATUS "pygmo_plugins_nonfree will be installed in the default location: ${Python3_SITEARCH}")
+    set(_PPNF_INSTALL_PATH "${Python3_SITEARCH}/pygmo_plugins_nonfree")
+else()
+    message(STATUS "pygmo_plugins_nonfree will be installed in the custom location: ${PPFN_INSTALL_PATH}")
+    set(_PPNF_INSTALL_PATH "${PPFN_INSTALL_PATH}/pygmo_plugins_nonfree")
+endif()
+
+# Install the core module.
+install(TARGETS core
+    RUNTIME DESTINATION ${_PPNF_INSTALL_PATH}
+    LIBRARY DESTINATION ${_PPNF_INSTALL_PATH}
+)
+
+# Install the Python files.
+install(FILES ${PPFN_PYTHON_FILES} DESTINATION ${_PPNF_INSTALL_PATH})
+
+unset(_PPNF_INSTALL_PATH)

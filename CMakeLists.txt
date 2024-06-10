@@ -69,30 +69,15 @@ if(MINGW)
 	list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE "-Wa,-mbig-obj")
 endif()
 
-if(PPNF_BUILD_CPP)
-    # pagmo plugins non free dependencies
-    if(PPNF_BUILD_TESTS)
-        # Internal variable that will be used to tell PagmoPNFFindBoost to locate the
-        # Boost unit test framework, if tests are required.
-        set(_PAGMO_PLUGINS_NONFREE_FIND_BOOST_UNIT_TEST_FRAMEWORK TRUE)
-    endif()
-endif()
+# Setting the boost libraries needed for PPNF
+# NOTE: need 1.48 as pagmo.
+set(_PPNF_MIN_BOOST_VERSION "1.48")
+find_package(Boost ${_PPNF_MIN_BOOST_VERSION} REQUIRED COMPONENTS system filesystem unit_test_framework)
+MESSAGE(STATUS "Detected Boost version: ${Boost_VERSION}")
+# Include system Boost headers.
+MESSAGE(STATUS "Boost include dirs: ${Boost_INCLUDE_DIRS}")
+MESSAGE(STATUS "Boost libraries: ${Boost_LIBRARIES}")
 
-if(PPNF_BUILD_PYTHON)
-    # pygmo plugins non free dependencies
-    include(YACMAPythonSetup)
-
-    # Python version check.
-    if(${PYTHON_VERSION_MAJOR} LESS 3 )
-        message(FATAL_ERROR "Minimum supported Python version is 3")
-    endif()
-
-    # Internal variable that will be used to tell PagmoFindBoost to locate Boost.Python.
-    set(_PAGMO_PLUGINS_NONFREE_FIND_BOOST_PYTHON TRUE)
-endif()
-
-# Boost setup (common to pagmo/pygmo . pluginsnonfree).
-include(PagmoPNFFindBoost)
 # Pagmo setup (common to pagmo/pygmo . pluginsnonfree).
 find_package(Pagmo REQUIRED)
 
@@ -148,9 +133,22 @@ if(PPNF_BUILD_CPP)
     endif()
 endif()
 
-# Build the pygmo_plugins_nonfree module
 if(PPNF_BUILD_PYTHON)
+    # Find python
+    find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+    message(STATUS "Python3 interpreter: ${Python3_EXECUTABLE}")
+    message(STATUS "Python3 installation directory: ${Python3_SITEARCH}")
+    message(STATUS "Python3 include directories: ${Python3_INCLUDE_DIRS}")
+
+    set(PPFN_INSTALL_PATH "" CACHE STRING "ppfn module installation path")
+    mark_as_advanced(PPFN_INSTALL_PATH)
+
+    # pybind11.
+    find_package(pybind11 REQUIRED)
+
+    # Build directory
     add_subdirectory("${CMAKE_SOURCE_DIR}/pygmo_plugins_nonfree")
+
     if(MINGW OR ${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         message(STATUS "Creating the files for the generation of a binary wheel.")
         configure_file("${CMAKE_CURRENT_SOURCE_DIR}/tools/wheel_setup.py" "${CMAKE_CURRENT_BINARY_DIR}/wheel/setup.py" @ONLY)
@@ -181,7 +179,6 @@ if(PPNF_BUILD_CPP)
 
     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/pagmo_plugins_nonfree-config.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/pagmo_plugins_nonfree-config.cmake" @ONLY)
     install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pagmo_plugins_nonfree-config.cmake" DESTINATION "lib/cmake/pagmo_plugins_nonfree")
-    install(FILES "${CMAKE_CURRENT_SOURCE_DIR}/cmake_modules/PagmoPNFFindBoost.cmake" DESTINATION "lib/cmake/pagmo_plugins_nonfree")
     install(EXPORT pagmo_plugins_nonfree_export NAMESPACE Pagmo_plugins_nonfree:: DESTINATION lib/cmake/pagmo_plugins_nonfree)
     # Take care of versioning.
     include(CMakePackageConfigHelpers)
