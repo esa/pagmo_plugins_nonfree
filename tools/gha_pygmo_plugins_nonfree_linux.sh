@@ -10,10 +10,10 @@ set -e
 sudo apt-get install wget
 
 # Install conda+deps.
-wget https://github.com/conda-forge/miniforge/releases/latest/download/Mambaforge-Linux-x86_64.sh -O mambaforge.sh
+wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O miniforge3.sh
 export deps_dir=$HOME/local
-export PATH="$HOME/mambaforge/bin:$PATH"
-bash mambaforge.sh -b -p $HOME/mambaforge
+export PATH="$HOME/miniforge3/bin:$PATH"
+bash miniforge3.sh -b -p $HOME/miniforge3
 mamba env create -f ppnf_devel.yml -q -p $deps_dir
 source activate $deps_dir
 
