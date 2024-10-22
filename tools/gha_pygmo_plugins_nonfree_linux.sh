@@ -17,7 +17,7 @@ bash miniconda.sh -b -p $HOME/miniconda
 conda config --add channels conda-forge
 conda config --set channel_priority strict
 
-mamba env create -f ppnf_devel.yml -q -p $deps_dir
+conda env create -f ppnf_devel.yml -q -p $deps_dir
 source activate $deps_dir
 
 # We build and install pagmo_plugins_nonfree
