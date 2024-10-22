@@ -12,3 +12,4 @@ dependencies:
   - pybind11-abi
   - python
   - pygmo
+  - python=3.13

@@ -10,10 +10,13 @@ set -e
 sudo apt-get install wget
 
 # Install conda+deps.
-wget https://github.com/conda-forge/miniforge/releases/latest/download/Miniforge3-Linux-x86_64.sh -O miniforge3.sh
+wget https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
 export deps_dir=$HOME/local
-export PATH="$HOME/miniforge3/bin:$PATH"
-bash miniforge3.sh -b -p $HOME/miniforge3
+export PATH="$HOME/miniconda/bin:$PATH"
+bash miniconda.sh -b -p $HOME/miniconda
+conda config --add channels conda-forge
+conda config --set channel_priority strict
+
 mamba env create -f ppnf_devel.yml -q -p $deps_dir
 source activate $deps_dir
 
