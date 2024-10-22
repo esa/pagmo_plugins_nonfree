@@ -58,6 +58,6 @@ jobs:
   linux_release:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Build
         run: bash tools/gha_pygmo_plugins_nonfree_linux.sh
