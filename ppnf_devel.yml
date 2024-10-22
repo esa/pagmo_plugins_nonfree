@@ -6,8 +6,8 @@ dependencies:
   - cxx-compiler
   - ninja
   - cmake >=3.18
-  - boost-cpp >=1.86
   - pagmo-devel
+  - libboost-devel>=1.86
   - pybind11
   - pybind11-abi
   - pygmo
