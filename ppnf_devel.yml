@@ -9,5 +9,6 @@ dependencies:
   - boost-cpp >=1.48
   - pagmo-devel
   - pybind11
+  - pybind11-abi
   - python
   - pygmo
