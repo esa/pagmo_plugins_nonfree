@@ -72,7 +72,7 @@ endif()
 # Setting the boost libraries needed for PPNF
 # NOTE: need 1.48 as pagmo.
 set(_PPNF_MIN_BOOST_VERSION "1.48")
-find_package(Boost ${_PPNF_MIN_BOOST_VERSION} REQUIRED COMPONENTS system filesystem unit_test_framework)
+find_package(Boost ${_PPNF_MIN_BOOST_VERSION} REQUIRED COMPONENTS system filesystem unit_test_framework serialization)
 MESSAGE(STATUS "Detected Boost version: ${Boost_VERSION}")
 # Include system Boost headers.
 MESSAGE(STATUS "Boost include dirs: ${Boost_INCLUDE_DIRS}")
