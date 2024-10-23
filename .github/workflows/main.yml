@@ -28,7 +28,7 @@ jobs:
         TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
      steps:
-       - uses: actions/checkout@v2
+       - uses: actions/checkout@v4
        - name: Build
          run: bash tools/gha_manylinux.sh
   amd64-manylinux228-py310:
@@ -40,12 +40,24 @@ jobs:
         TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
         TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
      steps:
-       - uses: actions/checkout@v2
+       - uses: actions/checkout@v4
        - name: Build
          run: bash tools/gha_manylinux.sh
-  linux_release:
+  linux_release_py311:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Build
-        run: bash tools/gha_pygmo_plugins_nonfree_linux.sh
+        run: bash tools/gha_pygmo_plugins_nonfree_linux_py311.sh
+  linux_release_py312:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: bash tools/gha_pygmo_plugins_nonfree_linux_py312.sh
+  linux_release_py313:
+          runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        run: bash tools/gha_pygmo_plugins_nonfree_linux_py313.sh
