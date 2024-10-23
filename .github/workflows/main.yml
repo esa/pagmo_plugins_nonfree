@@ -19,18 +19,6 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  amd64-manylinux228-py312:
-     runs-on: ubuntu-latest
-     container:
-      image: pagmo2/manylinux228_x86_64_with_deps:latest
-      env: 
-        PPNF_BUILD_TYPE: "Python312"
-        TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-     steps:
-       - uses: actions/checkout@v2
-       - name: Build
-         run: bash tools/gha_manylinux.sh
   amd64-manylinux228-py311:
      runs-on: ubuntu-latest
      container:
