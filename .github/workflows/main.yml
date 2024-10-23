@@ -56,7 +56,7 @@ jobs:
       - name: Build
         run: bash tools/gha_pygmo_plugins_nonfree_linux_py312.sh
   linux_release_py313:
-          runs-on: ubuntu-latest
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - name: Build
