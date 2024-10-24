@@ -69,11 +69,16 @@ if(MINGW)
 	list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE "-Wa,-mbig-obj")
 endif()
 
-# Setting the boost libraries needed for PPNF
-# NOTE: need 1.48 as pagmo.
-set(_PPNF_MIN_BOOST_VERSION "1.48")
-find_package(Boost ${_PPNF_MIN_BOOST_VERSION} REQUIRED COMPONENTS system filesystem unit_test_framework serialization)
-MESSAGE(STATUS "Detected Boost version: ${Boost_VERSION}")
+# Boost (min rquirement from heyoka 2024)
+find_package(Boost 1.69 QUIET COMPONENTS system filesystem unit_test_framework serialization CONFIG)
+if(NOT ${Boost_FOUND})
+    message(STATUS "Boost not found in CONFIG mode, retrying in MODULE mode.")
+    find_package(Boost 1.69 QUIET MODULE COMPONENTS serialization)
+endif()
+if(NOT ${Boost_FOUND})
+    message(FATAL_ERROR "Could not locate Boost in either CONFIG or MODULE mode.")
+endif()
+message(STATUS "Found Boost version ${Boost_VERSION}.")
 # Include system Boost headers.
 MESSAGE(STATUS "Boost include dirs: ${Boost_INCLUDE_DIRS}")
 MESSAGE(STATUS "Boost libraries: ${Boost_LIBRARIES}")
