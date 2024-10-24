@@ -78,9 +78,9 @@ jobs:
       - name: Build
         shell: pwsh
         run: |
-          mkdir build
+          mkdir build          
           cd build
-          cmake ../ -G "Visual Studio 17 2022" -A x64 -DCMAKE_CXX_FLAGS=-I\ C:/Miniconda/envs/ppnf_devel/Library/include -DCMAKE_INSTALL_PREFIX=C:\Miniconda\envs\ppnf_devel\Library -DPPNF_BUILD_CPP=yes -DPPNF_BUILD_TESTS=yes
+          cmake ../ -G "Visual Studio 17 2022" -A x64 -DCMAKE_PREFIX_PATH=C:\Miniconda\envs\ppnf_devel -DCMAKE_INSTALL_PREFIX=C:\Miniconda\envs\ppnf_devel -DPPNF_BUILD_CPP=yes -DPPNF_BUILD_TESTS=yes
           cmake --build . -j4 --config Release --target install
           cd tests/Release
           ctest -j4 -V -C Release --output-on-failure
@@ -89,6 +89,7 @@ jobs:
           cd build_py
           cmake ../ -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX=C:\Miniconda\envs\ppnf_devel\Library -DPPNF_BUILD_PYTHON=yes -DPPNF_BUILD_CPP=no
           cmake --build . -j4 --config Release --target install
+          cd c:\
           python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()"
 
           
