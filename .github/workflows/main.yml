@@ -93,3 +93,4 @@ jobs:
           python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()"
 
           
+          
