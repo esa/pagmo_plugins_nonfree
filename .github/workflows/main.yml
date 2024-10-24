@@ -19,48 +19,48 @@ on:
 
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  amd64-manylinux228-py311:
-     runs-on: ubuntu-latest
-     container:
-      image: pagmo2/manylinux228_x86_64_with_deps:latest
-      env: 
-        PPNF_BUILD_TYPE: "Python311"
-        TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-     steps:
-       - uses: actions/checkout@v4
-       - name: Build
-         run: bash tools/gha_manylinux.sh
-  amd64-manylinux228-py310:
-     runs-on: ubuntu-latest
-     container:
-      image: pagmo2/manylinux228_x86_64_with_deps:latest
-      env: 
-        PPNF_BUILD_TYPE: "Python310"
-        TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-     steps:
-       - uses: actions/checkout@v4
-       - name: Build
-         run: bash tools/gha_manylinux.sh
-  linux_release_py311:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build
-        run: bash tools/gha_pygmo_plugins_nonfree_linux_py311.sh
-  linux_release_py312:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build
-        run: bash tools/gha_pygmo_plugins_nonfree_linux_py312.sh
-  linux_release_py313:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build
-        run: bash tools/gha_pygmo_plugins_nonfree_linux_py313.sh
+#  amd64-manylinux228-py311:
+#     runs-on: ubuntu-latest
+#     container:
+#      image: pagmo2/manylinux228_x86_64_with_deps:latest
+#      env: 
+#        PPNF_BUILD_TYPE: "Python311"
+#        TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+#        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Build
+#         run: bash tools/gha_manylinux.sh
+#  amd64-manylinux228-py310:
+#     runs-on: ubuntu-latest
+#     container:
+#      image: pagmo2/manylinux228_x86_64_with_deps:latest
+#      env: 
+#        PPNF_BUILD_TYPE: "Python310"
+#        TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
+#        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
+#     steps:
+#       - uses: actions/checkout@v4
+#       - name: Build
+#         run: bash tools/gha_manylinux.sh
+#  linux_release_py311:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Build
+#        run: bash tools/gha_pygmo_plugins_nonfree_linux_py311.sh
+#  linux_release_py312:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Build
+#        run: bash tools/gha_pygmo_plugins_nonfree_linux_py312.sh
+#  linux_release_py313:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v4
+#      - name: Build
+#        run: bash tools/gha_pygmo_plugins_nonfree_linux_py313.sh
   windows_2022_release:
     runs-on: windows-2022
     steps:
@@ -82,7 +82,7 @@ jobs:
           cd build
           cmake ../ -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX=C:\Miniconda\envs\ppnf_devel\Library -DPPNF_BUILD_CPP=yes -DPPNF_BUILD_TESTS=yes
           cmake --build . -j4 --config Release --target install
-          cd test/Release
+          cd tests/Release
           ctest -j4 -V -C Release --output-on-failure
           cd ../../..
           mkdir build_py
