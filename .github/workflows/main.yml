@@ -61,3 +61,33 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build
         run: bash tools/gha_pygmo_plugins_nonfree_linux_py313.sh
+  windows_2022_release:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v1.1
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: ppnf_devel
+          environment-file: ppnf_devel.yml
+          auto-update-conda: true
+          channels: conda-forge
+          channel-priority: strict
+          auto-activate-base: false
+      - name: Build
+        shell: pwsh
+        run: |
+          mkdir build
+          cd build
+          cmake ../ -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX=C:\Miniconda\envs\ppnf_devel\Library -DPPNF_BUILD_CPP=yes -DPPNF_BUILD_TESTS=yes -DBoost_NO_BOOST_CMAKE=ON
+          cmake --build . -j4 --config Release --target install
+          ctest -j4 -V -C Release --output-on-failure
+          cd ..
+          mkdir build_py
+          cd build_py
+          cmake ../ -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX=C:\Miniconda\envs\ppnf_devel\Library -DPPNF_PYTHON_CPP=yes -DPPNF_BUILD_CPP=no -DPPNF_BUILD_TESTS=no -DBoost_NO_BOOST_CMAKE=ON
+          cmake --build . -j4 --config Release --target install
+          python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()"
+
+          
