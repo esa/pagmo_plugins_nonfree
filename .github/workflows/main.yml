@@ -86,7 +86,7 @@ jobs:
           cd ..
           mkdir build_py
           cd build_py
-          cmake ../ -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX=C:\Miniconda\envs\ppnf_devel\Library -DPPNF_PYTHON_CPP=yes -DPPNF_BUILD_CPP=no -DPPNF_BUILD_TESTS=no -DBoost_NO_BOOST_CMAKE=ON
+          cmake ../ -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX=C:\Miniconda\envs\ppnf_devel\Library -DPPNF_BUILD_PYTHON=yes -DPPNF_BUILD_CPP=no -DPPNF_BUILD_TESTS=no -DBoost_NO_BOOST_CMAKE=ON
           cmake --build . -j4 --config Release --target install
           python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()"
 
