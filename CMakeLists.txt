@@ -229,6 +229,9 @@ if(PPNF_BUILD_CPP)
 endif()
 
 if(PPNF_BUILD_PYTHON)
+    # Find pagmo_plugins_nonfree
+    find_package(pagmo_plugins_nonfree)
+
     # Find python
     find_package(Python3 REQUIRED COMPONENTS Interpreter Development.Module)
     message(STATUS "Python3 interpreter: ${Python3_EXECUTABLE}")
