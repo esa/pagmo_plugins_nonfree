@@ -26,7 +26,7 @@ if((NOT PPNF_BUILD_CPP) AND (NOT PPNF_BUILD_PYTHON))
 endif()
 
 # Main ppnf project version.
-set(pagmo_plugins_nonfree_VERSION 0.26)
+set(pagmo_plugins_nonfree_VERSION 0.27)
 
 if(PPNF_BUILD_CPP)
     # Initial setup of a pagmo_plugins_nonfree build.
@@ -54,21 +54,105 @@ if(APPLE AND YACMA_COMPILER_IS_CLANGXX)
   list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG "-stdlib=libc++")
   list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE "-stdlib=libc++")
 endif()
+
 if(YACMA_COMPILER_IS_MSVC)
-  # Disable the idiotic minmax macros on MSVC, some annoying warnings,
-  # and enable the bigobj option.
-  list(APPEND PAGMO_PLUGINS_NONFREECXX_FLAGS_DEBUG "-DNOMINMAX" "/wd4459" "/wd4127" "/wd4702" "/wd4251" "/bigobj")
-  list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE "-DNOMINMAX" "/wd4459" "/wd4127" "/wd4702" "/wd4251" "/bigobj")
-  # On Windows systems and pybind11 this may be needed to avoid this issue (https://github.com/boostorg/system/issues/32)
-  add_definitions(-DHAVE_SNPRINTF)
+    include(CheckCXXCompilerFlag)
+    # Disable the idiotic minmax macros on MSVC (both cl and clang-cl).
+    # Also, enable the bigobj flag and the WIN32_LEAN_AND_MEAN definitions:
+    # https://stackoverflow.com/questions/11040133/what-does-defining-win32-lean-and-mean-exclude-exactly
+    list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG "-DNOMINMAX" "/bigobj" "-DWIN32_LEAN_AND_MEAN")
+    list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE "-DNOMINMAX" "/bigobj" "-DWIN32_LEAN_AND_MEAN")
+    # Enable strict conformance mode, if supported.
+    set(CMAKE_REQUIRED_QUIET TRUE)
+    check_cxx_compiler_flag("/permissive-" _PAGMO_PLUGINS_NONFREE_MSVC_SUPPORTS_STRICT_CONFORMANCE)
+    unset(CMAKE_REQUIRED_QUIET)
+    if(_PAGMO_PLUGINS_NONFREE_MSVC_SUPPORTS_STRICT_CONFORMANCE)
+        message(STATUS "The '/permissive-' flag is supported, enabling it.")
+        list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG "/permissive-")
+        list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE "/permissive-")
+    endif()
+    unset(_PAGMO_PLUGINS_NONFREE_MSVC_SUPPORTS_STRICT_CONFORMANCE)
+    if(YACMA_COMPILER_IS_CLANGXX)
+        # clang-cl emits various warnings from third party deps, let's just silence them.
+        # NOTE: at one point in the recent past, MSVC added an options similar to GCC's isystem:
+        # https://blogs.msdn.microsoft.com/vcblog/2017/12/13/broken-warnings-theory/
+        # We probably just need to wait for this to be picked up by CMake/clang-cl. Let's
+        # revisit the issue in the future.
+        list(APPEND _PAGMO_PLUGINS_NONFREE_CLANG_CL_DISABLED_WARNINGS
+            "-Wno-unused-variable"
+            "-Wno-inconsistent-dllimport"
+            "-Wno-unknown-pragmas"
+            "-Wno-unused-parameter"
+            "-Wno-sign-compare"
+            "-Wno-deprecated-declarations"
+            "-Wno-deprecated-dynamic-exception-spec"
+            "-Wno-old-style-cast"
+            "-Wno-sign-conversion"
+            "-Wno-non-virtual-dtor"
+            "-Wno-deprecated"
+            "-Wno-shadow"
+            "-Wno-shorten-64-to-32"
+            "-Wno-reserved-id-macro"
+            "-Wno-undef"
+            "-Wno-c++98-compat-pedantic"
+            "-Wno-documentation-unknown-command"
+            "-Wno-zero-as-null-pointer-constant"
+            "-Wno-language-extension-token"
+            "-Wno-gnu-anonymous-struct"
+            "-Wno-nested-anon-types"
+            "-Wno-documentation"
+            "-Wno-comma"
+            "-Wno-nonportable-system-include-path"
+            "-Wno-global-constructors"
+            "-Wno-redundant-parens"
+            "-Wno-exit-time-destructors"
+            "-Wno-missing-noreturn"
+            "-Wno-switch-enum"
+            "-Wno-covered-switch-default"
+            "-Wno-float-equal"
+            "-Wno-double-promotion"
+            "-Wno-microsoft-enum-value"
+            "-Wno-missing-prototypes"
+            "-Wno-implicit-fallthrough"
+            "-Wno-format-nonliteral"
+            "-Wno-cast-qual"
+            "-Wno-disabled-macro-expansion"
+            "-Wno-unused-private-field"
+            "-Wno-unused-template"
+            "-Wno-unused-macros"
+            "-Wno-extra-semi-stmt"
+            "-Wno-c++98-compat")
+        list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG ${_PAGMO_PLUGINS_NONFREE_CLANG_CL_DISABLED_WARNINGS})
+        list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE ${_PAGMO_PLUGINS_NONFREE_CLANG_CL_DISABLED_WARNINGS})
+        unset(_PAGMO_PLUGINS_NONFREE_CLANG_CL_DISABLED_WARNINGS)
+    else()
+        # Problematic MSVC cl warnings.
+        list(APPEND PAGMO_PLUGINS_NONFREE_PLUGINS_NONFREE_CXX_FLAGS_DEBUG "/wd4459" "/wd4251")
+        list(APPEND PAGMO_PLUGINS_NONFREE_PLUGINS_NONFREE_CXX_FLAGS_RELEASE "/wd4459" "/wd4251")
+    endif()
 endif()
 if(MINGW)
-	# Flag needed to deal with big binaries in MinGW.
-	message(STATUS "Enabling the '-Wa,-mbig-obj' flag in MinGW builds.")
-	list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG "-Wa,-mbig-obj")
-	list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE "-Wa,-mbig-obj")
+    # In MinGW some tests generate big object files.
+    message(STATUS "Enabling the '-Wa,-mbig-obj' flag for MinGW.")
+    list(APPEND PAGMO_PLUGINS_NONFREE_PLUGINS_NONFREE_CXX_FLAGS_DEBUG "-Wa,-mbig-obj")
+    list(APPEND PAGMO_PLUGINS_NONFREE_PLUGINS_NONFREE_CXX_FLAGS_RELEASE "-Wa,-mbig-obj")
+endif()
+# NOTE: at least up to version 7, GCC is needlessly chatty
+# about the 'override' attribute. Thus, we manually disable
+# the -Wsuggest-override debug flag.
+if(YACMA_COMPILER_IS_GNUCXX AND CMAKE_CXX_COMPILER_VERSION VERSION_LESS "8")
+    include(CheckCXXCompilerFlag)
+    set(CMAKE_REQUIRED_QUIET TRUE)
+    check_cxx_compiler_flag("-Wno-suggest-override" _PAGMO_PLUGINS_NONFREE_GCC_SUPPORTS_NO_OVERRIDE)
+    unset(CMAKE_REQUIRED_QUIET)
+    if(_PAGMO_PLUGINS_NONFREE_GCC_SUPPORTS_NO_OVERRIDE)
+        message(STATUS "Enabling the '-Wno-suggest-override' flag for GCC<8.")
+        list(APPEND PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG "-Wno-suggest-override")
+    endif()
+    unset(_PAGMO_PLUGINS_NONFREE_GCC_SUPPORTS_NO_OVERRIDE)
 endif()
 
+# Find the dependencies.
 # Boost (min rquirement from heyoka 2024)
 find_package(Boost 1.69 QUIET COMPONENTS system filesystem unit_test_framework serialization CONFIG)
 if(NOT ${Boost_FOUND})
@@ -83,8 +167,14 @@ message(STATUS "Found Boost version ${Boost_VERSION}.")
 MESSAGE(STATUS "Boost include dirs: ${Boost_INCLUDE_DIRS}")
 MESSAGE(STATUS "Boost libraries: ${Boost_LIBRARIES}")
 
-# Pagmo setup (common to pagmo/pygmo . pluginsnonfree).
-find_package(Pagmo REQUIRED)
+# pagmo.
+# NOTE: put the minimum version in a variable
+# so that we can re-use it below.
+set (_PPFN_MIN_PAGMO_VERSION 2.19.0)
+find_package(pagmo REQUIRED)
+if(${pagmo_VERSION} VERSION_LESS ${_PPFN_MIN_PAGMO_VERSION})
+    message(FATAL_ERROR "The minimum pagmo version required by pygmo is ${_PPFN_MIN_PAGMO_VERSION}, but version ${pagmo_VERSION} was found instead.")
+endif()
 
 if(PPNF_BUILD_CPP)
     # List of source files.
