@@ -83,6 +83,9 @@ jobs:
           cmake ../ -G "Visual Studio 17 2022" -A x64 -DCMAKE_PREFIX_PATH=C:\Miniconda\envs\ppnf_devel -DCMAKE_INSTALL_PREFIX=C:\Miniconda\envs\ppnf_devel -DPPNF_BUILD_CPP=yes -DPPNF_BUILD_TESTS=yes
           cmake --build . -j4 --config Release --target install
           pwd
+          ls
+          mv tests/Release/worhp_c.* ./
+          ls
           ctest -j4 -V -C Release --output-on-failure
           cd ..
           mkdir build_py
