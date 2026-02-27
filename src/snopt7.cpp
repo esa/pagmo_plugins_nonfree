@@ -123,28 +123,28 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
     auto &p = info.m_prob;
     auto &dv = info.m_dv;
     // We copy the decision vector into the vector_double
-    std::copy(x, x + p.get_nx(), dv.begin());
+    std::copy(x, x + p->get_nx(), dv.begin());
     // We try to call the UDP fitness and gradient
     try {
         if (*needF > 0) {
-            auto fit = p.fitness(dv);
+            auto fit = p->fitness(dv);
             for (size_t i = 0u; i < static_cast<size_t>(*nF); ++i) {
                 F[i] = fit[i];
             }
 
             if (verb && !(f_count % verb)) {
                 // Constraints bits.
-                const auto ctol = p.get_c_tol();
+                const auto ctol = p->get_c_tol();
                 const auto c1eq
-                    = pagmo::detail::test_eq_constraints(fit.data() + 1, fit.data() + 1 + p.get_nec(), ctol.data());
+                    = pagmo::detail::test_eq_constraints(fit.data() + 1, fit.data() + 1 + p->get_nec(), ctol.data());
                 const auto c1ineq = pagmo::detail::test_ineq_constraints(
-                    fit.data() + 1 + p.get_nec(), fit.data() + fit.size(), ctol.data() + p.get_nec());
+                    fit.data() + 1 + p->get_nec(), fit.data() + fit.size(), ctol.data() + p->get_nec());
                 // This will be the total number of violated constraints.
-                const auto nv = p.get_nc() - c1eq.first - c1ineq.first;
+                const auto nv = p->get_nc() - c1eq.first - c1ineq.first;
                 // This will be the norm of the violation.
                 const auto l = c1eq.second + c1ineq.second;
                 // Test feasibility.
-                const auto feas = p.feasibility_f(fit);
+                const auto feas = p->feasibility_f(fit);
 
                 if (!(f_count / verb % 50u)) {
                     // Every 50 lines print the column names.
@@ -162,8 +162,8 @@ inline void snopt_fitness_wrapper(int *Status, int *n, double x[], int *needF, i
             ++f_count;
         }
 
-        if (*needG > 0 && p.has_gradient()) {
-            auto grad = p.gradient(dv);
+        if (*needG > 0 && p->has_gradient()) {
+            auto grad = p->gradient(dv);
             for (size_t i = 0u; i < static_cast<size_t>(*neG); ++i) {
                 G[i] = grad[i];
             }
@@ -713,7 +713,7 @@ We report the exact text of the original exception thrown:
     // We use the user workspace (iu variable) to hide a pointer to user_data,
     // so that it may be accessed in the user-defined function.
     detail::user_data info;
-    info.m_prob = prob;
+    info.m_prob = &prob;
     info.m_verbosity = m_verbosity;
     info.m_dv = pagmo::vector_double(dim);
     snopt7_problem.iu = reinterpret_cast<int *>(&info);
