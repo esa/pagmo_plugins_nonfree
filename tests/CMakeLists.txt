@@ -15,11 +15,13 @@ function(ADD_PAGMO_PLUGINS_TESTCASE arg1)
     set_property(TARGET ${arg1} PROPERTY CXX_STANDARD 17)
     set_property(TARGET ${arg1} PROPERTY CXX_STANDARD_REQUIRED YES)
     set_property(TARGET ${arg1} PROPERTY CXX_EXTENSIONS NO)
-    # On macOS, use flat_namespace so weak Boost::serialization singleton<T>
-    # template instances are coalesced across the executable and loaded dylibs,
-    # giving all code one shared Boost.Serialization registry.
+    # On macOS, use -force_flat_namespace so that ALL loaded dylibs (including
+    # libboost_serialization and libpagmo) in the test process resolve symbols
+    # via the global flat namespace. This coalesces all copies of
+    # boost::serialization::singleton<T> so void_cast registrations performed by
+    # any DSO are visible to void_cast_find in libboost_serialization.
     if(APPLE)
-        target_link_options(${arg1} PRIVATE "-Wl,-flat_namespace")
+        target_link_options(${arg1} PRIVATE "-Wl,-force_flat_namespace")
     endif()
     add_test(${arg1} ${arg1})
 endfunction()

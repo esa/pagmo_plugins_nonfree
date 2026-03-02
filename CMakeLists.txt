@@ -196,12 +196,6 @@ if(PPNF_BUILD_CPP)
     if(NOT APPLE)
         set_target_properties(pagmo_plugins_nonfree PROPERTIES CXX_VISIBILITY_PRESET hidden)
         set_target_properties(pagmo_plugins_nonfree PROPERTIES VISIBILITY_INLINES_HIDDEN TRUE)
-    else()
-        # On macOS, use flat_namespace so the dylib's internal Boost singleton<T>
-        # calls are resolved via the global flat namespace (finding the test
-        # executable's instance first), enabling one shared Boost.Serialization
-        # registry across all loaded images.
-        target_link_options(pagmo_plugins_nonfree PRIVATE "-Wl,-flat_namespace")
     endif()
     # Let's setup the target C++ standard, but only if the user did not provide it manually.
     if(NOT CMAKE_CXX_STANDARD)
