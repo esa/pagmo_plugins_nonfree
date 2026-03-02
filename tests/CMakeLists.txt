@@ -15,6 +15,12 @@ function(ADD_PAGMO_PLUGINS_TESTCASE arg1)
     set_property(TARGET ${arg1} PROPERTY CXX_STANDARD 17)
     set_property(TARGET ${arg1} PROPERTY CXX_STANDARD_REQUIRED YES)
     set_property(TARGET ${arg1} PROPERTY CXX_EXTENSIONS NO)
+    # On macOS, use flat_namespace so weak Boost::serialization singleton<T>
+    # template instances are coalesced across the executable and loaded dylibs,
+    # giving all code one shared Boost.Serialization registry.
+    if(APPLE)
+        target_link_options(${arg1} PRIVATE "-Wl,-flat_namespace")
+    endif()
     add_test(${arg1} ${arg1})
 endfunction()
 
