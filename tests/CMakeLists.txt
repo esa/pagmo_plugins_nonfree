@@ -10,23 +10,22 @@ add_library(worhp_c SHARED ../include/pagmo_plugins_nonfree/bogus_libs/worhp_lib
 
 function(ADD_PAGMO_PLUGINS_TESTCASE arg1)
     add_executable(${arg1} ${arg1}.cpp)
-    target_link_libraries(${arg1} pagmo_plugins_nonfree Boost::unit_test_framework)
+    # On macOS, link against the static library to avoid Boost.Serialization
+    # void_cast lookup failures caused by macOS two-level namespace: type_info::before()
+    # uses pointer identity, so identical template type_info objects in different DSOs
+    # (shared lib vs. test binary) have different addresses and are treated as separate
+    # types by void_cast_registry. Static linking puts all code in one binary with a
+    # single consistent set of type_info objects.
+    if(APPLE)
+        target_link_libraries(${arg1} pagmo_plugins_nonfree_static Boost::unit_test_framework)
+    else()
+        target_link_libraries(${arg1} pagmo_plugins_nonfree Boost::unit_test_framework)
+    endif()
     target_compile_options(${arg1} PRIVATE "$<$<CONFIG:DEBUG>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG}>" "$<$<CONFIG:RELEASE>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE}>")
     set_property(TARGET ${arg1} PROPERTY CXX_STANDARD 17)
     set_property(TARGET ${arg1} PROPERTY CXX_STANDARD_REQUIRED YES)
     set_property(TARGET ${arg1} PROPERTY CXX_EXTENSIONS NO)
     add_test(${arg1} ${arg1})
-    # On macOS, std::type_info::before() uses pointer identity for ordering.
-    # With two-level namespace, different DSOs have different std::type_info
-    # pointer values for the same type, causing Boost.Serialization's
-    # void_cast_registry (an ordered set keyed by type_info::before) to fail
-    # to find void_casts that were registered from a different DSO.
-    # DYLD_FORCE_FLAT_NAMESPACE=1 coalesces all symbol copies across DSOs so
-    # every image uses the same type_info objects and the same singletons.
-    if(APPLE)
-        set_tests_properties(${arg1} PROPERTIES
-            ENVIRONMENT "DYLD_FORCE_FLAT_NAMESPACE=1")
-    endif()
 endfunction()
 
 # Tests
