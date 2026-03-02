@@ -1,9 +1,5 @@
-
-# This is a basic workflow to help you get started with Actions
-
 name: CI
 
-# Controls when the workflow will run
 on:
   push:
     branches:
@@ -13,60 +9,16 @@ on:
   pull_request:
     branches:
       - master
-
-  # Allows you to run this workflow manually from the Actions tab
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+permissions:
+  contents: read
+
 jobs:
-#  amd64-manylinux228-py311:
-#     runs-on: ubuntu-latest
-#     container:
-#      image: pagmo2/manylinux228_x86_64_with_deps:latest
-#      env: 
-#        PPNF_BUILD_TYPE: "Python311"
-#        TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-#        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-#     steps:
-#       - uses: actions/checkout@v4
-#       - name: Build
-#         run: bash tools/gha_manylinux.sh
-#  amd64-manylinux228-py310:
-#     runs-on: ubuntu-latest
-#     container:
-#      image: pagmo2/manylinux228_x86_64_with_deps:latest
-#      env: 
-#        PPNF_BUILD_TYPE: "Python310"
-#        TWINE_USERNAME: ${{ secrets.TWINE_USERNAME }}
-#        TWINE_PASSWORD: ${{ secrets.TWINE_PASSWORD }}
-#     steps:
-#       - uses: actions/checkout@v4
-#       - name: Build
-#         run: bash tools/gha_manylinux.sh
-#  linux_release_py311:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#      - name: Build
-#        run: bash tools/gha_pygmo_plugins_nonfree_linux_py311.sh
-#  linux_release_py312:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#      - name: Build
-#        run: bash tools/gha_pygmo_plugins_nonfree_linux_py312.sh
-#  linux_release_py313:
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v4
-#      - name: Build
-#        run: bash tools/gha_pygmo_plugins_nonfree_linux_py313.sh
-  windows_2022_release:
-    runs-on: windows-2022
+  linux:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Add msbuild to PATH
-        uses: microsoft/setup-msbuild@v1.1
       - uses: conda-incubator/setup-miniconda@v3
         with:
           activate-environment: ppnf_devel
@@ -75,25 +27,110 @@ jobs:
           channels: conda-forge
           channel-priority: strict
           auto-activate-base: false
-      - name: Build
-        shell: pwsh
+      - name: Build and test C++ code
+        shell: bash -el {0}
         run: |
-          mkdir build          
-          cd build
-          cmake ../ -G "Visual Studio 17 2022" -A x64 -DCMAKE_PREFIX_PATH=C:\Miniconda\envs\ppnf_devel -DCMAKE_INSTALL_PREFIX=C:\Miniconda\envs\ppnf_devel -DPPNF_BUILD_CPP=yes -DPPNF_BUILD_TESTS=yes
-          cmake --build . -j4 --config Release --target install
-          pwd
-          ls
-          mv tests/Release/worhp_c.* ./
-          ls
-          ctest -j4 -V -C Release --output-on-failure
-          cd ..
-          mkdir build_py
-          cd build_py
-          cmake ../ -G "Visual Studio 17 2022" -A x64 -DCMAKE_INSTALL_PREFIX=C:\Miniconda\envs\ppnf_devel\Library -DPPNF_BUILD_PYTHON=yes -DPPNF_BUILD_CPP=no
-          cmake --build . -j4 --config Release --target install
-          cd c:\
+          mkdir build_cpp && cd build_cpp
+          cmake ../ -G "Ninja" \
+            -DCMAKE_PREFIX_PATH=$CONDA_PREFIX \
+            -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DPPNF_BUILD_CPP=yes \
+            -DPPNF_BUILD_TESTS=yes \
+            -DPPNF_BUILD_PYTHON=no
+          cmake --build . --target install -j4
+          ctest -j4 -V --output-on-failure
+      - name: Build and test Python bindings
+        shell: bash -el {0}
+        run: |
+          mkdir build_py && cd build_py
+          cmake ../ -G "Ninja" \
+            -DCMAKE_PREFIX_PATH=$CONDA_PREFIX \
+            -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DPPNF_BUILD_CPP=no \
+            -DPPNF_BUILD_PYTHON=yes
+          cmake --build . --target install -j4
+          cd ~
           python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()"
 
-          
-          
+  macos:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: ppnf_devel
+          environment-file: ppnf_devel.yml
+          auto-update-conda: true
+          channels: conda-forge
+          channel-priority: strict
+          auto-activate-base: false
+      - name: Build and test C++ code
+        shell: bash -el {0}
+        run: |
+          mkdir build_cpp && cd build_cpp
+          cmake ../ -G "Ninja" \
+            -DCMAKE_PREFIX_PATH=$CONDA_PREFIX \
+            -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DPPNF_BUILD_CPP=yes \
+            -DPPNF_BUILD_TESTS=yes \
+            -DPPNF_BUILD_PYTHON=no
+          cmake --build . --target install -j4
+          ctest -j4 -V --output-on-failure
+      - name: Build and test Python bindings
+        shell: bash -el {0}
+        run: |
+          mkdir build_py && cd build_py
+          cmake ../ -G "Ninja" \
+            -DCMAKE_PREFIX_PATH=$CONDA_PREFIX \
+            -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DPPNF_BUILD_CPP=no \
+            -DPPNF_BUILD_PYTHON=yes
+          cmake --build . --target install -j4
+          cd ~
+          python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()"
+
+  windows:
+    runs-on: windows-2022
+    steps:
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          activate-environment: ppnf_devel
+          environment-file: ppnf_devel.yml
+          auto-update-conda: true
+          channels: conda-forge
+          channel-priority: strict
+          auto-activate-base: false
+      - name: Build and test C++ code
+        shell: pwsh
+        run: |
+          mkdir build_cpp
+          cd build_cpp
+          cmake ../ -G "Visual Studio 17 2022" -A x64 `
+            -DCMAKE_PREFIX_PATH="$env:CONDA_PREFIX\Library" `
+            -DCMAKE_INSTALL_PREFIX="$env:CONDA_PREFIX\Library" `
+            -DPPNF_BUILD_CPP=yes `
+            -DPPNF_BUILD_TESTS=yes `
+            -DPPNF_BUILD_PYTHON=no
+          cmake --build . -j4 --config Release --target install
+          cp tests\Release\snopt7_c.dll tests\
+          cp tests\Release\worhp_c.dll tests\
+          ctest -j4 -V -C Release --output-on-failure
+      - name: Build and test Python bindings
+        shell: pwsh
+        run: |
+          mkdir build_py
+          cd build_py
+          cmake ../ -G "Visual Studio 17 2022" -A x64 `
+            -DCMAKE_PREFIX_PATH="$env:CONDA_PREFIX\Library" `
+            -DCMAKE_INSTALL_PREFIX="$env:CONDA_PREFIX\Library" `
+            -DPPNF_BUILD_PYTHON=yes `
+            -DPPNF_BUILD_CPP=no
+          cmake --build . -j4 --config Release --target install
+          cd $env:TEMP
+          python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()"
+
