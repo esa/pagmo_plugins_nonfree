@@ -47,6 +47,7 @@ see https://www.gnu.org/licenses/. */
 #ifndef PAGMO_SNOPT7_HPP
 #define PAGMO_SNOPT7_HPP
 
+#include <boost/serialization/map.hpp>
 #include <boost/type_traits/is_object.hpp>
 #include <limits> // std::numeric_limits
 #include <map>
