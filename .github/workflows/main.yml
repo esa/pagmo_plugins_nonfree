@@ -48,7 +48,7 @@ jobs:
             -DPPNF_BUILD_CPP=no \
             -DPPNF_BUILD_PYTHON=yes
           cmake --build . --target install -j4
-          cd /
+          cd ~
           python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()"
 
   macos:
@@ -87,7 +87,7 @@ jobs:
             -DPPNF_BUILD_CPP=no \
             -DPPNF_BUILD_PYTHON=yes
           cmake --build . --target install -j4
-          cd /
+          cd ~
           python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()"
 
   windows:
@@ -128,5 +128,5 @@ jobs:
             -DPPNF_BUILD_PYTHON=yes `
             -DPPNF_BUILD_CPP=no
           cmake --build . -j4 --config Release --target install
-          cd C:\
+          cd $env:TEMP
           python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()"
