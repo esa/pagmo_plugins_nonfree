@@ -15,15 +15,18 @@ function(ADD_PAGMO_PLUGINS_TESTCASE arg1)
     set_property(TARGET ${arg1} PROPERTY CXX_STANDARD 17)
     set_property(TARGET ${arg1} PROPERTY CXX_STANDARD_REQUIRED YES)
     set_property(TARGET ${arg1} PROPERTY CXX_EXTENSIONS NO)
-    # On macOS, use -force_flat_namespace so that ALL loaded dylibs (including
-    # libboost_serialization and libpagmo) in the test process resolve symbols
-    # via the global flat namespace. This coalesces all copies of
-    # boost::serialization::singleton<T> so void_cast registrations performed by
-    # any DSO are visible to void_cast_find in libboost_serialization.
-    if(APPLE)
-        target_link_options(${arg1} PRIVATE "-Wl,-force_flat_namespace")
-    endif()
     add_test(${arg1} ${arg1})
+    # On macOS, std::type_info::before() uses pointer identity for ordering.
+    # With two-level namespace, different DSOs have different std::type_info
+    # pointer values for the same type, causing Boost.Serialization's
+    # void_cast_registry (an ordered set keyed by type_info::before) to fail
+    # to find void_casts that were registered from a different DSO.
+    # DYLD_FORCE_FLAT_NAMESPACE=1 coalesces all symbol copies across DSOs so
+    # every image uses the same type_info objects and the same singletons.
+    if(APPLE)
+        set_tests_properties(${arg1} PROPERTIES
+            ENVIRONMENT "DYLD_FORCE_FLAT_NAMESPACE=1")
+    endif()
 endfunction()
 
 # Tests
