@@ -189,8 +189,14 @@ if(PPNF_BUILD_CPP)
     set_property(TARGET pagmo_plugins_nonfree PROPERTY VERSION "1.0")
     set_property(TARGET pagmo_plugins_nonfree PROPERTY SOVERSION 1)
     target_compile_options(pagmo_plugins_nonfree PRIVATE "$<$<CONFIG:DEBUG>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG}>" "$<$<CONFIG:RELEASE>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE}>")
-    set_target_properties(pagmo_plugins_nonfree PROPERTIES CXX_VISIBILITY_PRESET hidden)
-    set_target_properties(pagmo_plugins_nonfree PROPERTIES VISIBILITY_INLINES_HIDDEN TRUE)
+    # On macOS, hidden visibility prevents Boost.Serialization's singleton<T>
+    # template instances from participating in weak-symbol coalescing across
+    # dylib boundaries, breaking polymorphic serialization for plugins.
+    # Keep hidden visibility only on non-Apple platforms.
+    if(NOT APPLE)
+        set_target_properties(pagmo_plugins_nonfree PROPERTIES CXX_VISIBILITY_PRESET hidden)
+        set_target_properties(pagmo_plugins_nonfree PROPERTIES VISIBILITY_INLINES_HIDDEN TRUE)
+    endif()
     # Let's setup the target C++ standard, but only if the user did not provide it manually.
     if(NOT CMAKE_CXX_STANDARD)
         set_property(TARGET pagmo_plugins_nonfree PROPERTY CXX_STANDARD 17)
@@ -224,6 +230,28 @@ if(PPNF_BUILD_CPP)
 
     # Build the tests
     if(PPNF_BUILD_TESTS)
+        # On macOS, Boost.Serialization's void_cast_registry uses type_info::before()
+        # which compares pointer identity, not names. With Mach-O two-level namespace,
+        # identical template instantiations (e.g. algo_inner<worhp>) in different DSOs
+        # have different type_info* values, so registry lookups fail across DSO boundaries.
+        # macOS 12+ removed DYLD_FORCE_FLAT_NAMESPACE, so no dyld workaround is available.
+        # The reliable fix is to link test executables against a static copy of
+        # pagmo_plugins_nonfree so all code lives in one binary with consistent type_info.
+        if(APPLE)
+            add_library(pagmo_plugins_nonfree_static STATIC "${PAGMO_PLUGINS_NONFREE_SRC_FILES}")
+            target_compile_options(pagmo_plugins_nonfree_static PRIVATE "$<$<CONFIG:DEBUG>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG}>" "$<$<CONFIG:RELEASE>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE}>")
+            if(NOT CMAKE_CXX_STANDARD)
+                set_property(TARGET pagmo_plugins_nonfree_static PROPERTY CXX_STANDARD 17)
+            endif()
+            set_property(TARGET pagmo_plugins_nonfree_static PROPERTY CXX_STANDARD_REQUIRED YES)
+            set_property(TARGET pagmo_plugins_nonfree_static PROPERTY CXX_EXTENSIONS NO)
+            target_include_directories(pagmo_plugins_nonfree_static PUBLIC
+               $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+               $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>)
+            target_link_libraries(pagmo_plugins_nonfree_static PUBLIC Boost::boost Boost::serialization Boost::disable_autolinking Boost::system Boost::filesystem)
+            target_link_libraries(pagmo_plugins_nonfree_static PUBLIC Pagmo::pagmo)
+            target_link_libraries(pagmo_plugins_nonfree_static PUBLIC ${CMAKE_DL_LIBS})
+        endif()
         add_subdirectory("${CMAKE_SOURCE_DIR}/tests")
     endif()
 endif()
