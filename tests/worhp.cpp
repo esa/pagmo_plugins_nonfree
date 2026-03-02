@@ -22,6 +22,11 @@
 
 #include <pagmo_plugins_nonfree/worhp.hpp>
 
+// Ensure Boost.Serialization void cast is registered in the test binary too.
+// On macOS, -fvisibility=hidden causes the singleton in the shared library
+// to be separate from the test binary's singleton, so we must also register here.
+PAGMO_S11N_ALGORITHM_IMPLEMENT(ppnf::worhp)
+
 #ifdef _MSC_VER
 #define WORHP_LIB ".\\worhp_c.dll"
 #elif defined __APPLE__
