@@ -130,3 +130,4 @@ jobs:
           cmake --build . -j4 --config Release --target install
           cd $env:TEMP
           python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()"
+
