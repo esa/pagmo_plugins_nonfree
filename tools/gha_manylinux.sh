@@ -56,7 +56,7 @@ echo "PYTHON_DIR: ${PYTHON_DIR}"
 
 # The versions can be overridden from the workflow if needed.
 PAGMO_VERSION_RELEASE="${PAGMO_VERSION_RELEASE:-2.19.1}"
-PYGMO_VERSION_RELEASE="${PYGMO_VERSION_RELEASE:-2.19.5}"
+PYGMO_PYPI_VERSION_SPEC="${PYGMO_PYPI_VERSION_SPEC:-2.19.8}"
 
 # Lightweight system diagnostics to help compare amd64 vs arm runs.
 echo "System diagnostics:"
@@ -91,7 +91,7 @@ fi
 
 # Install packaging/build/test runtime dependencies in the selected Python.
 "${PYBIN}/python" -m pip install --upgrade pip setuptools wheel
-"${PYBIN}/python" -m pip install cloudpickle numpy "pygmo==${PYGMO_VERSION_RELEASE}"
+"${PYBIN}/python" -m pip install cloudpickle numpy "pygmo==${PYGMO_PYPI_VERSION_SPEC}"
 "${PYBIN}/python" -m pip install dill==0.3.5.1 networkx ipyparallel scipy auditwheel
 
 # Build and install pagmo2 (released tarball on tags, git HEAD otherwise).
