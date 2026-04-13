@@ -1,98 +1,148 @@
 .. _install:
 
-Installation guide
-==================
+Installation
+============
 
 .. contents::
 
 .. _cpp_install:
 
-C++
----
+C++ Library
+-----------
 
-pagmo_plugins_nonfree is a header-only library which has the following third-party dependencies:
+Dependencies
+^^^^^^^^^^^^
 
-* `Boost <http://www.boost.org/>`__, **mandatory**, version 1.61.0 minimum. Headers and the compiled libraries boost_system and boost_filesystem are needed. 
-* `pagmo <https://esa.github.io/pagmo2/index.html>`__, **mandatory**, header-only
+``pagmo_plugins_nonfree`` has the following **mandatory** build/runtime dependencies:
 
-After making sure the dependencies above are installed in your system, you can download the
-pagmo source code from the `GitHub release page <https://github.com/esa/pagmo_plugins_nonfree/releases>`__. Alternatively,
-and if you like living on the bleeding edge, you can get the very latest version of pagmo via the ``git``
-command:
+* a C++17 capable compiler,
+* `CMake <https://cmake.org/>`__ 3.20 or later,
+* `Boost <https://www.boost.org/>`__ 1.69 or later,
+* `pagmo <https://esa.github.io/pagmo2/>`__ 2.19.0 or later.
 
-.. code-block:: bash
+The C++ component builds as a shared library (it is not a header-only library).
 
-   git clone https://github.com/esa/pagmo_plugins_nonfree.git
+Build from source
+^^^^^^^^^^^^^^^^^
 
-Once you are in pagmo_plugin_nonfree's source tree, you must configure your build using ``cmake``. This will allow
-you to enable support for optional dependencies, configure the install destination, etc. When done,
-you can install pagmo_plugin_nonfree via the command
+After making sure dependencies are available on your system, clone the source tree:
 
-.. code-block:: bash
+.. code-block:: console
 
-   make install
+  $ git clone https://github.com/esa/pagmo_plugins_nonfree.git
+  $ cd pagmo_plugins_nonfree
 
-The headers will be installed in the ``CMAKE_INSTALL_PREFIX/include`` directory. 
+Then configure and install the C++ library:
+
+.. code-block:: console
+
+  $ mkdir build_cpp
+  $ cd build_cpp
+  $ cmake ../ -DPPNF_BUILD_CPP=ON -DPPNF_BUILD_PYTHON=OFF
+  $ cmake --build . --target install
+
+Useful CMake options include:
+
+* ``CMAKE_BUILD_TYPE``: build type (e.g. ``Release``, ``Debug``),
+* ``CMAKE_PREFIX_PATH``: additional dependency lookup paths,
+* ``CMAKE_INSTALL_PREFIX``: installation prefix,
+* ``PPNF_BUILD_TESTS``: build C++ tests,
+* ``PPNF_INSTALL_LIBDIR``: installation directory for libraries.
 
 .. _py_install:
 
 Python
 ------
 
-The Python module corresponding to pagmo_plugin_nonfree is called pygmo_plugin_nonfree. pygmo_plugin_nonfree has some runtime Python dependencies:
+Dependencies
+^^^^^^^^^^^^
 
-* `pygmo <https://esa.github.io/pagmo2/index.html>`__, the pygmo package
-* `NumPy <http://www.numpy.org/>`__, the standard Python array library
+The Python module corresponding to ``pagmo_plugins_nonfree`` is called
+``pygmo_plugins_nonfree``.
+
+``pygmo_plugins_nonfree`` has the following **mandatory** runtime dependencies:
+
+* `pygmo <https://esa.github.io/pygmo2/>`__ (version ``2.19.*``),
+* `NumPy <https://numpy.org/>`__,
 * `cloudpickle <https://github.com/cloudpipe/cloudpickle>`__, a package that extends Python's serialization
   capabilities.
 
-There are various options for the installation of pygmo_plugin_nonfree:
+For builds from source, the following are also required:
+
+* the C++ library ``pagmo_plugins_nonfree`` installed first,
+* `pybind11 <https://github.com/pybind/pybind11>`__,
+* a compatible Python installation with development headers/modules.
+
+Packages
+^^^^^^^^
+
+There are various options for the installation of ``pygmo_plugins_nonfree``:
 
 * `conda <https://conda.io/docs/>`__
 * `pip <https://pip.pypa.io/en/stable/>`__
 * installation from source.
 
-The following table summarizes the pros and cons of the various installation methods:
+Conda
+^^^^^
 
-========= ============ ============ ========== ========== ================ ==========
-Method    Linux Py 2.7 Linux Py 3.x OSX Py 2.7 OSX Py 3.x Win Py 2.7       Win Py 3.x
-========= ============ ============ ========== ========== ================ ==========
-conda     64bit        64bit        64bit      64bit      ✘                64bit
-pip       64bit        64bit        ✘          ✘          64bit (MinGW)    64bit (MinGW)
-source    32/64bit     32/64bit     32/64bit   32/64bit   32/64bit (MinGW) 32/64bit
-========= ============ ============ ========== ========== ================ ==========
+Conda packages are provided via conda-forge:
 
-In general, we recommend the use of `conda <https://conda.io/docs/>`__: in addition to making the installation
-of pygmo easy, it also provides user-friendly access to a wealth of packages from the scientific Python
-ecosystem. Conda is a good default choice in Linux and OSX.
+.. code-block:: console
 
-In order to provide a better experience to our Windows users, we also publish `pip <https://pip.pypa.io/en/stable/>`__
-packages for pygmo built with `MinGW <https://mingw-w64.org/doku.php>`__. The pip packages are also available on
-Linux for those users who might prefer pip to conda, but they are **not** available on OSX.
+  $ conda install -c conda-forge pygmo_plugins_nonfree
 
-Finally, it is always possible to compile pygmo_plugin_nonfree from source. This is the most flexible and powerful option, but of course
-also the least user-friendly.
+Please refer to conda-forge for current platform availability.
+
+pip
+^^^
+
+``pygmo_plugins_nonfree`` wheels are published on PyPI:
+
+* `https://pypi.org/project/pygmo_plugins_nonfree/ <https://pypi.org/project/pygmo_plugins_nonfree/>`__
+
+Install with:
+
+.. code-block:: console
+
+  $ pip install pygmo_plugins_nonfree
+
+Current CI status (pip/manylinux)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The project CI currently validates and builds the following configurations:
+
+* Non-manylinux Python CI:
+  Linux x86_64 (Python 3.12, 3.13, 3.14), Linux ARM64 (Python 3.14),
+  macOS ARM64 (Python 3.14), Windows x86_64 (Python 3.14).
+* Manylinux wheel CI:
+  manylinux 2.28 x86_64 and aarch64 for Python 3.11, 3.12, 3.13.
+* Manual PyPI publication:
+  wheels are published via the ``Publish to PyPI (manual)`` workflow dispatch.
+
+At the moment, PyPI publication is driven by the manylinux workflow above.
 
 Installation from source
 ^^^^^^^^^^^^^^^^^^^^^^^^
-pygmo_plugin_nonfree has the following dependencies:
 
-* pagmo (i.e., the C++ headers of the pagmo library need to be installed before attempting
-  to compile pygmo),
-* pygmo (i.e., the C++ headers of pygmo need to be installed before attempting
-  to compile pygmo_plugin_nonfree. these can be obtained activating the PAGMO_BUILD_PYGMO option of the pagmo build system),
-* `Boost.Python <http://www.boost.org/doc/libs/1_63_0/libs/python/doc/html/index.html>`__
-* `Boost.System <http://www.boost.org/doc/libs/1_63_0/libs/system/doc/index.html>`__
-* `Boost.Filesystem <http://www.boost.org/doc/libs/1_63_0/libs/filesystem/doc/index.htm>`__
-* `NumPy <http://www.numpy.org/>`__ (note that NumPy's development headers must be installed as well).
+To build ``pygmo_plugins_nonfree`` from source you need:
 
-To build the module from source you need to **activate** the ``PAGMO_PLUGINS_NONFREE_BUILD_PYTHON`` cmake option.
-Check carefully what Python version and what libraries/include paths are detected (in particular, on systems with multiple Python versions
-it can happen that CMake detects the headers from a Python version and the Python library from another version).
-The ``CMAKE_INSTALL_PREFIX`` variable will be used to construct the final location of headers and Python module after install.
+* the C++ library ``pagmo_plugins_nonfree`` installed first,
+* `pybind11 <https://github.com/pybind/pybind11>`__,
+* a compatible Python installation,
+* ``pygmo``, ``NumPy`` and ``cloudpickle``.
 
-When done, type (in your build directory):
+A typical build sequence is:
 
-.. code-block:: bash
+.. code-block:: console
 
-   make install
+  $ cd /path/to/pagmo_plugins_nonfree
+  $ mkdir build_py
+  $ cd build_py
+  $ cmake ../ -DPPNF_BUILD_CPP=OFF -DPPNF_BUILD_PYTHON=ON
+  $ cmake --build . --target install
+
+Pay special attention to ``Python3_EXECUTABLE`` and ``CMAKE_PREFIX_PATH`` when
+multiple Python or dependency installations are present.
+
+If needed, you can override the Python package install path via
+``PPFN_INSTALL_PATH``.

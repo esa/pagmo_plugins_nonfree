@@ -11,7 +11,8 @@ body {
     font-family: "Roboto", sans-serif;
 }
 
-code, pre {
+code,
+pre {
     font-family: "Space Mono", monospace;
 }
 
@@ -20,11 +21,10 @@ code, pre {
     font-style: italic;
 }
 
-.navbar-default .navbar-brand {
-    padding: 15px;
+.navbar-brand {
     font-family: "bebas_neuebook";
     font-weight: bold;
-    font-size: 30px;
+    font-size: 1.75rem;
     color: #333333;
     -webkit-touch-callout: none;
     -webkit-user-select: none;
@@ -34,28 +34,24 @@ code, pre {
     user-select: none;
 }
 
-.admonition.note.alert.alert-info a {
-    color: #FFFFFF;
-}
-
-h1, .h1 {
+h1,
+h2,
+h3 {
     font-family: "bebas_neuebook";
     color: #333333;
 }
 
-h2, .h2 {
-    font-family: "bebas_neuebook";
-    color: #333333;
+.bd-header {
+    border-bottom: 1px solid #e5e5e5;
 }
 
-h3, .h3 {
-    font-family: "bebas_neuebook";
-    color: #333333;
+.bd-header.navbar {
+    background-color: #ffffff;
 }
 
-.navbar-inverse {
-    background-color: #333333;
-    border-color: #333333;
+.bd-header .navbar-nav > li > a,
+.bd-header .navbar-nav .nav-link {
+    color: #333333;
 }
 
 a {
@@ -72,17 +68,25 @@ code {
     font-size: 90%;
     color: #9c1d1d;
     background-color: #f1f1f1;
-    border-radius: 0;
+    border-radius: 2px;
 }
 
-.alert-info {
+.admonition.note {
     background-color: #789e6d;
     border-color: #789e6d;
     color: #ffffff;
 }
 
-.alert-warning {
+.admonition.note a {
+    color: #ffffff;
+}
+
+.admonition.warning {
     background-color: #ffba4c;
     border-color: #ffba4c;
     color: #ffffff;
+}
+
+.admonition.warning a {
+    color: #333333;
 }
