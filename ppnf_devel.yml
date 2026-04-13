@@ -8,6 +8,7 @@ dependencies:
   - cmake >=3.18
   - pagmo-devel
   - libboost-devel>=1.86
+  - eigen<5
   - pybind11
   - pybind11-abi
   - pygmo
