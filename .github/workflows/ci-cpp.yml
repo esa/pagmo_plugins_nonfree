@@ -86,4 +86,5 @@ jobs:
         run: |
           cp build\tests\Release\snopt7_c.dll build\tests\
           cp build\tests\Release\worhp_c.dll build\tests\
+          $env:PATH = "$PWD\build\tests\Release;$PWD\build\Release;$env:USERPROFILE\local\Library\bin;$env:USERPROFILE\local\bin;$env:PATH"
           ctest --test-dir build -VV --output-on-failure -j4 -C Release
