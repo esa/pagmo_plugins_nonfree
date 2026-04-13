@@ -1,132 +1,165 @@
 #!/usr/bin/env bash
 
-# Echo each command.
+# Fail fast on command errors, undefined vars, and pipeline failures.
+set -Eeuo pipefail
+# Keep shell tracing enabled so CI logs show every step and argument.
 set -x
 
-# Exit on error.
-set -e
+# Required inputs from the workflow/container invocation.
+: "${PPNF_BUILD_TYPE:?PPNF_BUILD_TYPE is required}"
+: "${GITHUB_WORKSPACE:?GITHUB_WORKSPACE is required}"
 
-# Report on the environrnt variables used for this build
+# Basic context useful for debugging CI runs.
 echo "PPNF_BUILD_TYPE: ${PPNF_BUILD_TYPE}"
-echo "GITHUB_REF: ${GITHUB_REF}"
+echo "GITHUB_REF: ${GITHUB_REF:-<unset>}"
 echo "GITHUB_WORKSPACE: ${GITHUB_WORKSPACE}"
-# No idea why but this following line seems to be necessary (added: 18/01/2023)
-git config --global --add safe.directory ${GITHUB_WORKSPACE}
-BRANCH_NAME=`git rev-parse --abbrev-ref HEAD`
-echo "BRANCH_NAME: ${BRANCH_NAME}"
 
-
-# 1 - We read for what python wheels have to be built
-if [[ ${PPNF_BUILD_TYPE} == *38* ]]; then
-	PYTHON_DIR="cp38-cp38"
-elif [[ ${PPNF_BUILD_TYPE} == *39* ]]; then
-	PYTHON_DIR="cp39-cp39"
-elif [[ ${PPNF_BUILD_TYPE} == *310* ]]; then
-	PYTHON_DIR="cp310-cp310"
-elif [[ ${PPNF_BUILD_TYPE} == *311* ]]; then
-	PYTHON_DIR="cp311-cp311"
-elif [[ ${PPNF_BUILD_TYPE} == *312* ]]; then
-	PYTHON_DIR="cp312-cp312"
+# Preflight: list interpreters baked into the manylinux image.
+# This makes Python-version mismatches obvious in the logs.
+echo "Preflight: available Python installs under /opt/python"
+if [[ -d /opt/python ]]; then
+	ls -1 /opt/python || true
 else
-	echo "Invalid build type: ${PPNF_BUILD_TYPE}"
+	echo "WARNING: /opt/python directory is missing"
+fi
+
+for expected_dir in cp311-cp311 cp312-cp312 cp313-cp313 cp314-cp314; do
+	if [[ -x "/opt/python/${expected_dir}/bin/python" ]]; then
+		echo "Found interpreter: /opt/python/${expected_dir}/bin/python"
+	else
+		echo "Missing interpreter: /opt/python/${expected_dir}/bin/python"
+	fi
+done
+
+# Needed when running in GitHub Actions containers.
+git config --global --add safe.directory "${GITHUB_WORKSPACE}"
+
+# Map workflow build type to the manylinux Python ABI directory.
+case "${PPNF_BUILD_TYPE}" in
+	*314*) PYTHON_DIR="cp314-cp314" ;;
+	*313*) PYTHON_DIR="cp313-cp313" ;;
+	*312*) PYTHON_DIR="cp312-cp312" ;;
+	*311*) PYTHON_DIR="cp311-cp311" ;;
+	*)
+		echo "Invalid build type '${PPNF_BUILD_TYPE}'. Supported: Python314, Python313, Python312, Python311"
+		exit 1
+		;;
+esac
+
+# Resolve python/pip/ipcluster binaries for the selected interpreter.
+PYBIN="/opt/python/${PYTHON_DIR}/bin"
+if [[ ! -x "${PYBIN}/python" ]]; then
+	echo "Python executable not found at ${PYBIN}/python. Update the manylinux image for ${PYTHON_DIR}."
 	exit 1
 fi
-
-# Report the inferred directory where python is found
 echo "PYTHON_DIR: ${PYTHON_DIR}"
 
-# The pagmo/pygmo versions to be used.
-export PAGMO_VERSION="2.19.0"
-export PYGMO_VERSION="2.19.5"
+# The versions can be overridden from the workflow if needed.
+PAGMO_VERSION_RELEASE="${PAGMO_VERSION_RELEASE:-2.19.1}"
+PYGMO_VERSION_RELEASE="${PYGMO_VERSION_RELEASE:-2.19.5}"
 
-# Check if this is a release build.
-if [[ "${GITHUB_REF}" == "refs/tags/v"* ]]; then
-    echo "Tag build detected"
-	export PPNF_RELEASE_BUILD="yes"
-else
-	echo "Non-tag build detected"
+# Lightweight system diagnostics to help compare amd64 vs arm runs.
+echo "System diagnostics:"
+uname -a || true
+echo "Architecture: $(uname -m)"
+echo "CPU count: $(nproc)"
+free -h || true
+if command -v lscpu >/dev/null 2>&1; then
+	lscpu || true
+fi
+if [[ -f /proc/meminfo ]]; then
+	echo "Top of /proc/meminfo:" && head -n 6 /proc/meminfo || true
 fi
 
-# Python mandatory deps.
-/opt/python/${PYTHON_DIR}/bin/pip install cloudpickle numpy pygmo==${PYGMO_VERSION}
-# Python optional deps.
-/opt/python/${PYTHON_DIR}/bin/pip install dill==0.3.5.1 networkx ipyparallel scipy
+# Small helper that uses /usr/bin/time -v when available to record peak RSS.
+run_time() {
+	if command -v /usr/bin/time >/dev/null 2>&1; then
+		/usr/bin/time -v "$@"
+	else
+		"$@"
+	fi
+}
 
-# In the pagmo2/manylinux228_x86_64_with_deps:latest image in dockerhub
-# the working directory is /root/install, we will install pagmo there
+# Tag builds consume released pagmo sources; non-tag builds use pagmo git HEAD.
+if [[ "${GITHUB_REF:-}" == "refs/tags/v"* ]]; then
+	echo "Tag build detected"
+	PPNF_RELEASE_BUILD="yes"
+else
+	echo "Non-tag build detected"
+	PPNF_RELEASE_BUILD="no"
+fi
+
+# Install packaging/build/test runtime dependencies in the selected Python.
+"${PYBIN}/python" -m pip install --upgrade pip setuptools wheel
+"${PYBIN}/python" -m pip install cloudpickle numpy "pygmo==${PYGMO_VERSION_RELEASE}"
+"${PYBIN}/python" -m pip install dill==0.3.5.1 networkx ipyparallel scipy auditwheel
+
+# Build and install pagmo2 (released tarball on tags, git HEAD otherwise).
 cd /root/install
+if [[ "${PPNF_RELEASE_BUILD}" == "yes" ]]; then
+	curl -fsSL -o pagmo2.tar.gz "https://github.com/esa/pagmo2/archive/refs/tags/v${PAGMO_VERSION_RELEASE}.tar.gz"
+	tar xzf pagmo2.tar.gz
+	cd "pagmo2-${PAGMO_VERSION_RELEASE}"
+else
+	rm -rf pagmo2
+	git clone --depth 1 https://github.com/esa/pagmo2.git
+	cd pagmo2
+fi
 
-# Install pagmo
-curl -L -o pagmo2.tar.gz https://github.com/esa/pagmo2/archive/refs/tags/v${PAGMO_VERSION}.tar.gz
-tar xzf pagmo2.tar.gz
-cd pagmo2-*
-
-mkdir build
+# Configure and install pagmo2 into the container's default prefix.
+rm -rf build
+mkdir -p build
 cd build
-cmake \
+cmake -DBoost_NO_BOOST_CMAKE=ON \
 	-DPAGMO_WITH_EIGEN3=yes \
 	-DPAGMO_WITH_NLOPT=yes \
 	-DPAGMO_WITH_IPOPT=yes \
-	-DPAGMO_ENABLE_IPO=ON \
-	-DCMAKE_BUILD_TYPE=Release ../;
-make -j4 install
+	-DPAGMO_ENABLE_IPO=OFF \
+	-DCMAKE_BUILD_TYPE=Release ../
+run_time cmake --build . --target install --parallel 2
 
-# pygmo_plugins_nonfree
-cd ${GITHUB_WORKSPACE}
-mkdir build_pagmo_plugins_nonfree
-cd build_pagmo_plugins_nonfree
-cmake -DCMAKE_BUILD_TYPE=Release \
+# Build and install the pagmo_plugins_nonfree C++ library first.
+cd "${GITHUB_WORKSPACE}"
+rm -rf build_cpp
+mkdir -p build_cpp
+cd build_cpp
+cmake -DBoost_NO_BOOST_CMAKE=ON \
+	-DCMAKE_BUILD_TYPE=Release \
 	-DPPNF_BUILD_CPP=yes \
 	-DPPNF_BUILD_TESTS=no \
-	-DPPNF_BUILD_PYTHON=no ../;
-make -j4 install
-cd ..
-mkdir build
+	-DPPNF_BUILD_PYTHON=no ../
+run_time cmake --build . --target install --parallel 2
+
+# Then build and install pygmo_plugins_nonfree against selected Python.
+cd "${GITHUB_WORKSPACE}"
+rm -rf build
+mkdir -p build
 cd build
-cmake -DCMAKE_BUILD_TYPE=Release \
+cmake -DBoost_NO_BOOST_CMAKE=ON \
+	-DCMAKE_BUILD_TYPE=Release \
 	-DPPNF_BUILD_CPP=no \
 	-DPPNF_BUILD_PYTHON=yes \
-	-DPython3_EXECUTABLE=/opt/python/${PYTHON_DIR}/bin/python ../;
-make -j4 install
+	-DPython3_EXECUTABLE="${PYBIN}/python" ../
+run_time cmake --build . --target install --parallel 2
 
-# Making the wheel and installing it
+# Build wheel from the wheel/ packaging directory and repair it for manylinux.
 cd wheel
-# Move the installed ppnf files, wherever they might be in /usr/local,
-# into the current dir.
-mv `/opt/python/${PYTHON_DIR}/bin/python -c 'import site; print(site.getsitepackages()[0])'`/pygmo_plugins_nonfree ./
-# Create the wheel and repair it.
-# NOTE: this is temporary because some libraries in the docker
-# image are installed in lib64 rather than lib and they are
-# not picked up properly by the linker.
+rm -rf pygmo_plugins_nonfree
+SITE_PACKAGES_DIR="$("${PYBIN}/python" -c 'import site; print(site.getsitepackages()[0])')"
+cp -r "${SITE_PACKAGES_DIR}/pygmo_plugins_nonfree" ./
+
+# Keep compatibility with images exposing shared libs under /usr/local/lib64.
 export LD_LIBRARY_PATH="/usr/local/lib64:/usr/local/lib"
-/opt/python/${PYTHON_DIR}/bin/python setup.py bdist_wheel
-auditwheel repair dist/pygmo_plugins_nonfree* -w ./dist2
-# Try to install it and run the tests.
+run_time "${PYBIN}/python" setup.py bdist_wheel
+auditwheel repair dist/pygmo_plugins_nonfree*.whl -w ./dist2
 unset LD_LIBRARY_PATH
+
+# Smoke-test the repaired wheel in a clean root context.
 cd /
-/opt/python/${PYTHON_DIR}/bin/pip install ${GITHUB_WORKSPACE}/build/wheel/dist2/pygmo_plugins_nonfree*
-/opt/python/${PYTHON_DIR}/bin/ipcluster start --daemonize=True
+"${PYBIN}/python" -m pip install --force-reinstall "${GITHUB_WORKSPACE}/build/wheel/dist2/pygmo_plugins_nonfree"*.whl
+# Keep at least 2 engines: tests can rely on parallel workers.
+"${PYBIN}/ipcluster" start --daemonize=True -n 2
 sleep 20
-/opt/python/${PYTHON_DIR}/bin/python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()";
+"${PYBIN}/python" -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()"
 
-# Upload to pypi. This variable will contain something if this is a tagged build (vx.y.z), otherwise it will be empty.
-# if [[ "${PYGMO_RELEASE_VERSION}" != "" ]]; then
-# 	echo "Release build detected, creating the source code archive."
-# 	cd ${GITHUB_WORKSPACE}
-# 	TARBALL_NAME=${GITHUB_WORKSPACE}/build/wheel/dist2/pygmo-${PYGMO_RELEASE_VERSION}.tar
-# 	git archive --format=tar --prefix=pygmo2/ -o ${TARBALL_NAME} ${BRANCH_NAME}
-# 	tar -rf ${TARBALL_NAME} --transform "s,^build/wheel/pygmo.egg-info,pygmo2," build/wheel/pygmo.egg-info/PKG-INFO
-# 	gzip -9 ${TARBALL_NAME}
-# 	echo "... uploading all to PyPi."
-# 	/opt/python/${PYTHON_DIR}/bin/pip install twine
-# 	/opt/python/${PYTHON_DIR}/bin/twine upload -u ci4esa ${GITHUB_WORKSPACE}/build/wheel/dist2/pygmo*
-# fi
-
-# Upload to PyPI.
-if [[ "${PPNF_RELEASE_BUILD}" == "yes" ]]; then
-	/opt/python/${PYTHON_DIR}/bin/pip install twine
-	/opt/python/${PYTHON_DIR}/bin/twine upload -u ci4esa ${GITHUB_WORKSPACE}/build/wheel/dist2/pygmo*
-fi
-
-set +e
 set +x
