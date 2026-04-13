@@ -5,6 +5,7 @@ build*
 *~
 *.bak
 .DS_Store
+.cache
 
 # .orig files from patch.
 *.orig
