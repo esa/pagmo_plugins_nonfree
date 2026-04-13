@@ -84,5 +84,7 @@ jobs:
       - name: Test
         shell: powershell
         run: |
+          cp tests\Release\snopt7_c.dll tests\
+          cp tests\Release\worhp_c.dll tests\
           $env:PATH = "$PWD\build\Release;$env:USERPROFILE\local\Library\bin;$env:USERPROFILE\local\bin;$env:PATH"
           ctest --test-dir build -VV --output-on-failure -j4 -C Release
