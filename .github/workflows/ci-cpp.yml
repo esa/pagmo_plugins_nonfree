@@ -18,13 +18,13 @@ jobs:
         include:
           - label: linux-x64
             runner: ubuntu-22.04
-            conda_pkgs: c-compiler cxx-compiler cmake ninja boost-cpp tbb tbb-devel eigen nlopt ipopt
+            conda_pkgs: c-compiler cxx-compiler cmake ninja pagmo-devel libboost-devel>=1.86 tbb tbb-devel eigen nlopt ipopt
           - label: linux-arm64
             runner: ubuntu-22.04-arm
-            conda_pkgs: c-compiler cxx-compiler cmake ninja boost-cpp tbb tbb-devel eigen
+            conda_pkgs: c-compiler cxx-compiler cmake ninja pagmo-devel libboost-devel>=1.86 tbb tbb-devel eigen
           - label: macos-arm64
             runner: macos-latest
-            conda_pkgs: c-compiler cxx-compiler libcxx cmake ninja boost-cpp tbb tbb-devel eigen nlopt ipopt
+            conda_pkgs: c-compiler cxx-compiler libcxx cmake ninja pagmo-devel libboost-devel>=1.86 tbb tbb-devel eigen nlopt ipopt
     steps:
       - uses: actions/checkout@v4
       - uses: conda-incubator/setup-miniconda@v3
