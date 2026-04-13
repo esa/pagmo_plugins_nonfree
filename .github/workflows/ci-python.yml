@@ -27,16 +27,10 @@ jobs:
           channels: conda-forge
           channel-priority: strict
       - name: Build
-        run: |
-          set -e
-          if [ "${{ matrix.python-version }}" = "3.14" ]; then
-            bash tools/gha_pygmo_plugins_nonfree_linux_py313.sh || true
-          elif [ "${{ matrix.python-version }}" = "3.13" ]; then
-            bash tools/gha_pygmo_plugins_nonfree_linux_py313.sh || true
-          else
-            bash tools/gha_pygmo_plugins_nonfree_linux_py312.sh || true
-          fi
+        run: bash tools/gha_unix_nonmanylinux.sh
         shell: bash -l {0}
+        env:
+          PPNF_PYTHON_VERSION: ${{ matrix.python-version }}
 
   linux-arm64:
     runs-on: ubuntu-24.04-arm
@@ -54,8 +48,10 @@ jobs:
           channels: conda-forge
           channel-priority: strict
       - name: Build
-        run: bash tools/gha_pygmo_plugins_nonfree_linux_py313.sh
+        run: bash tools/gha_unix_nonmanylinux.sh
         shell: bash -l {0}
+        env:
+          PPNF_PYTHON_VERSION: ${{ matrix.python-version }}
 
   macos-arm64:
     runs-on: macos-14
@@ -73,8 +69,10 @@ jobs:
           channels: conda-forge
           channel-priority: strict
       - name: Build
-        run: bash tools/gha_pygmo_plugins_nonfree_linux_py313.sh
+        run: bash tools/gha_unix_nonmanylinux.sh
         shell: bash -l {0}
+        env:
+          PPNF_PYTHON_VERSION: ${{ matrix.python-version }}
 
   windows-x64:
     runs-on: windows-2022
@@ -94,7 +92,7 @@ jobs:
           channels: conda-forge
           channel-priority: strict
       - name: Build
-        run: .\tools\gha_pygmo_plugins_nonfree_linux_py313.sh
+        run: .\tools\gha_windows.ps1
         shell: powershell
 
   build-and-deploydocs:
