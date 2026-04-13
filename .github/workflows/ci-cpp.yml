@@ -71,7 +71,7 @@ jobs:
       - name: Configure
         shell: powershell
         run: |
-          conda create -y -q -p $env:USERPROFILE\local cmake ninja 'eigen<5' nlopt ipopt 'boost-cpp>=1.86' tbb tbb-devel pagmo-devel
+          conda create -y -q -p $env:USERPROFILE\local cmake ninja 'eigen<5' nlopt ipopt 'libboost-devel>=1.86' tbb tbb-devel pagmo-devel
           conda run -p $env:USERPROFILE\local cmake -S . -B build -G "Visual Studio 17 2022" -A x64 `
             -DCMAKE_PREFIX_PATH=$env:USERPROFILE\local `
             -DCMAKE_INSTALL_PREFIX=$env:USERPROFILE\local `
