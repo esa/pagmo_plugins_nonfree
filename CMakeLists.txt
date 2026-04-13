@@ -11,19 +11,6 @@ if(POLICY CMP0167)
     cmake_policy(SET CMP0167 OLD)
 endif()
 
-# Install dirs default (use GNUInstallDirs on Unix like upstream)
-if(UNIX AND NOT APPLE)
-    include(GNUInstallDirs)
-    set(_PPNF_INSTALL_LIBDIR_DEFAULT "${CMAKE_INSTALL_LIBDIR}")
-else()
-    set(_PPNF_INSTALL_LIBDIR_DEFAULT "lib")
-endif()
-if(NOT PPNF_INSTALL_LIBDIR)
-    set(PPNF_INSTALL_LIBDIR "${_PPNF_INSTALL_LIBDIR_DEFAULT}" CACHE STRING "Library installation directory." FORCE)
-endif()
-mark_as_advanced(PPNF_INSTALL_LIBDIR)
-message(STATUS "Library installation directory: ${PPNF_INSTALL_LIBDIR}")
-
 # Set default build type to "Release".
 if(NOT CMAKE_BUILD_TYPE)
     set(CMAKE_BUILD_TYPE Release CACHE STRING
@@ -60,6 +47,19 @@ else()
     project(pygmo_plugins_nonfree VERSION ${pagmo_plugins_nonfree_VERSION} LANGUAGES CXX C)
     message(STATUS "System name: ${CMAKE_SYSTEM_NAME}")
 endif()
+
+# Install dirs default (use GNUInstallDirs on Unix like upstream)
+if(UNIX AND NOT APPLE)
+    include(GNUInstallDirs)
+    set(_PPNF_INSTALL_LIBDIR_DEFAULT "${CMAKE_INSTALL_LIBDIR}")
+else()
+    set(_PPNF_INSTALL_LIBDIR_DEFAULT "lib")
+endif()
+if(NOT PPNF_INSTALL_LIBDIR)
+    set(PPNF_INSTALL_LIBDIR "${_PPNF_INSTALL_LIBDIR_DEFAULT}" CACHE STRING "Library installation directory." FORCE)
+endif()
+mark_as_advanced(PPNF_INSTALL_LIBDIR)
+message(STATUS "Library installation directory: ${PPNF_INSTALL_LIBDIR}")
 
 # Common general bits.
 
