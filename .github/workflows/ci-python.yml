@@ -96,14 +96,21 @@ jobs:
         shell: powershell
 
   build-and-deploydocs:
-    if: ${{ github.event_name == 'push' }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-update-conda: true
+          channels: conda-forge
+          channel-priority: strict
       - name: Install and Build docs
-        run: bash tools/gha_pygmo_plugins_nonfree_linux_py313.sh
+        run: bash tools/gha_deploydocs.sh
+        shell: bash -l {0}
       - name: Upload to github pages
-        if: ${{ github.event_name == 'push' }}
+        if: >-
+          github.event_name == 'push' &&
+          (github.ref == 'refs/heads/master' || startsWith(github.ref, 'refs/tags/'))
         uses: JamesIves/github-pages-deploy-action@v4
         with:
           folder: doc/sphinx/_build/html
