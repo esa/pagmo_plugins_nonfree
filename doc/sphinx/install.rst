@@ -18,7 +18,7 @@ Dependencies
 * a C++17 capable compiler,
 * `CMake <https://cmake.org/>`__ 3.20 or later,
 * `Boost <https://www.boost.org/>`__ 1.69 or later,
-* `pagmo <https://esa.github.io/pagmo2/>`__ 2.19 or later.
+* `pagmo <https://esa.github.io/pagmo2/>`__ 2.19.0 or later.
 
 The C++ component builds as a shared library (it is not a header-only library).
 
@@ -45,7 +45,9 @@ Useful CMake options include:
 
 * ``CMAKE_BUILD_TYPE``: build type (e.g. ``Release``, ``Debug``),
 * ``CMAKE_PREFIX_PATH``: additional dependency lookup paths,
-* ``CMAKE_INSTALL_PREFIX``: installation prefix.
+* ``CMAKE_INSTALL_PREFIX``: installation prefix,
+* ``PPNF_BUILD_TESTS``: build C++ tests,
+* ``PPNF_INSTALL_LIBDIR``: installation directory for libraries.
 
 .. _py_install:
 
@@ -65,12 +67,11 @@ The Python module corresponding to ``pagmo_plugins_nonfree`` is called
 * `cloudpickle <https://github.com/cloudpipe/cloudpickle>`__, a package that extends Python's serialization
   capabilities.
 
-Additionally, optional runtime dependencies used by some features/tests include:
+For builds from source, the following are also required:
 
-* `dill <https://pypi.org/project/dill/>`__,
-* `NetworkX <https://networkx.org/>`__,
-* `ipyparallel <https://ipyparallel.readthedocs.io/>`__,
-* `SciPy <https://scipy.org/>`__.
+* the C++ library ``pagmo_plugins_nonfree`` installed first,
+* `pybind11 <https://github.com/pybind/pybind11>`__,
+* a compatible Python installation with development headers/modules.
 
 Packages
 ^^^^^^^^
@@ -84,8 +85,13 @@ There are various options for the installation of ``pygmo_plugins_nonfree``:
 Conda
 ^^^^^
 
-Conda builds are available through conda-forge feedstocks. Please refer to the
-relevant package pages for current availability and platform coverage.
+Conda packages are provided via conda-forge:
+
+.. code-block:: console
+
+  $ conda install -c conda-forge pygmo_plugins_nonfree
+
+Please refer to conda-forge for current platform availability.
 
 pip
 ^^^
@@ -113,6 +119,8 @@ The project CI currently validates and builds the following configurations:
 * Manual PyPI publication:
   wheels are published via the ``Publish to PyPI (manual)`` workflow dispatch.
 
+At the moment, PyPI publication is driven by the manylinux workflow above.
+
 Installation from source
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -121,17 +129,20 @@ To build ``pygmo_plugins_nonfree`` from source you need:
 * the C++ library ``pagmo_plugins_nonfree`` installed first,
 * `pybind11 <https://github.com/pybind/pybind11>`__,
 * a compatible Python installation,
-* ``pygmo``, ``NumPy`` and the other runtime dependencies listed above.
+* ``pygmo``, ``NumPy`` and ``cloudpickle``.
 
 A typical build sequence is:
 
 .. code-block:: console
 
   $ cd /path/to/pagmo_plugins_nonfree
-  $ mkdir build
-  $ cd build
+  $ mkdir build_py
+  $ cd build_py
   $ cmake ../ -DPPNF_BUILD_CPP=OFF -DPPNF_BUILD_PYTHON=ON
   $ cmake --build . --target install
 
 Pay special attention to ``Python3_EXECUTABLE`` and ``CMAKE_PREFIX_PATH`` when
 multiple Python or dependency installations are present.
+
+If needed, you can override the Python package install path via
+``PPFN_INSTALL_PATH``.

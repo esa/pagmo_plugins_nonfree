@@ -13,7 +13,7 @@ conda create -y -q -p "$DEPS_DIR" \
     c-compiler cxx-compiler cmake ninja \
     pagmo-devel "libboost-devel>=1.86" pybind11 pybind11-abi pygmo \
     python=3.13 \
-    "sphinx=4.5.0" sphinx-bootstrap-theme breathe "doxygen<1.13" graphviz
+    "sphinx<9" pydata-sphinx-theme breathe doxygen graphviz
 
 # Build and install the C++ library.
 conda run -p "$DEPS_DIR" cmake -S . -B build_cpp -G Ninja \
