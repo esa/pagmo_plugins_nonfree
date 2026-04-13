@@ -37,13 +37,15 @@ cmake ../ \
     -DCMAKE_INSTALL_PREFIX="${deps_dir}" \
     -DCMAKE_PREFIX_PATH="${deps_dir}" \
     -DPPNF_BUILD_CPP=OFF \
-    -DPPNF_BUILD_TESTS=OFF \
     -DPPNF_BUILD_PYTHON=ON
 cmake --build . --target install --parallel 2
 cd ..
 
-# Run the Python test suite.
-python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()"
+# Run the Python test suite from outside the source tree so the installed package is imported.
+(
+    cd "${HOME}"
+    python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()"
+)
 
 set +e
 set +x

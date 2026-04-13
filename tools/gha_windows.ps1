@@ -34,10 +34,12 @@ cmake -G "Visual Studio 17 2022" -A x64 `
     -DCMAKE_INSTALL_PREFIX="$depsDir" `
     -DCMAKE_PREFIX_PATH="$depsDir" `
     -DPPNF_BUILD_CPP=OFF `
-    -DPPNF_BUILD_TESTS=OFF `
     -DPPNF_BUILD_PYTHON=ON `
     ..
 cmake --build . --config Release --target INSTALL --parallel 2
 Pop-Location
 
+# Run tests outside the source checkout so Python resolves the installed package.
+Push-Location $env:TEMP
 python -c "import pygmo_plugins_nonfree; import pygmo; pygmo_plugins_nonfree.test.run_test_suite(1); pygmo.mp_bfe.shutdown_pool()"
+Pop-Location
