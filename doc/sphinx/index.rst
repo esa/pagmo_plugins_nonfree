@@ -30,12 +30,16 @@ Plugins to commercial solvers for pagmo / pygmo
    :width: 12%
 
 
-``pagmo_plugins_nonfree`` is an affliated package of `pagmo/pygmo <https://esa.github.io/pagmo2/index.html>`_. It adds some 
-commercial solvers to the list of User Defined Algorithms (UDAs). All the added UDAs are developed as plugins, that is, they
-work loading the third party library at run-time. The user needs to make sure to have the library and the right to use it. 
-The library name and path can be specified upon construction of the UDAs.
+``pagmo_plugins_nonfree`` is an affiliated package of
+`pagmo/pygmo <https://esa.github.io/pagmo2/index.html>`_.
 
-Contents:
+It adds commercial solvers to the list of User Defined Algorithms (UDAs).
+All added UDAs are implemented as plugins, so third-party libraries are loaded
+at run time. You must ensure you have access rights to the solver libraries.
+Library name and path can be specified when constructing the UDAs.
+
+Getting Started
+^^^^^^^^^^^^^^^
 
 .. toctree::
    :maxdepth: 1
@@ -45,7 +49,7 @@ Contents:
 
 C++
 ^^^
-Contents:
+API reference for C++ plugins.
 
 .. toctree::
    :maxdepth: 1
@@ -56,7 +60,7 @@ Contents:
 
 Python
 ^^^^^^
-Contents:
+API reference for Python plugins.
 
 .. toctree::
    :maxdepth: 1

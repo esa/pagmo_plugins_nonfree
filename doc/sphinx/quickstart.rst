@@ -9,7 +9,9 @@ Quick start
 C++
 ---
 
-After following the :ref:`install` you will be able to compile and run your first C++ pagmo_plugins_nonfree program:
+After following the :ref:`install` you will be able to compile
+and run your first C++ pagmo_plugins_nonfree program. Let us have a 
+look at a mininal cpp file and its corresponding CMakeLists.txt:
 
 .. _getting_started_c++:
 
@@ -17,14 +19,19 @@ After following the :ref:`install` you will be able to compile and run your firs
    :language: c++
    :linenos:
 
-Place it into a ``getting_started.cpp`` text file and compile it (for example) with:
+.. literalinclude:: docs/examples/CMakeLists.txt
+   :language: cmake
+   :linenos:
+
+Make a folder and place there the C++ code into a ``getting_started.cpp`` text
+file and the CMake code into a ``CMakeLists.txt`` text file. Then, 
+from the command line, you can build and run the example with:
 
 .. code-block:: bash
 
-   g++ -I ~/.local/include -I /usr/include/eigen3/ -O2 -DNDEBUG -std=c++11 getting_started.cpp -pthread -lboost_system -lboost_filesystem -ldl
-
-Note that we have made some assumptions in the above line. 1) your pagmo was installed with the eigen option activated, 2) you installed the headers
-in a local folder in your user directory.
+   $ mkdir build && cd build
+   $ cmake ..
+   $ cmake --build .
 
 -----------------------------------------------------------------------
 
