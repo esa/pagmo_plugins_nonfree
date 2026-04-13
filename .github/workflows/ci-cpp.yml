@@ -84,16 +84,7 @@ jobs:
       - name: Test
         shell: powershell
         run: |
-          $destDir = Join-Path $PWD 'build\\tests\\Release'
-          if (-not (Test-Path $destDir)) { New-Item -ItemType Directory -Path $destDir | Out-Null }
-          foreach ($dll in @('snopt7_c.dll','worhp_c.dll')) {
-            $found = Get-ChildItem -Path $PWD -Recurse -Filter $dll -ErrorAction SilentlyContinue | Select-Object -First 1
-            if ($found) {
-              Copy-Item $found.FullName (Join-Path $destDir $dll) -Force
-            } else {
-              Write-Host "Warning: $dll not found in build output. Listing some DLLs for debugging:"
-              Get-ChildItem -Path $PWD -Recurse -Filter '*.dll' -ErrorAction SilentlyContinue | Select-Object -First 50 | ForEach-Object { Write-Host $_.FullName }
-            }
-          }
-          $env:PATH = "$PWD\\build\\Release;$env:USERPROFILE\\local\\Library\\bin;$env:USERPROFILE\\local\\bin;$env:PATH"
+          cp build\tests\Release\snopt7_c.dll build\
+          cp build\tests\Release\worhp_c.dll build\
+          $env:PATH = "$PWD\\build;$env:USERPROFILE\\local\\Library\\bin;$env:USERPROFILE\\local\\bin;$env:PATH"
           ctest --test-dir build -VV --output-on-failure -j4 -C Release
