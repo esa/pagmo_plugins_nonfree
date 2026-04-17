@@ -94,6 +94,10 @@ fi
 "${PYBIN}/python" -m pip install cloudpickle numpy "pygmo==${PYGMO_PYPI_VERSION_SPEC}"
 "${PYBIN}/python" -m pip install dill==0.3.5.1 networkx ipyparallel scipy auditwheel
 
+# Install BLAS/LAPACK dependencies needed by xtensor-blas consumers.
+yum install -y openblas-devel lapack-devel || yum install -y openblas lapack
+
+
 # Build and install pagmo2 (released tarball on tags, git HEAD otherwise).
 cd /root/install
 if [[ "${PPNF_RELEASE_BUILD}" == "yes" ]]; then

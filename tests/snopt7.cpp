@@ -66,6 +66,30 @@ struct throwing_udp {
 };
 unsigned throwing_udp::counter = 0u;
 
+// A simple analytical UDP exposing exact gradients.
+struct analytic_udp {
+    vector_double fitness(const vector_double &x) const
+    {
+        return {x[0] * x[0] + x[1] * x[1]};
+    }
+    vector_double gradient(const vector_double &x) const
+    {
+        return {2. * x[0], 2. * x[1]};
+    }
+    bool has_gradient() const
+    {
+        return true;
+    }
+    sparsity_pattern gradient_sparsity() const
+    {
+        return {{0, 0}, {0, 1}};
+    }
+    std::pair<vector_double, vector_double> get_bounds() const
+    {
+        return {{-5., -5.}, {5., 5.}};
+    }
+};
+
 BOOST_AUTO_TEST_CASE(construction)
 {
     // We test construction of the snopt7 uda
@@ -164,6 +188,24 @@ BOOST_AUTO_TEST_CASE(streams_and_log)
     BOOST_CHECK(uda.get_verbosity() == 23u);
     BOOST_CHECK(uda.get_name().find("SNOPT7") != std::string::npos);
     BOOST_CHECK(uda.get_extra_info().find("Name of the snopt7_c library") != std::string::npos);
+}
+
+BOOST_AUTO_TEST_CASE(fevals_gevals_with_algorithm_wrapper)
+{
+    algorithm algo{snopt7{false, SNOPT7C_LIB}};
+    population pop{analytic_udp{}, 1u};
+
+    const auto fevals0 = pop.get_problem().get_fevals();
+    const auto gevals0 = pop.get_problem().get_gevals();
+
+    auto evolved = algo.evolve(pop);
+
+    // algorithm::evolve() returns a new population: the original 'pop' is not modified.
+    BOOST_CHECK_EQUAL(pop.get_problem().get_fevals(), fevals0);
+    BOOST_CHECK_EQUAL(pop.get_problem().get_gevals(), gevals0);
+
+    BOOST_CHECK(evolved.get_problem().get_fevals() > fevals0);
+    BOOST_CHECK(evolved.get_problem().get_gevals() > gevals0);
 }
 
 BOOST_AUTO_TEST_CASE(serialization_test)
