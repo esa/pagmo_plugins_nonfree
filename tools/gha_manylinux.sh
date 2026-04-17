@@ -99,7 +99,9 @@ yum install -y openblas-devel lapack-devel || yum install -y openblas lapack
 
 
 # Build and install pagmo2 (released tarball on tags, git HEAD otherwise).
-cd /root/install
+INSTALL_ROOT="${INSTALL_ROOT:-/root/install}"
+mkdir -p "${INSTALL_ROOT}"
+cd "${INSTALL_ROOT}"
 if [[ "${PPNF_RELEASE_BUILD}" == "yes" ]]; then
 	curl -fsSL -o pagmo2.tar.gz "https://github.com/esa/pagmo2/archive/refs/tags/v${PAGMO_VERSION_RELEASE}.tar.gz"
 	tar xzf pagmo2.tar.gz
