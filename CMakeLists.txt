@@ -1,8 +1,15 @@
 # NOTE: current minimum requirement.
-cmake_minimum_required(VERSION 3.18.0)
+# NOTE: require a modern CMake to match upstream pagmo
+cmake_minimum_required(VERSION 3.20)
 
 # Module path setup.
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake_modules" "${CMAKE_SOURCE_DIR}/cmake_modules/yacma")
+
+# Policies to align behaviour with upstream pagmo
+cmake_policy(SET CMP0069 NEW)
+if(POLICY CMP0167)
+    cmake_policy(SET CMP0167 OLD)
+endif()
 
 # Set default build type to "Release".
 if(NOT CMAKE_BUILD_TYPE)
@@ -40,6 +47,19 @@ else()
     project(pygmo_plugins_nonfree VERSION ${pagmo_plugins_nonfree_VERSION} LANGUAGES CXX C)
     message(STATUS "System name: ${CMAKE_SYSTEM_NAME}")
 endif()
+
+# Install dirs default (use GNUInstallDirs on Unix like upstream)
+if(UNIX AND NOT APPLE)
+    include(GNUInstallDirs)
+    set(_PPNF_INSTALL_LIBDIR_DEFAULT "${CMAKE_INSTALL_LIBDIR}")
+else()
+    set(_PPNF_INSTALL_LIBDIR_DEFAULT "lib")
+endif()
+if(NOT PPNF_INSTALL_LIBDIR)
+    set(PPNF_INSTALL_LIBDIR "${_PPNF_INSTALL_LIBDIR_DEFAULT}" CACHE STRING "Library installation directory." FORCE)
+endif()
+mark_as_advanced(PPNF_INSTALL_LIBDIR)
+message(STATUS "Library installation directory: ${PPNF_INSTALL_LIBDIR}")
 
 # Common general bits.
 
@@ -155,11 +175,11 @@ endif()
 # Find the dependencies.
 # Boost (min rquirement from heyoka 2024)
 find_package(Boost 1.69 QUIET COMPONENTS system filesystem unit_test_framework serialization CONFIG)
-if(NOT ${Boost_FOUND})
+if(NOT Boost_FOUND)
     message(STATUS "Boost not found in CONFIG mode, retrying in MODULE mode.")
     find_package(Boost 1.69 QUIET MODULE COMPONENTS serialization)
 endif()
-if(NOT ${Boost_FOUND})
+if(NOT Boost_FOUND)
     message(FATAL_ERROR "Could not locate Boost in either CONFIG or MODULE mode.")
 endif()
 message(STATUS "Found Boost version ${Boost_VERSION}.")
@@ -189,13 +209,16 @@ if(PPNF_BUILD_CPP)
     set_property(TARGET pagmo_plugins_nonfree PROPERTY VERSION "1.0")
     set_property(TARGET pagmo_plugins_nonfree PROPERTY SOVERSION 1)
     target_compile_options(pagmo_plugins_nonfree PRIVATE "$<$<CONFIG:DEBUG>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG}>" "$<$<CONFIG:RELEASE>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE}>")
-    set_target_properties(pagmo_plugins_nonfree PROPERTIES CXX_VISIBILITY_PRESET hidden)
-    set_target_properties(pagmo_plugins_nonfree PROPERTIES VISIBILITY_INLINES_HIDDEN TRUE)
-    # Let's setup the target C++ standard, but only if the user did not provide it manually.
-    if(NOT CMAKE_CXX_STANDARD)
-        set_property(TARGET pagmo_plugins_nonfree PROPERTY CXX_STANDARD 17)
+    # On macOS, hidden visibility prevents Boost.Serialization's singleton<T>
+    # template instances from participating in weak-symbol coalescing across
+    # dylib boundaries, breaking polymorphic serialization for plugins.
+    # Keep hidden visibility only on non-Apple platforms.
+    if(NOT APPLE)
+        set_target_properties(pagmo_plugins_nonfree PROPERTIES CXX_VISIBILITY_PRESET hidden)
+        set_target_properties(pagmo_plugins_nonfree PROPERTIES VISIBILITY_INLINES_HIDDEN TRUE)
     endif()
-    set_property(TARGET pagmo_plugins_nonfree PROPERTY CXX_STANDARD_REQUIRED YES)
+    # Enforce C++17 (use modern CMake target properties as upstream)
+    target_compile_features(pagmo_plugins_nonfree PUBLIC cxx_std_17)
     set_property(TARGET pagmo_plugins_nonfree PROPERTY CXX_EXTENSIONS NO)
     # NOTE: make sure the include directories from the current build
     # are included first, so that if there is already a pagmo_plugins_nonfree installation
@@ -224,6 +247,28 @@ if(PPNF_BUILD_CPP)
 
     # Build the tests
     if(PPNF_BUILD_TESTS)
+        # On macOS, Boost.Serialization's void_cast_registry uses type_info::before()
+        # which compares pointer identity, not names. With Mach-O two-level namespace,
+        # identical template instantiations (e.g. algo_inner<worhp>) in different DSOs
+        # have different type_info* values, so registry lookups fail across DSO boundaries.
+        # macOS 12+ removed DYLD_FORCE_FLAT_NAMESPACE, so no dyld workaround is available.
+        # The reliable fix is to link test executables against a static copy of
+        # pagmo_plugins_nonfree so all code lives in one binary with consistent type_info.
+        if(APPLE)
+            add_library(pagmo_plugins_nonfree_static STATIC "${PAGMO_PLUGINS_NONFREE_SRC_FILES}")
+            target_compile_options(pagmo_plugins_nonfree_static PRIVATE "$<$<CONFIG:DEBUG>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_DEBUG}>" "$<$<CONFIG:RELEASE>:${PAGMO_PLUGINS_NONFREE_CXX_FLAGS_RELEASE}>")
+            if(NOT CMAKE_CXX_STANDARD)
+                set_property(TARGET pagmo_plugins_nonfree_static PROPERTY CXX_STANDARD 17)
+            endif()
+            set_property(TARGET pagmo_plugins_nonfree_static PROPERTY CXX_STANDARD_REQUIRED YES)
+            set_property(TARGET pagmo_plugins_nonfree_static PROPERTY CXX_EXTENSIONS NO)
+            target_include_directories(pagmo_plugins_nonfree_static PUBLIC
+               $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+               $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}/include>)
+            target_link_libraries(pagmo_plugins_nonfree_static PUBLIC Boost::boost Boost::serialization Boost::disable_autolinking Boost::system Boost::filesystem)
+            target_link_libraries(pagmo_plugins_nonfree_static PUBLIC Pagmo::pagmo)
+            target_link_libraries(pagmo_plugins_nonfree_static PUBLIC ${CMAKE_DL_LIBS})
+        endif()
         add_subdirectory("${CMAKE_SOURCE_DIR}/tests")
     endif()
 endif()
@@ -270,19 +315,19 @@ if(PPNF_BUILD_CPP)
     # Installation of the library.
     install(TARGETS pagmo_plugins_nonfree
         EXPORT pagmo_plugins_nonfree_export
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION "${PPNF_INSTALL_LIBDIR}"
+        ARCHIVE DESTINATION "${PPNF_INSTALL_LIBDIR}"
         RUNTIME DESTINATION bin
     )
 
     configure_file("${CMAKE_CURRENT_SOURCE_DIR}/pagmo_plugins_nonfree-config.cmake.in" "${CMAKE_CURRENT_BINARY_DIR}/pagmo_plugins_nonfree-config.cmake" @ONLY)
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pagmo_plugins_nonfree-config.cmake" DESTINATION "lib/cmake/pagmo_plugins_nonfree")
-    install(EXPORT pagmo_plugins_nonfree_export NAMESPACE Pagmo_plugins_nonfree:: DESTINATION lib/cmake/pagmo_plugins_nonfree)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pagmo_plugins_nonfree-config.cmake" DESTINATION "${PPNF_INSTALL_LIBDIR}/cmake/pagmo_plugins_nonfree")
+    install(EXPORT pagmo_plugins_nonfree_export NAMESPACE Pagmo_plugins_nonfree:: DESTINATION "${PPNF_INSTALL_LIBDIR}/cmake/pagmo_plugins_nonfree")
     # Take care of versioning.
     include(CMakePackageConfigHelpers)
     write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/pagmo_plugins_nonfree-config-version.cmake" VERSION ${pagmo_plugins_nonfree_VERSION}
-        COMPATIBILITY ExactVersion)
-    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pagmo_plugins_nonfree-config-version.cmake" DESTINATION "lib/cmake/pagmo_plugins_nonfree")
+        COMPATIBILITY SameMinorVersion)
+    install(FILES "${CMAKE_CURRENT_BINARY_DIR}/pagmo_plugins_nonfree-config-version.cmake" DESTINATION "${PPNF_INSTALL_LIBDIR}/cmake/pagmo_plugins_nonfree")
 endif()
 
 # Uninstall target

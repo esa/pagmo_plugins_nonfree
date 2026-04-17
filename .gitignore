@@ -5,6 +5,7 @@ build*
 *~
 *.bak
 .DS_Store
+.cache
 
 # .orig files from patch.
 *.orig
@@ -28,3 +29,4 @@ doc/sphinx/_build
 
 # Config files
 pygmo_plugins_nonfree/_version.py
+_codeql_detected_source_root

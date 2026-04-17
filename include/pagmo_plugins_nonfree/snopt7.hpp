@@ -47,6 +47,7 @@ see https://www.gnu.org/licenses/. */
 #ifndef PAGMO_SNOPT7_HPP
 #define PAGMO_SNOPT7_HPP
 
+#include <boost/serialization/map.hpp>
 #include <boost/type_traits/is_object.hpp>
 #include <limits> // std::numeric_limits
 #include <map>
@@ -91,7 +92,7 @@ struct user_data {
     // The log.
     using log_type = std::vector<log_line_type>;
     // The problem stored in the evolve() population
-    pagmo::problem m_prob;
+    const pagmo::problem *m_prob;
     // A preallocated decision vector
     pagmo::vector_double m_dv;
     // The verbosity
