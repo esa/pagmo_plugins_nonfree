@@ -10,7 +10,7 @@ Python3_add_library(core MODULE WITH_SOABI
     docstrings.cpp
 )
 
-target_link_libraries(core PRIVATE Pagmo_plugins_nonfree::pagmo_plugins_nonfree Boost::boost pybind11::module)
+target_link_libraries(core PRIVATE Pagmo_plugins_nonfree::pagmo_plugins_nonfree Boost::boost pybind11::module Pagmo::pagmo)
 
 # Python headers already provided by Python3; keep include of Python3 only.
 target_include_directories(core SYSTEM PRIVATE "${Python3_INCLUDE_DIRS}")

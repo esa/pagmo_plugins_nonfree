@@ -9,9 +9,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build-type: ["Python313", "Python312", "Python311"]
+        build-type: ["Python314", "Python313", "Python312", "Python311"]
     container:
-      image: pagmo2/manylinux228_aarch64_with_deps:latest
+      image: pagmo2/manylinux_2_28_aarch64_with_deps:latest
       env:
         PPNF_BUILD_TYPE: ${{ matrix.build-type }}
     steps:
@@ -30,9 +30,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        build-type: ["Python313", "Python312", "Python311"]
+        build-type: ["Python314", "Python313", "Python312", "Python311"]
     container:
-      image: pagmo2/manylinux228_x86_64_with_deps:latest
+      image: pagmo2/manylinux_2_28_x86_64_with_deps:latest
       env:
         PPNF_BUILD_TYPE: ${{ matrix.build-type }}
     steps:
@@ -64,7 +64,69 @@ jobs:
           pattern: manylinux228-*
           path: dist/
           merge-multiple: true
+
+      - name: Filter wheels already on PyPI
+        id: filter_wheels
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p dist/to_upload
+          python - <<'PY'
+          import json
+          import os
+          from pathlib import Path
+          from shutil import copy2
+          from urllib.error import HTTPError
+          from urllib.request import urlopen
+
+          wheels = sorted(Path("dist").glob("*.whl"))
+          if not wheels:
+            raise RuntimeError("No wheels found under dist/")
+
+          to_upload = []
+          for wheel in wheels:
+            parts = wheel.name.split("-")
+            if len(parts) < 2:
+              # Unexpected filename: keep it for upload.
+              to_upload.append(wheel)
+              continue
+
+            project = parts[0].replace("_", "-")
+            version = parts[1]
+            url = f"https://pypi.org/pypi/{project}/{version}/json"
+
+            exists = False
+            try:
+              with urlopen(url, timeout=15) as resp:
+                payload = json.load(resp)
+              filenames = {item.get("filename", "") for item in payload.get("urls", [])}
+              exists = wheel.name in filenames
+            except HTTPError as ex:
+              if ex.code != 404:
+                raise
+
+            if exists:
+              print(f"Skipping already published wheel: {wheel.name}")
+            else:
+              print(f"Will publish wheel: {wheel.name}")
+              to_upload.append(wheel)
+
+          for wheel in to_upload:
+            copy2(wheel, Path("dist/to_upload") / wheel.name)
+
+          out = Path(os.environ["GITHUB_OUTPUT"])
+          with out.open("a", encoding="utf-8") as f:
+            f.write(f"count={len(to_upload)}\n")
+            f.write(f"has_new={'true' if to_upload else 'false'}\n")
+          PY
+
+      - name: No new wheels to publish
+        if: steps.filter_wheels.outputs.has_new != 'true'
+        run: echo "All wheels are already present on PyPI. Skipping upload."
+
       - name: Publish to PyPI
+        if: steps.filter_wheels.outputs.has_new == 'true'
         uses: pypa/gh-action-pypi-publish@release/v1
         with:
-          packages-dir: dist/
+          packages-dir: dist/to_upload/
+          skip-existing: true
